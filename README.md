@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SociMe — AI Social Media Manager
 
-## Getting Started
+## הפעלה מקומית
 
-First, run the development server:
-
+### 1. התקנת Dependencies
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. הגדרת משתני סביבה
+ערוך את הקובץ `.env.local` והכנס את המפתחות שלך:
+```
+NEXT_PUBLIC_SUPABASE_URL=...       ← מ-supabase.com/dashboard
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...  ← מ-supabase.com/dashboard
+SUPABASE_SERVICE_ROLE_KEY=...      ← Settings → API → service_role
+OPENAI_API_KEY=sk-...              ← platform.openai.com/api-keys
+META_ACCESS_TOKEN=...              ← developers.facebook.com
+META_PAGE_ID=...                   ← מזהה עמוד הפייסבוק שלך
+META_IG_ACCOUNT_ID=...             ← מזהה חשבון ה-Instagram העסקי
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. הקמת מסד הנתונים
+1. צור פרויקט חדש ב-supabase.com
+2. SQL Editor → הדבק `supabase/schema.sql` → Run
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. הפעלה
+```bash
+npm run dev
+```
+פתח http://localhost:3000
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Deploy ל-Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git init && git add . && git commit -m "SociMe initial"
+# Push ל-GitHub, אז Import ב-vercel.com
+# הוסף את כל משתני .env.local בהגדרות Vercel → Deploy ✅
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## מבנה הפרויקט
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/
+  page.tsx              ← דף ראשי (Hero + Story + Features + Schema)
+  layout.tsx            ← RTL + Heebo font
+  api/
+    generate/           ← POST: OpenAI post generation + moderation
+    auth/register/      ← POST: Supabase signup + draft save
+    auth/login/         ← POST: Supabase signin
+    scheduler/          ← GET/POST: manage posts
+    scheduler/[id]/     ← PATCH: update post status
+    meta/publish/       ← POST: publish to Facebook + Instagram
+components/
+  Drawer.tsx            ← Slide menu RTL
+  ChatBot.tsx           ← AI chatbot (calls /api/generate)
+  PaywallForm.tsx       ← Register/Login + Stripe placeholder
+lib/
+  supabase.ts           ← Supabase clients
+  openai.ts             ← OpenAI + Hebrew system prompt
+  meta.ts               ← Meta Graph API
+supabase/
+  schema.sql            ← 4 tables: users, transactions, token_ledger, scheduler
+```
