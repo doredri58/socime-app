@@ -422,40 +422,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ DB SCHEMA ══ */}
-      <section id="schema" className="py-24 px-6" style={{ background: '#FAFAFE' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14 reveal">
-            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--purple)' }}>תשתית Backend</div>
-            <h2 className="text-3xl font-extrabold" style={{ color: 'var(--text-dark)', letterSpacing: '-0.8px' }}>סכמת PostgreSQL</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { name: 'users', fields: [['id', 'UUID PK'], ['email', 'TEXT'], ['name', 'TEXT'], ['plan', 'ENUM'], ['token_balance', 'INT'], ['created_at', 'TS'], ['last_login_at', 'TS']] },
-              { name: 'transactions', fields: [['id', 'UUID PK'], ['user_id', 'FK'], ['transaction_type', 'ENUM'], ['amount_paid_ils', 'DECIMAL'], ['stripe_payment_id', 'TEXT'], ['tokens_granted', 'INT'], ['created_at', 'TS']] },
-              { name: 'token_ledger', fields: [['id', 'UUID PK'], ['user_id', 'FK'], ['tokens_used', 'INT'], ['api_cost_usd', 'DECIMAL'], ['action_type', 'ENUM'], ['post_id', 'FK'], ['created_at', 'TS']] },
-              { name: 'scheduler', fields: [['id', 'UUID PK'], ['user_id', 'FK'], ['content_text', 'TEXT'], ['platform', 'TEXT[]'], ['status', 'ENUM'], ['scheduled_at', 'TS'], ['published_at', 'TS'], ['meta_post_id', 'TEXT']] },
-            ].map((table, i) => (
-              <div key={table.name} className="bg-white rounded-2xl overflow-hidden reveal glow-card"
-                style={{ transitionDelay: `${i * 0.07}s` }}>
-                <div className="px-4 py-3" style={{ background: 'var(--purple-soft)', borderBottom: '1px solid var(--purple-border)' }}>
-                  <span className="text-sm font-bold font-mono" style={{ color: 'var(--purple)' }}>{table.name}</span>
-                </div>
-                <div className="py-1">
-                  {table.fields.map(([name, type]) => (
-                    <div key={name} className="flex items-center justify-between px-4 py-1.5 text-xs" style={{ borderBottom: '1px solid rgba(161,70,255,0.05)' }}>
-                      <span className="font-semibold font-mono" style={{ color: 'var(--text-dark)' }}>{name}</span>
-                      <span className="px-1.5 py-0.5 rounded text-xs font-bold font-mono"
-                        style={{ background: 'var(--purple-soft)', color: 'var(--purple)' }}>{type}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ══ FOOTER ══ */}
       <footer className="py-16 px-6 bg-white" style={{ borderTop: '1px solid rgba(161,70,255,0.1)' }}>
         <div className="max-w-5xl mx-auto flex flex-col items-center gap-6">
