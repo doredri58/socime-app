@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
   try {
@@ -53,6 +53,10 @@ export async function POST(req: NextRequest) {
         status: 'draft',
       })
     }
+
+    // התחברות אוטומטית — יוצר session cookie כדי שהמשתמש יהיה מחובר לדשבורד
+    const authClient = await createServerSupabaseClient()
+    await authClient.auth.signInWithPassword({ email, password })
 
     return NextResponse.json({ success: true, userId })
   } catch (err: unknown) {

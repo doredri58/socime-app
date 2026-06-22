@@ -13,12 +13,15 @@ const SYSTEM_PROMPT = `אתה מומחה שיווק דיגיטלי ישראלי.
 - אל תכלול כוכביות או סימני markdown
 - ענה ב-JSON בלבד בפורמט: { "text": "...", "hashtags": "..." }`
 
-export async function generatePost(businessDesc: string) {
-  const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite' })
+// Text generation — gemini-2.5-flash
+export async function generatePost(businessDesc: string, systemPromptOverride?: string) {
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+
+  const systemContext = systemPromptOverride ?? SYSTEM_PROMPT
 
   const result = await model.generateContent({
-    contents: [{ role: 'user', parts: [{ text: `${SYSTEM_PROMPT}\n\nכתוב פוסט לעסק הבא: ${businessDesc}` }] }],
-    generationConfig: { temperature: 0.8, maxOutputTokens: 400 },
+    contents: [{ role: 'user', parts: [{ text: `${systemContext}\n\nכתוב פוסט לעסק הבא: ${businessDesc}` }] }],
+    generationConfig: { temperature: 0.8, maxOutputTokens: 500 },
   })
 
   const raw = result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
@@ -27,7 +30,7 @@ export async function generatePost(businessDesc: string) {
   const usage = result.response.usageMetadata
   const inputTokens = usage?.promptTokenCount ?? 0
   const outputTokens = usage?.candidatesTokenCount ?? 0
-  // Gemini 1.5 Flash pricing: $0.075/1M input, $0.30/1M output
+  // gemini-2.5-flash pricing: $0.075/1M input, $0.30/1M output
   const costUsd = (inputTokens * 0.000000075) + (outputTokens * 0.0000003)
 
   return {
@@ -36,4 +39,51 @@ export async function generatePost(businessDesc: string) {
     tokensUsed: inputTokens + outputTokens,
     costUsd,
   }
+}
+
+// Image generation — gemini-2.0-flash-exp (Nano Banana)
+export async function generateImage(prompt: string): Promise<string> {
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash-exp' })
+
+  const result = await model.generateContent({
+    contents: [{ role: 'user', parts: [{ text: `צור תמונה: ${prompt}` }] }],
+    generationConfig: {
+      // @ts-expect-error — responseModalities is supported but not yet in types
+      responseModalities: ['IMAGE', 'TEXT'],
+    },
+  })
+
+  for (const part of result.response.candidates?.[0]?.content?.parts ?? []) {
+    if (part.inlineData?.mimeType?.startsWith('image/')) {
+      return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`
+    }
+  }
+
+  throw new Error('לא הוחזרה תמונה מ-Gemini')
+}
+
+// Ideas generation — batch of 10
+export async function generateIdeas(
+  category: 'value' | 'marketing' | 'vibe',
+  systemPrompt: string
+): Promise<string[]> {
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+
+  const categoryMap = {
+    value: 'ערך ותוכן מקצועי',
+    marketing: 'שיווק ומכירות',
+    vibe: 'אווירה ואישיות העסק',
+  }
+
+  const result = await model.generateContent({
+    contents: [{
+      role: 'user',
+      parts: [{ text: `${systemPrompt}\n\nצור 10 רעיונות לפוסטים בקטגוריה: ${categoryMap[category]}.\nהחזר JSON בלבד: { "ideas": ["...", "...", ...] }` }],
+    }],
+    generationConfig: { temperature: 0.9, maxOutputTokens: 800 },
+  })
+
+  const raw = result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
+  const parsed = JSON.parse(raw) as { ideas: string[] }
+  return parsed.ideas
 }

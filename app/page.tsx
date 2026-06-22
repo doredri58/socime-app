@@ -1,9 +1,11 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Drawer from '@/components/Drawer'
 import ChatBot from '@/components/ChatBot'
 import PaywallForm from '@/components/PaywallForm'
+import Onboarding from '@/components/Onboarding'
 
 interface Draft { text: string; hashtags: string }
 
@@ -37,13 +39,18 @@ function useCounterAnimation(target: number, suffix: string, triggered: boolean)
   return val
 }
 
-export default function Home() {
+function HomeInner() {
+  const searchParams = useSearchParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
   const [draft, setDraft] = useState<Draft | null>(null)
   const [statsVisible, setStatsVisible] = useState(false)
   const statsRef = useRef<HTMLDivElement>(null)
   const flipRef = useRef<HTMLDivElement>(null)
+
+  // Google OAuth callback — show onboarding for new users
+  const oauthUid = searchParams.get('uid')
+  const needsOnboarding = searchParams.get('onboarding') === 'true' && !!oauthUid
   useScrollReveal()
 
   const stat1 = useCounterAnimation(1240, '+', statsVisible)
@@ -55,6 +62,14 @@ export default function Home() {
     if (statsRef.current) obs.observe(statsRef.current)
     return () => obs.disconnect()
   }, [])
+
+  if (needsOnboarding && oauthUid) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg,#f8f4ff 0%,#ffffff 60%)' }}>
+        <Onboarding userId={oauthUid} onComplete={() => { window.location.href = '/dashboard' }} />
+      </div>
+    )
+  }
 
   function handlePaywall(draftPost: Draft) {
     setDraft(draftPost)
@@ -97,14 +112,24 @@ export default function Home() {
             >{l}</a>
           ))}
         </div>
-        <button
-          className="px-5 py-2 rounded-xl text-sm font-bold text-white transition-all"
-          style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 0 20px rgba(161,70,255,0.3)' }}
-          onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(161,70,255,0.45)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' }}
-          onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(161,70,255,0.3)'; (e.currentTarget as HTMLElement).style.transform = '' }}
-        >
-          התחל בחינם
-        </button>
+        <div className="flex items-center gap-2">
+          <a href="/login"
+            className="px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
+            style={{ color: 'var(--purple)', border: '1.5px solid var(--purple-border)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--purple-soft)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '' }}
+          >
+            כניסה
+          </a>
+          <a href="/login?mode=register"
+            className="px-5 py-2 rounded-xl text-sm font-bold text-white transition-all cursor-pointer"
+            style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 0 20px rgba(161,70,255,0.3)' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(161,70,255,0.45)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(161,70,255,0.3)'; (e.currentTarget as HTMLElement).style.transform = '' }}
+          >
+            התחל בחינם
+          </a>
+        </div>
       </nav>
 
       {/* ══ HERO ══ */}
@@ -447,5 +472,13 @@ export default function Home() {
         </div>
       </footer>
     </>
+  )
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={null}>
+      <HomeInner />
+    </Suspense>
   )
 }
