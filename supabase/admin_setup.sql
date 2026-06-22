@@ -22,9 +22,9 @@ SELECT email, name, role, tier, token_balance, status
 FROM users
 WHERE lower(email) = 'doredri58@gmail.com';
 
--- 4. העלאת חשבון המייסד להרשאות מלאות
+-- 4. העלאת חשבון האדמין להרשאות מלאות
 UPDATE users
-SET role          = 'Admin',
+SET role          = 'admin',
     tier          = 'pro',
     plan          = 'pro',
     token_balance = 999999,

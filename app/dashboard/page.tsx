@@ -31,20 +31,20 @@ export default async function DashboardHome() {
   const userName  = profile?.name ?? 'משתמש'
 
   const stats = [
-    { label: 'יתרת טוקנים',  value: profile?.token_balance ?? 0, icon: '🪙', color: 'var(--purple)' },
-    { label: 'תמונות החודש', value: `${imgUsed}/${quota}`,        icon: '🖼️', color: '#16a34a' },
-    { label: 'פוסטים בתור',  value: queueCount ?? 0,              icon: '📅', color: '#2563eb' },
+    { label: 'יתרת טוקנים',  value: profile?.token_balance ?? 0, icon: 'ti-coins',    grad: 'var(--card-purple)',  num: '#6D28D9' },
+    { label: 'תמונות החודש', value: `${imgUsed}/${quota}`,        icon: 'ti-photo',    grad: 'var(--card-fuchsia)', num: '#A21CAF' },
+    { label: 'פוסטים בתור',  value: queueCount ?? 0,              icon: 'ti-calendar', grad: 'var(--card-pink)',    num: '#BE185D' },
   ]
 
   const actions = [
-    { href: '/dashboard/business', title: 'תיק עסק',     desc: business?.business_name ?? 'הגדר את העסק שלך', icon: '🏢' },
-    { href: '/dashboard/create',   title: 'יצירת תוכן',  desc: 'פוסטים ותמונות עם AI',                       icon: '✨' },
-    { href: '/dashboard/queue',    title: 'תור פוסטים',  desc: 'נהל את התזמון שלך',                          icon: '📅' },
+    { href: '/dashboard/business', title: 'תיק עסק',    desc: business?.business_name ?? 'הגדר את העסק שלך', icon: 'ti-building-store' },
+    { href: '/dashboard/create',   title: 'יצירת תוכן', desc: 'פוסטים ותמונות עם AI',                        icon: 'ti-sparkles'      },
+    { href: '/dashboard/queue',    title: 'תור פוסטים', desc: 'נהל את התזמון שלך',                           icon: 'ti-calendar'      },
   ]
 
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-2xl md:text-3xl font-extrabold mb-1" style={{ color: 'var(--text-dark)', letterSpacing: '-0.5px' }}>
+      <h1 className="text-2xl md:text-3xl font-bold mb-1" style={{ color: 'var(--text-dark)', letterSpacing: '-0.5px' }}>
         שלום {userName} 👋
       </h1>
       <p className="text-sm mb-8" style={{ color: 'var(--text-light)' }}>
@@ -54,13 +54,11 @@ export default async function DashboardHome() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {stats.map(s => (
-          <div key={s.label} className="bg-white rounded-2xl p-5"
-            style={{ border: '1px solid var(--purple-border)', boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-2xl">{s.icon}</span>
-            </div>
-            <div className="text-2xl font-black" style={{ color: s.color }}>{s.value}</div>
-            <div className="text-xs mt-1" style={{ color: 'var(--text-light)' }}>{s.label}</div>
+          <div key={s.label} className="rounded-2xl p-5"
+            style={{ background: s.grad, border: '1px solid var(--purple-border)' }}>
+            <i className={`ti ${s.icon}`} style={{ fontSize: 20, color: s.num, marginBottom: 10, display: 'block' }} aria-hidden="true" />
+            <div className="text-2xl font-bold" style={{ color: s.num }}>{s.value}</div>
+            <div className="text-xs mt-1 font-medium" style={{ color: s.num, opacity: 0.7 }}>{s.label}</div>
           </div>
         ))}
       </div>
@@ -72,10 +70,13 @@ export default async function DashboardHome() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {actions.map(a => (
           <Link key={a.href} href={a.href}
-            className="bg-white rounded-2xl p-5 transition-all hover:-translate-y-0.5"
-            style={{ border: '1px solid var(--purple-border)', boxShadow: '0 2px 12px rgba(0,0,0,0.03)' }}>
-            <div className="text-3xl mb-3">{a.icon}</div>
-            <div className="text-base font-bold mb-1" style={{ color: 'var(--text-dark)' }}>{a.title}</div>
+            className="bg-white rounded-2xl p-5 transition-all hover:-translate-y-1"
+            style={{ border: '1px solid var(--purple-border)', boxShadow: '0 2px 16px rgba(124,58,237,0.06)', textDecoration: 'none' }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+              style={{ background: 'var(--purple-soft)' }}>
+              <i className={`ti ${a.icon}`} style={{ fontSize: 20, color: 'var(--purple)' }} aria-hidden="true" />
+            </div>
+            <div className="text-base font-semibold mb-1" style={{ color: 'var(--text-dark)' }}>{a.title}</div>
             <div className="text-xs" style={{ color: 'var(--text-light)' }}>{a.desc}</div>
           </Link>
         ))}

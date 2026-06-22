@@ -9,34 +9,32 @@ interface PaywallFormProps {
   initialMode?: 'register' | 'login'
 }
 
-type Plan = 'basic' | 'pro'
-
-const PLANS = {
-  basic: { label: 'Basic',  price: 49,  tokens: 100, desc: '100 טוקנים · פרסום ל-Meta' },
-  pro:   { label: 'Pro',    price: 99,  tokens: 300, desc: '300 טוקנים · AI תמונות + תזמון' },
-}
 
 export default function PaywallForm({ draftPost, onBack, initialMode = 'register' }: PaywallFormProps) {
   const [mode, setMode]               = useState<'register' | 'login'>(initialMode)
   const [loading, setLoading]         = useState(false)
-  const [payLoading, setPayLoading]   = useState(false)
   const [error, setError]             = useState('')
-  const [success, setSuccess]         = useState(false)
   const [newUserId, setNewUserId]     = useState<string | null>(null)
-  const [newUserEmail, setNewUserEmail] = useState('')
   const [showOnboarding, setShowOnboarding] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState<Plan>('pro')
+  const [forgotMode, setForgotMode]   = useState(false)
+  const [resetSent, setResetSent]     = useState(false)
 
   const [name, setName]         = useState('')
   const [email, setEmail]       = useState('')
   const [password, setPassword] = useState('')
 
   async function handleGoogleLogin() {
-    const supabase = createClient()
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: `${window.location.origin}/auth/callback` },
-    })
+    setError('')
+    try {
+      const supabase = createClient()
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
+      })
+      if (oauthError) setError(oauthError.message)
+    } catch {
+      setError('שגיאה בחיבור ל-Google — נסה עם אימייל')
+    }
   }
 
   async function handleRegister(e: React.FormEvent) {
@@ -52,7 +50,6 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
     setLoading(false)
     if (!res.ok) { setError(data.error); return }
     setNewUserId(data.userId ?? null)
-    setNewUserEmail(email)
     setShowOnboarding(true)
   }
 
@@ -71,50 +68,75 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
     window.location.href = '/dashboard'
   }
 
-  // אחרי Onboarding → מעבר לתשלום
-  async function handleGoToPayment(userId: string) {
-    setPayLoading(true)
-    const res = await fetch('/api/payplus/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, plan: selectedPlan, email: newUserEmail }),
+  async function handleForgotPassword(e: React.FormEvent) {
+    e.preventDefault()
+    if (!email) { setError('הכנס אימייל'); return }
+    setLoading(true); setError('')
+    const supabase = createClient()
+    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     })
-    const data = await res.json()
-    setPayLoading(false)
-    if (data.paymentUrl) {
-      window.location.href = data.paymentUrl
-    } else {
-      // fallback — אם PayPlus לא מוגדר עדיין, פשוט הצג הצלחה
-      setSuccess(true)
+    setLoading(false)
+    if (err) { setError(err.message); return }
+    setResetSent(true)
+  }
+
+  // אחרי Onboarding → ישירות לדשבורד (PayPlus יופעל לפני השקה)
+  function handleOnboardingComplete() {
+    window.location.href = '/dashboard'
+  }
+
+  // מסך שכחתי סיסמא
+  if (forgotMode) {
+    if (resetSent) {
+      return (
+        <div className="bg-white rounded-3xl p-8 glow-card text-center">
+          <div className="text-4xl mb-3">📬</div>
+          <div className="text-lg font-black mb-2" style={{ color: '#1A1A2E' }}>מייל נשלח!</div>
+          <div className="text-sm mb-5" style={{ color: '#4A4A6A' }}>
+            בדוק את תיבת הדואר שלך ולחץ על הקישור לאיפוס הסיסמא.
+          </div>
+          <button onClick={() => { setForgotMode(false); setResetSent(false) }}
+            className="text-sm font-semibold" style={{ color: 'var(--purple)' }}>
+            חזרה להתחברות
+          </button>
+        </div>
+      )
     }
+    return (
+      <div className="bg-white rounded-3xl p-8 glow-card">
+        <h2 className="text-xl font-extrabold text-center mb-1" style={{ color: '#1A1A2E' }}>שכחתי סיסמא</h2>
+        <p className="text-sm text-center mb-5" style={{ color: '#4A4A6A' }}>נשלח אליך מייל עם קישור לאיפוס</p>
+        {error && <div className="p-3 rounded-xl mb-4 text-sm text-red-600 bg-red-50 border border-red-200">{error}</div>}
+        <form onSubmit={handleForgotPassword} className="flex flex-col gap-3">
+          <input type="email" required value={email} onChange={e => setEmail(e.target.value)}
+            placeholder="האימייל שלך" dir="ltr"
+            className="px-3 py-2.5 rounded-xl text-sm outline-none"
+            style={{ background: '#FAFAFA', border: '1.5px solid rgba(161,70,255,0.2)', color: '#1A1A2E' }} />
+          <button type="submit" disabled={loading}
+            className="w-full py-3 rounded-full text-white font-bold"
+            style={{ background: 'linear-gradient(135deg,var(--purple),#7c3aed)', opacity: loading ? 0.7 : 1 }}>
+            {loading ? 'שולח...' : 'שלח מייל איפוס'}
+          </button>
+          <button type="button" onClick={() => { setForgotMode(false); setError('') }}
+            className="text-sm font-semibold text-center" style={{ color: 'var(--text-light)' }}>
+            חזרה להתחברות
+          </button>
+        </form>
+      </div>
+    )
   }
 
   if (showOnboarding && newUserId) {
     return (
       <Onboarding
         userId={newUserId}
-        onComplete={() => handleGoToPayment(newUserId)}
+        onComplete={handleOnboardingComplete}
       />
     )
   }
 
-  if (success) {
-    return (
-      <div className="bg-white rounded-3xl p-8 glow-card text-center">
-        <div className="text-4xl mb-4">🎉</div>
-        <div className="text-xl font-bold mb-2" style={{ color: '#1A1A2E' }}>ברוך הבא ל-SociMe!</div>
-        <div className="text-sm mb-4" style={{ color: '#4A4A6A' }}>
-          {draftPost ? 'הפוסט שלך נשמר כטיוטה וממתין לך.' : 'החשבון שלך פעיל.'}
-        </div>
-        <a href="/dashboard" className="block w-full py-3 rounded-2xl text-white font-bold text-center"
-          style={{ background: 'linear-gradient(135deg,#a146ff,#7c3aed)', boxShadow: '0 4px 18px rgba(161,70,255,0.3)' }}>
-          כניסה לדשבורד ←
-        </a>
-      </div>
-    )
-  }
-
-  return (
+return (
     <div className="bg-white rounded-3xl p-8 glow-card">
       <h2 className="text-xl font-extrabold text-center mb-1" style={{ color: '#1A1A2E' }}>
         {mode === 'register' ? 'הצטרף ל-SociMe' : 'התחבר לחשבון'}
@@ -133,26 +155,12 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
         </div>
       )}
 
-      {/* בחירת פלאן */}
+      {/* תקופת ניסיון */}
       {mode === 'register' && (
-        <div className="grid grid-cols-2 gap-2 mb-4">
-          {(Object.entries(PLANS) as [Plan, typeof PLANS.basic][]).map(([key, plan]) => (
-            <button key={key} type="button" onClick={() => setSelectedPlan(key)}
-              className="p-3 rounded-2xl text-right transition-all"
-              style={{
-                background:  selectedPlan === key ? 'var(--purple-soft)' : '#FAFAFA',
-                border:      selectedPlan === key ? '2px solid var(--purple)' : '1.5px solid rgba(161,70,255,0.15)',
-              }}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-lg font-black" style={{ color: 'var(--purple)' }}>₪{plan.price}</span>
-                <span className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: key === 'pro' ? '#a146ff' : '#e9d5ff', color: key === 'pro' ? '#fff' : '#7c3aed' }}>
-                  {plan.label}
-                </span>
-              </div>
-              <div className="text-xs" style={{ color: '#8888A8' }}>{plan.desc}</div>
-            </button>
-          ))}
+        <div className="flex items-center gap-2 p-3 rounded-xl mb-4 text-sm font-medium"
+          style={{ background: '#f0fdf4', border: '1px solid #86efac', color: '#16a34a' }}>
+          <span>✓</span>
+          <span>הצטרפות חינמית — שדרוג לחבילה בכל עת</span>
         </div>
       )}
 
@@ -205,6 +213,12 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
           onFocus={e => { e.target.style.borderColor = 'var(--purple)' }}
           onBlur={e => { e.target.style.borderColor = 'rgba(161,70,255,0.2)' }}
         />
+        {mode === 'login' && (
+          <button type="button" onClick={() => { setForgotMode(true); setError('') }}
+            className="text-xs text-right font-semibold" style={{ color: 'var(--purple)' }}>
+            שכחתי סיסמא
+          </button>
+        )}
 
         <button type="submit" disabled={loading}
           className="w-full py-3 rounded-full text-white font-bold text-base transition-all cursor-pointer"
@@ -213,11 +227,7 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
             boxShadow: '0 4px 18px rgba(161,70,255,0.38)',
             opacity: loading ? 0.7 : 1,
           }}>
-          {loading
-            ? 'מעבד...'
-            : mode === 'register'
-              ? `הרשמה + תשלום ₪${PLANS[selectedPlan].price} ב-PayPlus`
-              : 'התחבר'}
+          {loading ? 'מעבד...' : mode === 'register' ? 'הרשמה חינמית' : 'התחבר'}
         </button>
 
         <button type="button"
@@ -229,7 +239,10 @@ export default function PaywallForm({ draftPost, onBack, initialMode = 'register
       </form>
 
       <div className="text-center text-xs mt-3" style={{ color: '#8888A8' }}>
-        🔒 תשלום מאובטח דרך PayPlus · ₪ בלבד · ביטול בכל עת
+        🔒 ההרשמה חינמית · שדרוג לפי בחירה · ביטול בכל עת
+      </div>
+      <div className="text-center text-xs mt-2" style={{ color: '#c4b5d4' }}>
+        Powered by <span style={{ fontWeight: 600, color: '#9333EA' }}>EDRI GROUP</span>
       </div>
     </div>
   )

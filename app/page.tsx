@@ -469,6 +469,7 @@ function HomeInner() {
             ))}
           </div>
           <div className="text-xs" style={{ color: 'rgba(136,136,168,0.5)' }}>© 2025 SociMe · כל הזכויות שמורות לדור דוד אדרי</div>
+          <div className="text-xs mt-1" style={{ color: 'rgba(136,136,168,0.4)' }}>Built by <span style={{ fontWeight: 600, color: '#9333EA', opacity: 0.7 }}>EDRI GROUP</span></div>
         </div>
       </footer>
     </>

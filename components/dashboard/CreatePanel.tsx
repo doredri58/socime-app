@@ -5,13 +5,14 @@ import ImageGenerator from '@/components/ImageGenerator'
 interface Props {
   userId: string
   businessDescription: string
+  initialIdea?: string
 }
 
 type Tab = 'post' | 'image'
 
-export default function CreatePanel({ userId, businessDescription }: Props) {
+export default function CreatePanel({ userId, businessDescription, initialIdea }: Props) {
   const [tab, setTab]         = useState<Tab>('post')
-  const [desc, setDesc]       = useState(businessDescription)
+  const [desc, setDesc]       = useState(initialIdea ?? businessDescription)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
   const [post, setPost]       = useState<{ text: string; hashtags: string } | null>(null)

@@ -62,11 +62,29 @@ export default async function QueuePage() {
                     ))}
                   </div>
                 </div>
+                {/* media thumbnail for uploaded posts */}
+                {post.payload_url && post.content_type === 'image' && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={post.payload_url} alt=""
+                    className="w-full rounded-xl mb-3 object-cover"
+                    style={{ maxHeight: 220 }} />
+                )}
+                {post.payload_url && post.content_type === 'video' && (
+                  <div className="w-full rounded-xl mb-3 flex items-center justify-center"
+                    style={{ height: 80, background: '#1a1a2e', color: '#fff', fontSize: 28 }}>
+                    🎬
+                  </div>
+                )}
                 <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-dark)' }}>
-                  {post.content_text}
+                  {post.content_text || post.caption}
                 </div>
                 {post.hashtags && (
                   <div className="text-xs mt-2 font-semibold" style={{ color: 'var(--purple)' }}>{post.hashtags}</div>
+                )}
+                {post.source === 'uploaded' && (
+                  <div className="text-xs mt-1 font-semibold" style={{ color: 'var(--text-light)' }}>
+                    📂 הועלה ידנית
+                  </div>
                 )}
                 <div className="text-xs mt-3" style={{ color: 'var(--text-light)' }}>
                   {new Date(post.created_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}

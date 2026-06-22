@@ -1,19 +1,35 @@
 @import "tailwindcss";
 
 :root {
-  --purple: #A146FF;
-  --purple-light: #C47FFF;
-  --purple-deep: #7B2FD0;
-  --purple-soft: rgba(161,70,255,0.08);
-  --purple-border: rgba(161,70,255,0.15);
-  --purple-glow: 0 0 32px rgba(161,70,255,0.22), 0 4px 24px rgba(161,70,255,0.12);
-  --purple-glow-sm: 0 0 16px rgba(161,70,255,0.15), 0 2px 12px rgba(161,70,255,0.08);
-  --text-dark: #1A1A2E;
-  --text-mid: #4A4A6A;
-  --text-light: #8888A8;
+  --purple:        #7C3AED;
+  --purple-light:  #A78BFA;
+  --purple-deep:   #C026D3;
+  --purple-pink:   #EC4899;
+  --purple-soft:   rgba(124,58,237,0.07);
+  --purple-border: rgba(124,58,237,0.13);
+  --purple-glow:    0 0 32px rgba(124,58,237,0.22), 0 4px 24px rgba(192,38,211,0.12);
+  --purple-glow-sm: 0 0 16px rgba(124,58,237,0.15), 0 2px 12px rgba(192,38,211,0.08);
+
+  /* Sidebar gradient */
+  --sidebar-gradient: linear-gradient(165deg, #7C3AED 0%, #9333EA 38%, #C026D3 72%, #EC4899 100%);
+
+  /* Card gradients */
+  --card-purple: linear-gradient(135deg, #EDE9FE, #DDD6FE);
+  --card-fuchsia: linear-gradient(135deg, #FDF4FF, #FAE8FF);
+  --card-pink: linear-gradient(135deg, #FCE7F3, #FBCFE8);
+
+  --text-dark:  #1A0533;
+  --text-mid:   #4B3A6E;
+  --text-light: #9381B5;
+
+  --dash-bg: #FAF5FF;
 }
 
 html { scroll-behavior: smooth; direction: rtl; }
+
+@media (min-width: 768px) {
+  .dash-sidebar { display: flex !important; flex-direction: column; }
+}
 
 body {
   font-family: 'Heebo', sans-serif;

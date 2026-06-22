@@ -23,9 +23,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const isAdmin  = ['admin', 'founder'].includes(profile?.role ?? '')
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#FAFAFE', direction: 'rtl' }}>
+    <div className="flex min-h-screen" style={{ background: 'var(--dash-bg)' }}>
       <Sidebar userName={userName} tier={tier} isAdmin={isAdmin} />
-      <main className="flex-1 min-w-0 p-6 md:p-10">
+      <main className="flex-1 min-w-0 p-6 md:p-10" style={{ direction: 'rtl' }}>
         {children}
       </main>
     </div>
