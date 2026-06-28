@@ -1,8 +1,8 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
-import CreatePanel from '@/components/dashboard/CreatePanel'
+import CreateStudio from '@/components/dashboard/CreateStudio'
 
-export default async function CreatePage({ searchParams }: { searchParams: Promise<{ idea?: string }> }) {
+export default async function CreatePage({ searchParams }: { searchParams: Promise<{ idea?: string; prompt?: string }> }) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/?login=required')
@@ -10,22 +10,26 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
 
   const { data: business } = await db
     .from('business_profiles')
-    .select('raw_description')
+    .select('business_name, raw_description')
     .eq('user_id', user!.id)
     .single()
 
-  const { idea } = await searchParams
+  const { data: profile } = await db
+    .from('users')
+    .select('name, token_balance')
+    .eq('id', user!.id)
+    .single()
+
+  const params = await searchParams
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-extrabold mb-1" style={{ color: '#fff', letterSpacing: '-0.5px' }}>
-        יצירת תוכן
-      </h1>
-      <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.45)' }}>
-        פוסטים ותמונות מותאמים לעסק שלך — מבוססים על תיק העסק
-      </p>
-
-      <CreatePanel userId={user!.id} businessDescription={business?.raw_description ?? ''} initialIdea={idea} />
-    </div>
+    <CreateStudio
+      userId={user!.id}
+      businessName={business?.business_name ?? 'העסק שלי'}
+      businessDescription={business?.raw_description ?? ''}
+      userName={profile?.name ?? ''}
+      tokenBalance={profile?.token_balance ?? 0}
+      initialPrompt={params.prompt ?? params.idea ?? ''}
+    />
   )
 }
