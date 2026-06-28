@@ -77,7 +77,7 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
           <div style="font-size:0.82rem;color:var(--purple);font-weight:500">${hashtags}</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
             <span style="display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:#DCFCE7;color:#16A34A;border-radius:50px;font-size:0.73rem;font-weight:600">
-              ✓ עבר מודרציה OpenAI
+              ✓ נוצר על ידי Gemini AI
             </span>
             <span style="padding:4px 10px;background:#EDE9FE;color:#7C3AED;border-radius:50px;font-size:0.73rem;font-weight:600">${tokensUsed} טוקנים</span>
           </div>
@@ -101,16 +101,16 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
   }
 
   return (
-    <div className="glow-card rounded-3xl overflow-hidden bg-white w-full">
+    <div className="rounded-3xl overflow-hidden w-full" style={{ background: 'rgba(13,8,41,0.7)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
       {/* Header */}
-      <div className="flex items-center gap-3 px-5 py-4 border-b" style={{ borderColor: 'rgba(161,70,255,0.18)', background: 'linear-gradient(135deg,rgba(161,70,255,0.06) 0%,transparent 100%)' }}>
+      <div className="flex items-center gap-3 px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(152,80,255,0.1)' }}>
         <div className="flex gap-2">
           <div className="w-3 h-3 rounded-full bg-red-400"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
           <div className="w-3 h-3 rounded-full bg-green-400"></div>
         </div>
         <div className="flex-1 text-right">
-          <div className="text-sm font-bold text-gray-900">SociMe AI</div>
+          <div className="text-sm font-bold" style={{ color: '#fff' }}>SociMe AI</div>
           <div className="text-xs font-medium flex items-center justify-end gap-1" style={{ color: '#22C55E' }}>
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot inline-block"></span>
             פעיל עכשיו
@@ -124,20 +124,20 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
       </div>
 
       {/* Messages */}
-      <div className="h-72 overflow-y-auto p-4 flex flex-col gap-3" style={{ background: '#FAFAFA' }}>
+      <div className="h-72 overflow-y-auto p-4 flex flex-col gap-3" style={{ background: 'transparent' }}>
         {messages.map((msg, i) => (
           <div key={i} className={`flex gap-2 msg-in ${msg.role === 'bot' ? 'flex-row-reverse' : 'flex-row'}`}>
             <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-xs font-bold"
               style={msg.role === 'bot'
                 ? { background: 'linear-gradient(135deg,var(--purple),var(--purple-light))', color: 'white' }
-                : { background: '#F0F0F8', border: '1px solid rgba(161,70,255,0.18)', color: '#4A4A6A' }
+                : { background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', color: '#fff' }
               }>
               {msg.role === 'bot' ? 'AI' : 'אני'}
             </div>
             <div className="max-w-xs md:max-w-sm rounded-[18px] px-4 py-3 text-sm leading-relaxed"
               style={msg.role === 'bot'
-                ? { background: 'linear-gradient(135deg,var(--purple),var(--purple-light))', color: 'white', borderBottomRightRadius: 5 }
-                : { background: 'white', color: '#1A1A2E', border: '1px solid rgba(161,70,255,0.18)', borderBottomLeftRadius: 5 }
+                ? { background: 'linear-gradient(135deg,#9850FF,#BE56FF)', color: 'white', borderBottomRightRadius: 5 }
+                : { background: 'rgba(255,255,255,0.12)', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderBottomLeftRadius: 5 }
               }
               dangerouslySetInnerHTML={{ __html: msg.html }}
             />
@@ -161,7 +161,7 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
       </div>
 
       {/* Input bar */}
-      <div className="flex gap-2 px-4 py-3 bg-white border-t" style={{ borderColor: 'rgba(161,70,255,0.18)' }}>
+      <div className="flex gap-2 px-4 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.04)' }}>
         <button
           disabled={!scheduleEnabled}
           onClick={() => generatedPost && onPaywall(generatedPost)}
@@ -180,7 +180,7 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
         </button>
 
         <div className="flex-1 flex items-center gap-2 px-4 py-2 rounded-xl transition-all"
-          style={{ background: '#FAFAFA', border: '1.5px solid rgba(161,70,255,0.18)' }}>
+          style={{ background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)' }}>
           <button
             onClick={handleSend}
             className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all cursor-pointer"
@@ -200,7 +200,7 @@ export default function ChatBot({ onPaywall }: ChatBotProps) {
             dir="rtl"
             maxLength={300}
             className="flex-1 border-none bg-transparent text-sm outline-none text-right"
-            style={{ color: '#1A1A2E' }}
+            style={{ color: '#fff' }}
           />
         </div>
       </div>

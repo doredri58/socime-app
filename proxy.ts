@@ -3,6 +3,7 @@ import { createServerClient } from '@supabase/ssr'
 
 export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request })
+  const { pathname } = request.nextUrl
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,8 +20,18 @@ export async function proxy(request: NextRequest) {
     }
   )
 
-  // Refreshes session cookie on every request
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // הגנה על dashboard ו-admin
+  if ((pathname.startsWith('/dashboard') || pathname.startsWith('/admin')) && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  // אם כבר מחובר — אל תציג את דף הלוגין
+  if (pathname === '/login' && user) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   return response
 }
 

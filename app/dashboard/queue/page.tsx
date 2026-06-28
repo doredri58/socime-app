@@ -1,14 +1,15 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
+import ApproveButtons from '@/components/dashboard/ApproveButtons'
 
 const STATUS_META: Record<string, { label: string; bg: string; color: string }> = {
-  draft:     { label: 'טיוטה',   bg: '#fef3c7', color: '#b45309' },
-  scheduled: { label: 'מתוזמן',  bg: '#dbeafe', color: '#1d4ed8' },
-  queued:    { label: 'בתור',    bg: '#ede0ff', color: '#7c3aed' },
-  published: { label: 'פורסם',   bg: '#dcfce7', color: '#16a34a' },
-  failed:    { label: 'נכשל',    bg: '#fee2e2', color: '#dc2626' },
-  approved:  { label: 'מאושר',   bg: '#dcfce7', color: '#16a34a' },
-  paused:    { label: 'מושהה',   bg: '#f3f4f6', color: '#6b7280' },
+  draft:            { label: 'טיוטה',          bg: '#fef3c7', color: '#b45309' },
+  scheduled:        { label: 'מתוזמן',         bg: '#dbeafe', color: '#1d4ed8' },
+  pending_approval: { label: 'ממתין לאישורך',  bg: '#fff7ed', color: '#ea580c' },
+  queued:           { label: 'בתור לפרסום',    bg: '#ede0ff', color: '#7c3aed' },
+  published:        { label: 'פורסם',          bg: '#dcfce7', color: '#16a34a' },
+  failed:           { label: 'נכשל',           bg: '#fee2e2', color: '#dc2626' },
+  paused:           { label: 'מושהה',          bg: '#f3f4f6', color: '#6b7280' },
 }
 
 export default async function QueuePage() {
@@ -89,6 +90,9 @@ export default async function QueuePage() {
                 <div className="text-xs mt-3" style={{ color: 'var(--text-light)' }}>
                   {new Date(post.created_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                 </div>
+                {post.status === 'pending_approval' && (
+                  <ApproveButtons postId={post.id} />
+                )}
               </div>
             )
           })}

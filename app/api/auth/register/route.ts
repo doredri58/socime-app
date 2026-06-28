@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       id: userId,
       email,
       name,
+      role: 'user',
       plan: 'pro',
       token_balance: 200,
     })

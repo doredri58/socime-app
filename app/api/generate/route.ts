@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { generatePost, moderateContent } from '@/lib/llm'
+import { generatePost } from '@/lib/llm'
 import { createServiceClient } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
@@ -12,15 +12,6 @@ export async function POST(req: NextRequest) {
 
     // Generate post
     const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
-
-    // Moderation check (OpenAI only)
-    if ((process.env.LLM_PROVIDER ?? 'openai').toLowerCase() === 'openai') {
-      const fullText = `${text} ${hashtags}`
-      const moderation = await moderateContent(fullText)
-      if (moderation.flagged) {
-        return NextResponse.json({ error: 'התוכן לא עבר בדיקת מודרציה' }, { status: 422 })
-      }
-    }
 
     // Log to token_ledger if user is logged in
     if (userId) {
@@ -39,7 +30,6 @@ export async function POST(req: NextRequest) {
       text,
       hashtags,
       tokensUsed,
-      moderationPassed: true,
     })
   } catch (err: unknown) {
     console.error('[/api/generate]', err)

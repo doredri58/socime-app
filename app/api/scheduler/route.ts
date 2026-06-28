@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     content_text: contentText ?? "",
     hashtags:     hashtags ?? "",
     platform:     platform ?? ["instagram"],
-    status:       scheduledAt ? "queued" : "pending",
+    status:       scheduledAt ? "pending_approval" : "draft",
     scheduled_at: scheduledAt ?? null,
     source:       "generated",
     content_type: "text",

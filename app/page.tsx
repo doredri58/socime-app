@@ -9,63 +9,125 @@ import Onboarding from '@/components/Onboarding'
 
 interface Draft { text: string; hashtags: string }
 
-function useScrollReveal() {
-  useEffect(() => {
-    const els = document.querySelectorAll('.reveal')
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target) }
-      })
-    }, { threshold: 0.1 })
-    els.forEach(el => obs.observe(el))
-    return () => obs.disconnect()
-  }, [])
+/* ── Design Tokens ── */
+const PURPLE  = '#9850FF'
+const PURPLE2 = '#BE56FF'
+const BLUE    = '#3B82EF'
+const NAVY    = '#0D0829'
+
+/* ── Glassmorphism card ── */
+const glassCard = (extra?: React.CSSProperties): React.CSSProperties => ({
+  background: 'rgba(255,255,255,0.08)',
+  backdropFilter: 'blur(20px)',
+  WebkitBackdropFilter: 'blur(20px)',
+  borderRadius: 24,
+  border: '1px solid rgba(255,255,255,0.16)',
+  transition: 'all 0.28s ease',
+  ...extra,
+})
+
+/* ── Blue pill button ── */
+const bluePill = (extra?: React.CSSProperties): React.CSSProperties => ({
+  display: 'inline-flex', alignItems: 'center', gap: 8,
+  padding: '12px 28px', borderRadius: 999,
+  background: BLUE,
+  color: '#fff', fontWeight: 700, fontSize: 14,
+  textDecoration: 'none', border: 'none', cursor: 'pointer',
+  fontFamily: 'var(--font-space), sans-serif',
+  boxShadow: `0 4px 20px rgba(59,130,239,0.45)`,
+  transition: 'all 0.2s ease',
+  ...extra,
+})
+
+/* ── Ghost pill button ── */
+const ghostPill = (extra?: React.CSSProperties): React.CSSProperties => ({
+  display: 'inline-flex', alignItems: 'center', gap: 8,
+  padding: '12px 28px', borderRadius: 999,
+  background: 'rgba(255,255,255,0.12)',
+  color: '#fff', fontWeight: 600, fontSize: 14,
+  textDecoration: 'none', border: '1px solid rgba(255,255,255,0.25)',
+  cursor: 'pointer', fontFamily: 'var(--font-space), sans-serif',
+  transition: 'all 0.2s ease',
+  ...extra,
+})
+
+const FEATURES = [
+  { icon: 'ti-sparkles',  label: 'תוכן AI',      desc: 'AI שכותב בעברית, בסגנון העסק שלך. פוסטים מותאמים לקהל ולפלטפורמה.', color: PURPLE2 },
+  { icon: 'ti-calendar',  label: 'תזמון חכם',    desc: 'אשר פוסטים מראש ו-SociMe תפרסם אוטומטית בשעות הכי אפקטיביות.', color: BLUE },
+  { icon: 'ti-photo-ai',  label: 'תמונות AI',    desc: 'תמונות מקצועיות לפוסטים ישירות מהמערכת — בלי Canva, בלי מעצב.', color: '#10D4A8' },
+  { icon: 'ti-bulb',      label: 'בנק רעיונות',  desc: 'רעיונות ייחודיים לתוכן שמותאמים לתחום שלך עם הנחיות ברורות.', color: '#F59E0B' },
+]
+
+const PLANS = [
+  { name: 'חינמי',  price: '0',   note: 'לנצח',  popular: false, features: ['5 פוסטים לחודש', 'פייסבוק ואינסטגרם', 'תמיכה בעברית'],                  btn: 'התחל עכשיו',         href: '/login?mode=register' },
+  { name: 'פרו',    price: '149', note: 'לחודש', popular: true,  features: ['100 פוסטים לחודש', 'כל הפלטפורמות', 'תזמון מתקדם', 'תמיכה עדיפה'], btn: 'התחל 14 יום בחינם', href: '/login?mode=register' },
+  { name: 'ארגוני', price: '490', note: 'לחודש', popular: false, features: ['פוסטים ללא הגבלה', 'מספר חשבונות', 'API מותאם', 'SLA מובטח'],      btn: 'צור קשר',             href: 'mailto:dor@socime.co.il' },
+]
+
+/* ────────────────────────────
+   Neon Glassmorphism Card
+──────────────────────────── */
+function NeonCard({ children, style, delay = 0 }: {
+  children: React.ReactNode
+  style?: React.CSSProperties
+  delay?: number
+}) {
+  const [hovered, setHovered] = useState(false)
+  return (
+    <div
+      className={hovered ? '' : 'neon-card'}
+      style={{
+        ...glassCard(),
+        animationDelay: `${delay}s`,
+        transform: hovered ? 'translateY(-6px)' : 'none',
+        boxShadow: hovered
+          ? `0 0 0 1.5px rgba(152,80,255,0.5), 0 0 48px rgba(152,80,255,0.5), 0 0 96px rgba(190,86,255,0.25), 0 20px 60px rgba(0,0,0,0.3)`
+          : undefined,
+        ...style,
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
+      {children}
+    </div>
+  )
 }
 
-function useCounterAnimation(target: number, suffix: string, triggered: boolean) {
-  const [val, setVal] = useState('0' + suffix)
-  useEffect(() => {
-    if (!triggered) return
-    const duration = 1800
-    const start = performance.now()
-    const tick = (now: number) => {
-      const p = Math.min((now - start) / duration, 1)
-      const ease = 1 - Math.pow(1 - p, 3)
-      setVal(Math.round(ease * target).toLocaleString() + suffix)
-      if (p < 1) requestAnimationFrame(tick)
-    }
-    requestAnimationFrame(tick)
-  }, [triggered, target, suffix])
-  return val
-}
-
+/* ────────────────────────────
+   Main Page
+──────────────────────────── */
 function HomeInner() {
   const searchParams = useSearchParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [showPaywall, setShowPaywall] = useState(false)
   const [draft, setDraft] = useState<Draft | null>(null)
-  const [statsVisible, setStatsVisible] = useState(false)
-  const statsRef = useRef<HTMLDivElement>(null)
+  const [scrolled, setScrolled] = useState(false)
   const flipRef = useRef<HTMLDivElement>(null)
 
-  // Google OAuth callback — show onboarding for new users
   const oauthUid = searchParams.get('uid')
   const needsOnboarding = searchParams.get('onboarding') === 'true' && !!oauthUid
-  useScrollReveal()
-
-  const stat1 = useCounterAnimation(1240, '+', statsVisible)
-  const stat2 = useCounterAnimation(38500, '+', statsVisible)
-  const stat3 = useCounterAnimation(80, '%', statsVisible)
 
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setStatsVisible(true); obs.disconnect() } }, { threshold: 0.4 })
-    if (statsRef.current) obs.observe(statsRef.current)
-    return () => obs.disconnect()
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal')
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
+      }),
+      { threshold: 0.06 }
+    )
+    els.forEach(el => io.observe(el))
+    return () => io.disconnect()
   }, [])
 
   if (needsOnboarding && oauthUid) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-6" style={{ background: 'linear-gradient(135deg,#f8f4ff 0%,#ffffff 60%)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: NAVY }}>
         <Onboarding userId={oauthUid} onComplete={() => { window.location.href = '/dashboard' }} />
       </div>
     )
@@ -78,401 +140,364 @@ function HomeInner() {
   }
 
   return (
-    <>
-      {/* Hamburger */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        aria-label="פתח תפריט"
-        className="fixed top-20 right-6 z-[100] w-11 h-11 rounded-2xl bg-white flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all"
-        style={{ boxShadow: '0 2px 12px rgba(161,70,255,0.15), 0 0 0 1px rgba(161,70,255,0.12)' }}
-      >
-        {[0, 1, 2].map(i => (
-          <span key={i} className="block w-5 h-0.5 rounded-sm" style={{ background: 'var(--purple)' }} />
-        ))}
-      </button>
-
+    <div style={{
+      minHeight: '100vh',
+      background: `radial-gradient(ellipse at 20% 0%, rgba(190,86,255,0.35) 0%, transparent 60%),
+                   radial-gradient(ellipse at 80% 100%, rgba(59,130,239,0.25) 0%, transparent 55%),
+                   linear-gradient(160deg, #0D0829 0%, #160C3D 40%, #0F1654 100%)`,
+      fontFamily: 'var(--font-space), sans-serif',
+    }}>
       <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
       {/* ══ NAV ══ */}
-      <nav className="fixed top-0 right-0 left-0 z-50 flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-xl"
-        style={{ borderBottom: '1px solid rgba(161,70,255,0.08)' }}>
-        <div className="flex items-center gap-3">
-          <Image src="/logo.png" alt="SociMe Logo" width={36} height={36} className="rounded-xl" style={{ boxShadow: '0 0 12px rgba(161,70,255,0.3)' }} />
-          <span className="text-lg font-black tracking-tight" style={{ color: 'var(--text-dark)' }}>
-            Soci<span style={{ color: 'var(--purple)' }}>Me</span>
+      <nav style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 40px', height: 64,
+        background: scrolled ? 'rgba(13,8,41,0.85)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(16px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+        transition: 'all 0.3s ease',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <div style={{ width: 34, height: 34, borderRadius: 10, overflow: 'hidden', flexShrink: 0 }}>
+            <Image src="/logo.png" alt="SociMe" width={34} height={34} style={{ objectFit: 'cover' }} />
+          </div>
+          <span className="font-arimo" style={{ fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '-0.5px' }}>
+            Soci<span style={{ color: PURPLE2 }}>Me</span>
           </span>
         </div>
-        <div className="flex items-center gap-1">
-          {['תכונות', 'מחירים', 'אודות'].map(l => (
-            <a key={l} href={`#${l === 'תכונות' ? 'features' : l === 'מחירים' ? 'pricing' : 'story'}`}
-              className="px-4 py-2 text-sm font-medium rounded-xl transition-all cursor-pointer"
-              style={{ color: 'var(--text-mid)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--purple-soft)'; (e.currentTarget as HTMLElement).style.color = 'var(--purple)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = ''; (e.currentTarget as HTMLElement).style.color = 'var(--text-mid)' }}
-            >{l}</a>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }} className="hidden md:flex">
+          {[['תכונות', '#features'], ['מחירים', '#pricing'], ['אודות', '#story']].map(([l, h]) => (
+            <a key={l} href={h} style={{
+              padding: '7px 16px', borderRadius: 999,
+              fontSize: 13, fontWeight: 500, color: 'rgba(255,255,255,0.65)',
+              textDecoration: 'none', transition: 'all 0.15s',
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#fff'; (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)' }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'rgba(255,255,255,0.65)'; (e.currentTarget as HTMLElement).style.background = 'transparent' }}>
+              {l}
+            </a>
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <a href="/login"
-            className="px-4 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer"
-            style={{ color: 'var(--purple)', border: '1.5px solid var(--purple-border)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = 'var(--purple-soft)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = '' }}
-          >
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <a href="/login" className="hidden md:block" style={ghostPill({ padding: '8px 18px', fontSize: 13 })}>
             כניסה
           </a>
-          <a href="/login?mode=register"
-            className="px-5 py-2 rounded-xl text-sm font-bold text-white transition-all cursor-pointer"
-            style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 0 20px rgba(161,70,255,0.3)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 24px rgba(161,70,255,0.45)'; (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.boxShadow = '0 0 20px rgba(161,70,255,0.3)'; (e.currentTarget as HTMLElement).style.transform = '' }}
-          >
+          <a href="/login?mode=register" style={bluePill({ padding: '9px 22px', fontSize: 13 })}>
             התחל בחינם
           </a>
+          <button onClick={() => setDrawerOpen(true)} aria-label="תפריט" className="md:hidden"
+            style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
+            <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
+            <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
+          </button>
         </div>
       </nav>
 
       {/* ══ HERO ══ */}
-      <section id="hero" className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden px-6 pt-28 pb-20">
-        {/* Subtle background blobs */}
-        <div className="absolute pointer-events-none inset-0 overflow-hidden">
-          <div className="absolute rounded-full" style={{ width: 600, height: 600, top: '-15%', right: '-10%', background: 'radial-gradient(circle, rgba(161,70,255,0.07) 0%, transparent 65%)' }} />
-          <div className="absolute rounded-full" style={{ width: 400, height: 400, bottom: '-10%', left: '-8%', background: 'radial-gradient(circle, rgba(196,127,255,0.06) 0%, transparent 65%)' }} />
-        </div>
+      <section style={{ padding: '100px 40px 60px', maxWidth: 1160, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, alignItems: 'start' }}>
 
-        {/* Logo stage */}
-        <div className="relative flex items-center justify-center mb-12" style={{ width: 180, height: 180 }}>
-          {/* Ambient glow */}
-          <div className="absolute inset-0 rounded-full logo-glow-bg"
-            style={{ background: 'radial-gradient(circle, rgba(161,70,255,0.18) 0%, transparent 70%)', width: '140%', height: '140%', top: '-20%', left: '-20%' }} />
-
-          {/* Orbit ring 1 */}
-          <div className="absolute rounded-full ring-cw"
-            style={{ width: 164, height: 164, border: '1px dashed rgba(161,70,255,0.2)', top: 8, left: 8 }}>
-            <div className="absolute rounded-full" style={{ width: 7, height: 7, background: 'var(--purple)', top: -3.5, left: '50%', marginLeft: -3.5, boxShadow: '0 0 8px rgba(161,70,255,0.8)' }} />
-          </div>
-
-          {/* Orbit ring 2 */}
-          <div className="absolute rounded-full ring-ccw"
-            style={{ width: 210, height: 210, border: '1px solid rgba(161,70,255,0.1)', top: -15, left: -15 }}>
-            <div className="absolute rounded-full" style={{ width: 5, height: 5, background: 'var(--purple-light)', bottom: '15%', right: -2.5, boxShadow: '0 0 6px rgba(196,127,255,0.7)' }} />
-          </div>
-
-          {/* Logo image — floating */}
-          <div className="relative logo-reveal logo-float" style={{ zIndex: 2 }}>
-            <Image
-              src="/logo.png"
-              alt="SociMe"
-              width={120}
-              height={120}
-              className="rounded-3xl select-none"
-              style={{
-                boxShadow: '0 8px 40px rgba(161,70,255,0.35), 0 2px 8px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.6)',
-                filter: 'drop-shadow(0 0 20px rgba(161,70,255,0.25))'
-              }}
-              draggable={false}
-            />
-          </div>
-        </div>
-
-        {/* Badge */}
-        <div className="hero-badge inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-6 text-xs font-semibold"
-          style={{ background: 'var(--purple-soft)', border: '1px solid var(--purple-border)', color: 'var(--purple)' }}>
-          <span className="w-1.5 h-1.5 rounded-full pulse-dot inline-block" style={{ background: 'var(--purple)' }} />
-          בינה מלאכותית לסושיאל מדיה · גירסת בטא פתוחה
-        </div>
-
-        {/* Headline */}
-        <h1 className="hero-h1 text-center font-black leading-[1.05] mb-6"
-          style={{ fontSize: 'clamp(2.6rem,5.5vw,4.2rem)', letterSpacing: '-2px', color: 'var(--text-dark)' }}>
-          נהל את הסושיאל שלך<br />
-          <span className="shimmer-gradient">בלי להתאמץ</span>
-        </h1>
-
-        {/* Sub */}
-        <p className="hero-sub text-center leading-relaxed mb-10"
-          style={{ fontSize: 18, color: 'var(--text-mid)', maxWidth: 500, lineHeight: 1.8 }}>
-          SociMe כותבת, מתזמנת ומפרסמת תוכן ל-Facebook ו-Instagram עבורך —<br />
-          תוך שניות, בעברית, עם AI חכם.
-        </p>
-
-        {/* CTAs */}
-        <div className="hero-ctas flex gap-3 justify-center flex-wrap mb-16">
-          <button
-            className="px-8 py-3.5 rounded-2xl text-white font-bold text-base transition-all"
-            style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 0 28px rgba(161,70,255,0.3), inset 0 1px 0 rgba(255,255,255,0.15)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 36px rgba(161,70,255,0.4), inset 0 1px 0 rgba(255,255,255,0.15)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = ''; (e.currentTarget as HTMLElement).style.boxShadow = '0 0 28px rgba(161,70,255,0.3), inset 0 1px 0 rgba(255,255,255,0.15)' }}
-          >
-            התחל 14 יום בחינם
-          </button>
-          <button
-            className="px-8 py-3.5 rounded-2xl font-semibold text-base transition-all"
-            style={{ background: 'white', color: 'var(--text-mid)', border: '1px solid rgba(161,70,255,0.2)', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(161,70,255,0.4)'; (e.currentTarget as HTMLElement).style.color = 'var(--purple)' }}
-            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(161,70,255,0.2)'; (e.currentTarget as HTMLElement).style.color = 'var(--text-mid)' }}
-            onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            ראה איך זה עובד
-          </button>
-        </div>
-
-        {/* ChatBot / Paywall flip */}
-        <div ref={flipRef} className="flip-container w-full" style={{ maxWidth: 600, position: 'relative', zIndex: 10 }}>
-          <div className={`flip-inner${showPaywall ? ' flipped' : ''}`}>
-            <div className="flip-front">
-              <ChatBot onPaywall={handlePaywall} />
+          {/* Hero Text */}
+          <NeonCard style={{ padding: '48px 44px 44px' }} delay={0}>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6,
+              padding: '4px 14px', borderRadius: 999,
+              background: 'rgba(255,255,255,0.12)',
+              fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.9)',
+              marginBottom: 24,
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#A3E635', display: 'inline-block' }} className="pulse-dot" />
+              גרסת בטא · חינמי להתחלה
             </div>
-            <div className="flip-back">
-              <PaywallForm draftPost={draft} onBack={() => setShowPaywall(false)} />
+
+            <h1 className="font-arimo" style={{
+              fontSize: 'clamp(2.2rem,4.5vw,3.4rem)', fontWeight: 700,
+              color: '#fff', lineHeight: 1.1, letterSpacing: '-1.5px',
+              margin: '0 0 20px',
+            }}>
+              הסושיאל שלך —<br />
+              על <span style={{ color: PURPLE2 }}>אוטומט</span>
+            </h1>
+
+            <p style={{
+              fontSize: 15, color: 'rgba(255,255,255,0.72)', lineHeight: 1.75,
+              margin: '0 0 32px', maxWidth: 380,
+              fontFamily: 'var(--font-space), sans-serif',
+            }}>
+              SociMe כותבת, מתזמנת ומפרסמת תוכן לפייסבוק ואינסטגרם — בעברית, עם AI.
+            </p>
+
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', marginBottom: 24 }}>
+              <a href="/login?mode=register" style={bluePill()}>
+                <i className="ti ti-sparkles" style={{ fontSize: 15 }} />
+                התחל 14 יום בחינם
+              </a>
+              <button
+                style={ghostPill()}
+                onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
+                ראה הדגמה ↓
+              </button>
             </div>
+
+            <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap' }}>
+              {['ללא כרטיס אשראי', 'ביטול בכל עת', 'תמיכה בעברית'].map(t => (
+                <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.5)', display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ fontWeight: 900, color: '#A3E635', fontSize: 13 }}>✓</span> {t}
+                </span>
+              ))}
+            </div>
+          </NeonCard>
+
+          {/* ChatBot */}
+          <div ref={flipRef}>
+            <NeonCard delay={0.4} style={{ overflow: 'hidden' }}>
+              <div className="flip-container w-full">
+                <div className={`flip-inner${showPaywall ? ' flipped' : ''}`}>
+                  <div className="flip-front">
+                    <ChatBot onPaywall={handlePaywall} />
+                  </div>
+                  <div className="flip-back">
+                    <PaywallForm draftPost={draft} onBack={() => setShowPaywall(false)} />
+                  </div>
+                </div>
+              </div>
+            </NeonCard>
           </div>
         </div>
-      </section>
 
-      {/* ══ STATS ══ */}
-      <div ref={statsRef} className="py-16 px-6 bg-white" style={{ borderTop: '1px solid rgba(161,70,255,0.07)', borderBottom: '1px solid rgba(161,70,255,0.07)' }}>
-        <div className="max-w-3xl mx-auto grid grid-cols-3 gap-0">
+        {/* Stats Strip */}
+        <div className="reveal" style={{ ...glassCard({ marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(3,1fr)' }) }}>
           {[
-            { val: stat1, label: 'עסקים פעילים' },
-            { val: stat2, label: 'פוסטים נוצרו' },
-            { val: stat3, label: 'חסכון בזמן' },
+            { num: '1,200+', label: 'עסקים פעילים',  icon: 'ti-building-store', color: PURPLE2 },
+            { num: '38,000+', label: 'פוסטים נוצרו', icon: 'ti-file-text',      color: BLUE },
+            { num: '80%',     label: 'חסכון בזמן',   icon: 'ti-clock',          color: '#10D4A8' },
           ].map((s, i) => (
-            <div key={i} className="text-center px-8 py-6" style={{ borderRight: i < 2 ? '1px solid rgba(161,70,255,0.1)' : undefined }}>
-              <div className="text-3xl font-black mb-1" style={{ color: 'var(--purple)', letterSpacing: '-1px' }}>{s.val}</div>
-              <div className="text-sm" style={{ color: 'var(--text-light)' }}>{s.label}</div>
+            <div key={i} style={{
+              padding: '24px 32px', textAlign: 'center',
+              borderRight: i < 2 ? '1px solid rgba(255,255,255,0.1)' : undefined,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+            }}>
+              <i className={`ti ${s.icon}`} style={{ fontSize: 18, color: s.color, marginBottom: 4 }} />
+              <div className="font-arimo" style={{ fontSize: 30, fontWeight: 700, color: '#fff', letterSpacing: '-1px', lineHeight: 1 }}>{s.num}</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)' }}>{s.label}</div>
             </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* ══ STORY ══ */}
-      <section id="story" className="py-32 px-6 bg-white">
-        <div className="max-w-5xl mx-auto grid gap-16 md:grid-cols-2 items-center">
-          <div className="reveal">
-            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--purple)' }}>הסיפור שלנו</div>
-            <h2 className="font-extrabold leading-tight mb-6" style={{ fontSize: 'clamp(2rem,3.5vw,2.8rem)', letterSpacing: '-1px', color: 'var(--text-dark)' }}>
-              למה בניתי את<br /><span style={{ color: 'var(--purple)' }}>SociMe</span>?
-            </h2>
-            <p className="leading-relaxed mb-10 text-base" style={{ color: 'var(--text-mid)', lineHeight: 1.85 }}>
-              כשבעלי עסקים קטנים שאלו אותי "איך מצאת זמן לסושיאל?", התשובה הכנה היא שלא מצאתי — עד שבניתי כלי שעושה את זה עבורי.
-              <br /><br />
-              SociMe נולדה מהצורך האמיתי של בעלי עסקים שמבינים שנוכחות דיגיטלית קריטית לצמיחה, אבל אין להם שעות פנויות ליצור תוכן כל יום.
-            </p>
-            <div className="grid grid-cols-3 gap-4">
-              {[{ num: '97%', label: 'חסכון בזמן כתיבה' }, { num: '3x', label: 'יותר פוסטים בחודש' }, { num: '₪0', label: 'עלות קופירייטר' }].map(s => (
-                <div key={s.label} className="rounded-2xl p-5 text-center transition-all cursor-default glow-card"
-                  style={{ background: 'white' }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)' }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = '' }}>
-                  <div className="text-2xl font-black" style={{ color: 'var(--purple)' }}>{s.num}</div>
-                  <div className="text-xs mt-1" style={{ color: 'var(--text-light)' }}>{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
+      {/* ══ FEATURES BENTO ══ */}
+      <section id="features" style={{ padding: '20px 40px 60px', maxWidth: 1160, margin: '0 auto' }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 14px', borderRadius: 999,
+            background: 'rgba(152,80,255,0.2)', color: PURPLE2,
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(190,86,255,0.3)', marginBottom: 14,
+          }}>הכלים שלנו</div>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
+            הכל במקום אחד
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0 }}>מיצירת תוכן ועד פרסום אוטומטי — בלי לצאת מהמערכת</p>
+        </div>
 
-          <div className="reveal" style={{ transitionDelay: '0.15s' }}>
-            <div className="bg-white rounded-3xl p-8 glow-card">
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
-                  style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 4px 20px rgba(161,70,255,0.3)' }}>ד</div>
-                <div>
-                  <div className="text-lg font-extrabold" style={{ color: 'var(--text-dark)' }}>דור דוד אדרי</div>
-                  <div className="inline-block px-3 py-0.5 rounded-full text-xs font-semibold mt-1"
-                    style={{ background: 'var(--purple-soft)', color: 'var(--purple)' }}>מייסד ומפתח ראשי</div>
-                </div>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+          {FEATURES.map((f, i) => (
+            <NeonCard key={f.label} delay={i * 0.15} style={{ padding: '28px 30px' }}>
+              <div style={{
+                width: 48, height: 48, borderRadius: 16, marginBottom: 18,
+                background: `${f.color}22`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <i className={`ti ${f.icon}`} style={{ fontSize: 22, color: f.color }} />
               </div>
-              <p className="text-sm leading-relaxed" style={{ color: 'var(--text-mid)', lineHeight: 1.85 }}>
-                יזם טכנולוגי וחובב AI, דור בנה את SociMe מתוך אמונה שכל עסק קטן בישראל ראוי לנוכחות דיגיטלית חזקה — בלי צורך בתקציב ענק.
-                <br /><br />
-                בעל ניסיון בפיתוח Full-Stack ואינטגרציות Meta API, דור שם לב שהפתרונות הקיימים לא מתאימים לקצב ולשפה של העסק הישראלי.
-              </p>
-            </div>
-          </div>
+              <div className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{f.label}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.7 }}>{f.desc}</div>
+            </NeonCard>
+          ))}
         </div>
       </section>
 
-      {/* ══ FEATURES ══ */}
-      <section id="features" className="py-32 px-6" style={{ background: '#FAFAFE' }}>
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-20 reveal">
-            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--purple)' }}>כלים חכמים</div>
-            <h2 className="text-4xl font-extrabold mb-4" style={{ letterSpacing: '-1.2px', color: 'var(--text-dark)' }}>הכל במקום אחד</h2>
-            <p className="text-base" style={{ color: 'var(--text-mid)', maxWidth: 420, margin: '0 auto' }}>מיצירת תוכן בעברית ועד פרסום אוטומטי — SociMe מכסה את כל הצרכים שלך.</p>
-          </div>
+      {/* ══ HOW IT WORKS ══ */}
+      <section style={{ padding: '20px 40px 60px', maxWidth: 1160, margin: '0 auto' }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 6,
+            padding: '4px 14px', borderRadius: 999,
+            background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)', marginBottom: 14,
+          }}>איך זה עובד</div>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
+            שלושה צעדים לתוצאה
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0 }}>בלי לימוד, בלי עיצוב, בלי טרחה</p>
+        </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-8 glow-card reveal transition-transform cursor-default"
-              onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-4px)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = '')}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                style={{ background: 'var(--purple-soft)', border: '1px solid var(--purple-border)' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <polygon points="23 7 16 12 23 17 23 7" /><rect x="1" y="5" width="15" height="14" rx="2" />
-                </svg>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+          {[
+            { num: '01', title: 'מספר לנו על העסק',  desc: 'שם, תחום, קהל יעד — פעם אחת, זהו.',                      icon: 'ti-building-store', color: PURPLE2 },
+            { num: '02', title: 'AI כותב עבורך',      desc: 'SociMe מייצרת פוסטים מותאמים בעברית בשניות.',           icon: 'ti-sparkles',       color: BLUE },
+            { num: '03', title: 'מפרסם ושוכח',       desc: 'אשר, תזמן — הפוסט יפורסם בזמן המושלם.',                icon: 'ti-send',           color: '#10D4A8' },
+          ].map((step, i) => (
+            <NeonCard key={i} delay={i * 0.12} style={{ padding: '32px 28px' }}>
+              <div style={{ fontSize: 56, fontWeight: 900, letterSpacing: '-3px', lineHeight: 1, color: 'rgba(255,255,255,0.06)', marginBottom: 20 }} className="font-arimo">
+                {step.num}
               </div>
-              <div className="text-lg font-bold mb-2" style={{ color: 'var(--text-dark)' }}>בנק רעיונות לוידאו</div>
-              <div className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-mid)' }}>רעיונות ספציפיים לוידאו עם הנחיות צילום מפורטות — בדיוק לתחום העסק שלך.</div>
-              <div className="flex flex-col gap-2">
-                {[{ n: 1, title: 'טיפ של 60 שניות', desc: 'zoom-in, תאורה טבעית' }, { n: 2, title: 'Before & After', desc: 'split screen, כתוביות גדולות' }, { n: 3, title: 'Day in the Life', desc: 'B-roll, voiceover, CTA' }].map(i => (
-                  <div key={i.n} className="flex items-center gap-3 p-3 rounded-xl text-sm"
-                    style={{ background: '#FAFAFE', border: '1px solid rgba(161,70,255,0.1)', color: 'var(--text-mid)' }}>
-                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-xs font-bold text-white flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))' }}>{i.n}</div>
-                    <div><strong style={{ color: 'var(--text-dark)' }}>{i.title}:</strong> {i.desc}</div>
-                  </div>
-                ))}
+              <div style={{ width: 44, height: 44, borderRadius: 14, background: `${step.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                <i className={`ti ${step.icon}`} style={{ fontSize: 20, color: step.color }} />
+              </div>
+              <div className="font-arimo" style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{step.title}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>{step.desc}</div>
+            </NeonCard>
+          ))}
+        </div>
+      </section>
+
+      {/* ══ STORY ══ */}
+      <section id="story" style={{ padding: '20px 40px 60px', maxWidth: 1160, margin: '0 auto' }}>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <NeonCard style={{ padding: '40px 44px' }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 14 }}>
+              הסיפור שלנו
+            </div>
+            <h2 className="font-arimo" style={{ fontSize: 'clamp(1.6rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 18px', lineHeight: 1.2 }}>
+              למה בניתי את SociMe?
+            </h2>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.8, margin: '0 0 14px' }}>
+              כשבעלי עסקים קטנים שאלו אותי "איך מצאת זמן לסושיאל?", התשובה הכנה היא שלא מצאתי — עד שבניתי כלי שעושה את זה עבורי.
+            </p>
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.65)', lineHeight: 1.8, margin: 0 }}>
+              SociMe נולדה מהצורך האמיתי של עסקים שמבינים שנוכחות דיגיטלית קריטית, אבל אין להם שעות ביום.
+            </p>
+          </NeonCard>
+
+          <NeonCard style={{ padding: '40px 44px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: 18 }}>
+              <div style={{
+                width: 58, height: 58, borderRadius: 18, flexShrink: 0,
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontWeight: 700, fontSize: 22,
+                boxShadow: `0 6px 24px rgba(152,80,255,0.4)`,
+              }} className="font-arimo">ד</div>
+              <div>
+                <div className="font-arimo" style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 3 }}>דור דוד אדרי</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: PURPLE2, marginBottom: 14 }}>מייסד ומפתח ראשי</div>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)', lineHeight: 1.75, margin: 0 }}>
+                  יזם טכנולוגי וחובב AI. בעל ניסיון Full-Stack ואינטגרציות Meta API, בונה SociMe מתוך אמונה שכל עסק קטן ראוי לנוכחות דיגיטלית חזקה — בלי תקציב ענק.
+                </p>
               </div>
             </div>
-
-            {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-8 glow-card reveal transition-transform cursor-default" style={{ transitionDelay: '0.1s' }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-4px)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = '')}>
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5"
-                style={{ background: 'var(--purple-soft)', border: '1px solid var(--purple-border)' }}>
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
-                </svg>
-              </div>
-              <div className="text-lg font-bold mb-2" style={{ color: 'var(--text-dark)' }}>תזמון אוטומטי ל-Meta</div>
-              <div className="text-sm leading-relaxed mb-5" style={{ color: 'var(--text-mid)' }}>טיוטות מאושרות מתפרסמות ישירות ל-Facebook ו-Instagram בזמן האופטימלי.</div>
-              <div className="flex flex-col gap-2">
-                {[
-                  { status: 'פורסם', cls: 'bg-green-50 text-green-700', title: 'פוסט פתיחת עסק 🎉', meta: 'היום 10:00', ps: ['f', 'ig'] },
-                  { status: 'מתוזמן', cls: 'bg-blue-50 text-blue-700', title: 'טיפ שבועי', meta: 'מחר 18:30', ps: ['ig'] },
-                  { status: 'טיוטה', cls: 'bg-amber-50 text-amber-700', title: 'מבצע סוף שבוע', meta: 'ממתין לאישור', ps: ['f'] },
-                  { status: 'נכשל', cls: 'bg-red-50 text-red-600', title: 'תוכן לחג השבועות', meta: 'שגיאת Token', ps: ['f', 'ig'] },
-                ].map(item => (
-                  <div key={item.title} className="flex items-center gap-3 p-3 rounded-xl text-sm"
-                    style={{ background: '#FAFAFE', border: '1px solid rgba(161,70,255,0.1)' }}>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-bold flex-shrink-0 ${item.cls}`}>{item.status}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-xs truncate" style={{ color: 'var(--text-dark)' }}>{item.title}</div>
-                      <div className="text-xs" style={{ color: 'var(--text-light)' }}>{item.meta}</div>
-                    </div>
-                    <div className="flex gap-1">
-                      {item.ps.map(p => (
-                        <div key={p} className="w-5 h-5 rounded-md flex items-center justify-center text-white text-xs font-bold"
-                          style={{ background: p === 'f' ? '#1877F2' : 'linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)' }}>{p}</div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          </NeonCard>
         </div>
       </section>
 
       {/* ══ PRICING ══ */}
-      <section id="pricing" className="py-32 px-6 bg-white">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-20 reveal">
-            <div className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: 'var(--purple)' }}>מחירים</div>
-            <h2 className="text-4xl font-extrabold mb-4" style={{ letterSpacing: '-1.2px', color: 'var(--text-dark)' }}>פשוט, שקוף, בלי הפתעות</h2>
-            <p className="text-base" style={{ color: 'var(--text-mid)' }}>ביטול בכל עת, ללא התחייבות.</p>
-          </div>
+      <section id="pricing" style={{ padding: '20px 40px 60px', maxWidth: 1160, margin: '0 auto' }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{
+            display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
+            background: 'rgba(152,80,255,0.2)', color: PURPLE2,
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(190,86,255,0.3)', marginBottom: 14,
+          }}>מחירים</div>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
+            פשוט. שקוף. בלי הפתעות.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', margin: 0 }}>ביטול בכל עת, ללא התחייבות.</p>
+        </div>
 
-          <div className="grid md:grid-cols-3 gap-5">
-            {[
-              {
-                name: 'חינמי', price: '0', period: 'לנצח בחינם', popular: false,
-                features: ['5 פוסטים לחודש', 'Facebook + Instagram', 'תמיכה בעברית'],
-                btn: 'התחל עכשיו', btnStyle: 'outline'
-              },
-              {
-                name: 'פרו', price: '149', period: 'לחודש', popular: true,
-                features: ['100 פוסטים לחודש', 'כל הפלטפורמות', 'תזמון מתקדם', 'תמיכה עדיפה'],
-                btn: 'התחל 14 יום חינם', btnStyle: 'filled'
-              },
-              {
-                name: 'ארגוני', price: '490', period: 'לחודש', popular: false,
-                features: ['פוסטים ללא הגבלה', 'מספר חשבונות', 'API מותאם אישית', 'SLA מובטח'],
-                btn: 'צור קשר', btnStyle: 'outline'
-              },
-            ].map((plan) => (
-              <div key={plan.name}
-                className="rounded-3xl p-7 relative transition-all cursor-default reveal"
-                style={{
-                  background: plan.popular ? 'linear-gradient(145deg,rgba(161,70,255,0.06),white)' : 'white',
-                  border: plan.popular ? '1.5px solid rgba(161,70,255,0.3)' : '1px solid rgba(161,70,255,0.12)',
-                  boxShadow: plan.popular ? '0 0 40px rgba(161,70,255,0.12), 0 4px 20px rgba(0,0,0,0.03)' : '0 2px 12px rgba(0,0,0,0.03)',
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = '' }}>
-                {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
-                    style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))' }}>
-                    הכי פופולרי
-                  </div>
-                )}
-                <div className="text-sm font-semibold mb-3 mt-2" style={{ color: 'var(--text-light)' }}>{plan.name}</div>
-                <div className="text-4xl font-black mb-1 tracking-tight" style={{ color: plan.popular ? 'var(--purple)' : 'var(--text-dark)' }}>
-                  <sup className="text-xl font-bold" style={{ verticalAlign: 'super', fontSize: '1.1rem' }}>₪</sup>{plan.price}
-                </div>
-                <div className="text-xs mb-6" style={{ color: 'var(--text-light)' }}>{plan.period}</div>
-                <ul className="flex flex-col gap-2 mb-7">
-                  {plan.features.map(f => (
-                    <li key={f} className="flex items-center gap-2 text-sm" style={{ color: 'var(--text-mid)' }}>
-                      <span style={{ color: 'var(--purple)', fontWeight: 700 }}>✓</span> {f}
-                    </li>
-                  ))}
-                </ul>
-                <button className="w-full py-3 rounded-2xl text-sm font-bold transition-all"
-                  style={plan.btnStyle === 'filled'
-                    ? { background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', color: 'white', boxShadow: '0 0 20px rgba(161,70,255,0.25)' }
-                    : { background: 'white', color: 'var(--text-mid)', border: '1px solid rgba(161,70,255,0.2)' }
-                  }
-                  onMouseEnter={e => {
-                    const el = e.currentTarget as HTMLElement
-                    if (plan.btnStyle === 'filled') el.style.boxShadow = '0 4px 24px rgba(161,70,255,0.4)'
-                    else { el.style.borderColor = 'rgba(161,70,255,0.4)'; el.style.color = 'var(--purple)' }
-                    el.style.transform = 'translateY(-1px)'
-                  }}
-                  onMouseLeave={e => {
-                    const el = e.currentTarget as HTMLElement
-                    if (plan.btnStyle === 'filled') el.style.boxShadow = '0 0 20px rgba(161,70,255,0.25)'
-                    else { el.style.borderColor = 'rgba(161,70,255,0.2)'; el.style.color = 'var(--text-mid)' }
-                    el.style.transform = ''
-                  }}
-                >
-                  {plan.btn}
-                </button>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
+          {PLANS.map((plan, i) => (
+            <NeonCard key={plan.name} delay={i * 0.1} style={{
+              padding: '32px 28px',
+              border: plan.popular ? `1.5px solid rgba(190,86,255,0.5)` : '1px solid rgba(255,255,255,0.12)',
+              display: 'flex', flexDirection: 'column',
+              position: 'relative',
+            }}>
+              {plan.popular && (
+                <div style={{
+                  position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
+                  padding: '4px 18px', borderRadius: 999,
+                  background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+                  color: '#fff', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
+                  boxShadow: `0 4px 16px rgba(152,80,255,0.4)`,
+                }}>הכי פופולרי</div>
+              )}
+              <div style={{ fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.5)', marginBottom: 8 }}>{plan.name}</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, marginBottom: 4 }}>
+                <span className="font-arimo" style={{ fontSize: 44, fontWeight: 700, color: plan.popular ? PURPLE2 : '#fff', letterSpacing: '-2px' }}>₪{plan.price}</span>
               </div>
-            ))}
-          </div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 24 }}>{plan.note}</div>
+              <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+                {plan.features.map(f => (
+                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.75)' }}>
+                    <span style={{
+                      width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
+                      background: plan.popular ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(255,255,255,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      color: '#fff', fontSize: 10, fontWeight: 900,
+                    }}>✓</span>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <a href={plan.href} style={plan.popular ? bluePill({ display: 'block', textAlign: 'center', padding: '13px 0' }) : ghostPill({ display: 'block', textAlign: 'center', padding: '13px 0' })}>
+                {plan.btn}
+              </a>
+            </NeonCard>
+          ))}
         </div>
       </section>
 
+      {/* ══ CTA ══ */}
+      <section style={{ padding: '20px 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+        <NeonCard style={{ padding: '64px 40px', textAlign: 'center' }}>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 14px' }}>
+            מוכן להתחיל?
+          </h2>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.65)', margin: '0 0 32px', lineHeight: 1.7 }}>
+            הצטרף ל-1,200+ עסקים שכבר מנהלים את הסושיאל שלהם בצורה חכמה יותר.
+          </p>
+          <a href="/login?mode=register" style={bluePill({ fontSize: 15, padding: '14px 40px' })}>
+            <i className="ti ti-sparkles" style={{ fontSize: 17 }} />
+            התחל 14 יום בחינם
+          </a>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 16, marginBottom: 0 }}>
+            ללא כרטיס אשראי · ביטול בכל עת
+          </p>
+        </NeonCard>
+      </section>
+
       {/* ══ FOOTER ══ */}
-      <footer className="py-16 px-6 bg-white" style={{ borderTop: '1px solid rgba(161,70,255,0.1)' }}>
-        <div className="max-w-5xl mx-auto flex flex-col items-center gap-6">
-          <div className="flex items-center gap-3">
-            <Image src="/logo.png" alt="SociMe" width={40} height={40} className="rounded-2xl"
-              style={{ boxShadow: '0 0 16px rgba(161,70,255,0.25)' }} />
-            <span className="text-xl font-black" style={{ color: 'var(--text-dark)', letterSpacing: '-0.5px' }}>
-              Soci<span style={{ color: 'var(--purple)' }}>Me</span>
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', padding: '40px', background: 'rgba(0,0,0,0.3)' }}>
+        <div style={{ maxWidth: 1160, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16, textAlign: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 32, height: 32, borderRadius: 9, overflow: 'hidden' }}>
+              <Image src="/logo.png" alt="SociMe" width={32} height={32} style={{ objectFit: 'cover' }} />
+            </div>
+            <span className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff' }}>
+              Soci<span style={{ color: PURPLE2 }}>Me</span>
             </span>
           </div>
-          <p className="text-sm" style={{ color: 'var(--text-light)' }}>AI-Powered Social Media Manager · Made in Israel 🇮🇱</p>
-          <div className="flex justify-center gap-6 flex-wrap">
-            {["ראשי", "אודות", "פיצ'רים", "תנאי שימוש", "פרטיות"].map(link => (
-              <a key={link} href="#" className="text-sm transition-colors"
-                style={{ color: 'var(--text-light)' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = 'var(--purple)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = 'var(--text-light)' }}>
-                {link}
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', margin: 0 }}>AI-Powered Social Media Manager · Made in Israel</p>
+          <div style={{ display: 'flex', gap: 20, flexWrap: 'wrap', justifyContent: 'center' }}>
+            {['ראשי', 'אודות', "פיצ'רים", 'תנאי שימוש', 'פרטיות'].map(l => (
+              <a key={l} href="#" style={{ fontSize: 13, color: 'rgba(255,255,255,0.3)', textDecoration: 'none', transition: 'color 0.15s' }}
+                onMouseEnter={e => (e.currentTarget.style.color = PURPLE2)}
+                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.3)')}>
+                {l}
               </a>
             ))}
           </div>
-          <div className="text-xs" style={{ color: 'rgba(136,136,168,0.5)' }}>© 2025 SociMe · כל הזכויות שמורות לדור דוד אדרי</div>
-          <div className="text-xs mt-1" style={{ color: 'rgba(136,136,168,0.4)' }}>Built by <span style={{ fontWeight: 600, color: '#9333EA', opacity: 0.7 }}>EDRI GROUP</span></div>
+          <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.15)' }}>
+            © 2025 SociMe · כל הזכויות שמורות · <span style={{ color: PURPLE2, fontWeight: 700 }}>EDRI GROUP</span>
+          </div>
         </div>
       </footer>
-    </>
+    </div>
   )
 }
 

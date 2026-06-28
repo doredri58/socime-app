@@ -1,5 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createHmac } from 'crypto'
 import { createServiceClient } from '@/lib/supabase'
+
+function verifyPayPlusSignature(body: string, signature: string | null): boolean {
+  if (!signature || !process.env.PAYPLUS_SECRET) return false
+  const expected = createHmac('sha256', process.env.PAYPLUS_SECRET)
+    .update(body)
+    .digest('hex')
+  return expected === signature
+}
 
 const PLAN_CONFIG = {
   basic: { tier: 'basic', tokens: 100 },
@@ -8,7 +17,12 @@ const PLAN_CONFIG = {
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
+    const rawBody = await req.text()
+    const signature = req.headers.get('x-payplus-signature')
+    if (!verifyPayPlusSignature(rawBody, signature)) {
+      return NextResponse.json({ ok: false }, { status: 401 })
+    }
+    const body = JSON.parse(rawBody)
 
     // PayPlus שולח את סטטוס התשלום
     const status      = body.data?.status_code         // '000' = הצלחה
