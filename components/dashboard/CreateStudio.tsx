@@ -2,6 +2,7 @@
 import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 // ─── constants ───────────────────────────────────────────────────────────────
 const PURPLE  = '#9850FF'
@@ -200,6 +201,8 @@ export default function CreateStudio({ userId, businessName, businessDescription
   const [toast, setToast]             = useState<{ msg: string; ok: boolean } | null>(null)
   const [tokens, setTokens]           = useState(tokenBalance)
   const [charCount, setCharCount]     = useState(0)
+  const [imgAttempts, setImgAttempts] = useState(2)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const maxChars = platform === 'instagram' ? 2200 : platform === 'linkedin' ? 3000 : 63206
 
@@ -244,6 +247,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
 
   // ── AI image generation ──
   async function handleGenerateImage() {
+    if (imgAttempts <= 0) { setShowUpgrade(true); return }
     if (!prompt.trim() && !postText.trim()) { showToast('יש להזין פרומפט קודם', false); return }
     setImgGenLoading(true)
     const res = await fetch('/api/generate-image', {
@@ -255,6 +259,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
     setImgGenLoading(false)
     if (!res.ok) { showToast(data.error ?? 'שגיאה ביצירת תמונה', false); return }
     setImageUrl(data.url)
+    setImgAttempts(a => a - 1)
   }
 
   // ── file drop ──
@@ -521,15 +526,21 @@ export default function CreateStudio({ userId, businessName, businessDescription
             disabled={imgGenLoading}
             style={{
               width: '100%', padding: '11px', borderRadius: 14, cursor: imgGenLoading ? 'wait' : 'pointer',
-              background: 'rgba(59,130,239,0.12)', border: '1px solid rgba(59,130,239,0.25)',
-              color: '#60A5FA', fontSize: 13, fontWeight: 700,
+              background: imgAttempts <= 0 ? 'rgba(255,255,255,0.04)' : 'rgba(59,130,239,0.12)',
+              border: `1px solid ${imgAttempts <= 0 ? 'rgba(255,255,255,0.1)' : 'rgba(59,130,239,0.25)'}`,
+              color: imgAttempts <= 0 ? 'rgba(255,255,255,0.35)' : '#60A5FA',
+              fontSize: 13, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-              transition: 'all 0.2s',
+              transition: 'all 0.2s', position: 'relative',
             }}
           >
             {imgGenLoading
               ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(96,165,250,0.3)', borderTop: '2px solid #60A5FA', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר תמונה...</>
-              : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI</>
+              : imgAttempts <= 0
+                ? <><i className="ti ti-lock" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI<span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.3)', color: PURPLE2 }}>שדרג לPro</span></>
+                : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
+                    <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: imgAttempts === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.12)', border: `1px solid ${imgAttempts === 1 ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.2)'}`, color: imgAttempts === 1 ? '#FBBF24' : '#34D399', fontWeight: 700 }}>נותרו {imgAttempts} ניסיונות</span>
+                  </>
             }
           </button>
         </div>
@@ -629,9 +640,11 @@ export default function CreateStudio({ userId, businessName, businessDescription
           }}
         >
           <i className="ti ti-calendar-plus" style={{ fontSize: 16 }} />
-          תזמן פוסט
+          המשך לתזמון
         </button>
       </div>
+
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} trigger="image_limit" />}
 
       {/* spin keyframe */}
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>

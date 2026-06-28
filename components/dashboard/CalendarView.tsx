@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 // ─── constants ────────────────────────────────────────────────────────────────
 const PURPLE  = '#9850FF'
@@ -220,10 +221,11 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
   date: Date; draftText?: string; draftPlatform?: string
   userId: string; onClose: () => void; onSaved: () => void
 }) {
-  const [text, setText]       = useState(draftText ?? '')
+  const [text, setText]         = useState(draftText ?? '')
   const [platform, setPlatform] = useState<string[]>(draftPlatform ? [draftPlatform] : ['facebook'])
-  const [time, setTime]       = useState('10:00')
-  const [saving, setSaving]   = useState(false)
+  const [time, setTime]         = useState('10:00')
+  const [saving, setSaving]     = useState(false)
+  const [showUpgrade, setShowUpgrade] = useState(false)
 
   const dateStr = `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`
 
@@ -309,6 +311,24 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
           />
         </div>
 
+        {/* smart schedule Pro button */}
+        <button onClick={() => setShowUpgrade(true)} style={{
+          width: '100%', marginBottom: 10, padding: '11px 16px', borderRadius: 14, cursor: 'pointer',
+          background: 'linear-gradient(135deg, rgba(190,86,255,0.12), rgba(59,130,239,0.12))',
+          border: '1px solid rgba(190,86,255,0.3)',
+          color: PURPLE2, fontSize: 13, fontWeight: 700,
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <i className="ti ti-brain" style={{ fontSize: 16 }} />
+          תזמון חכם ב-AI
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginRight: 2 }}>מזהה שעות שיא</span>
+          <span style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 999, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.35)', color: PURPLE2, fontSize: 10, fontWeight: 800 }}>
+            <i className="ti ti-lock" style={{ fontSize: 10 }} /> Pro
+          </span>
+        </button>
+
+        <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', marginBottom: 10 }} />
+
         <div style={{ display: 'flex', gap: 8 }}>
           <button onClick={onClose} style={{
             flex: 1, padding: '11px', borderRadius: 12, cursor: 'pointer',
@@ -329,6 +349,8 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
             }
           </button>
         </div>
+
+        {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} trigger="smart_schedule" />}
       </div>
     </div>
   )
