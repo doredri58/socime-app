@@ -27,6 +27,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // הגנה על onboarding — חייב להיות מחובר
+  if (pathname.startsWith('/onboarding') && !user) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
   // אם כבר מחובר — אל תציג את דף הלוגין
   if (pathname === '/login' && user) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
