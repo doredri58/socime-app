@@ -26,18 +26,18 @@ export default async function QueuePage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <h1 className="text-2xl font-extrabold mb-1" style={{ color: 'var(--text-dark)', letterSpacing: '-0.5px' }}>
+      <h1 className="text-2xl font-extrabold mb-1" style={{ color: '#fff', letterSpacing: '-0.5px' }}>
         תור פוסטים
       </h1>
-      <p className="text-sm mb-7" style={{ color: 'var(--text-light)' }}>
+      <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.45)' }}>
         כל הפוסטים שלך — טיוטות, מתוזמנים ושפורסמו
       </p>
 
       {!posts || posts.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 text-center" style={{ border: '1px solid var(--purple-border)' }}>
           <div className="text-4xl mb-3">📭</div>
-          <div className="text-base font-bold mb-1" style={{ color: 'var(--text-dark)' }}>אין פוסטים עדיין</div>
-          <div className="text-sm mb-5" style={{ color: 'var(--text-light)' }}>צור את הפוסט הראשון שלך</div>
+          <div className="text-base font-bold mb-1" style={{ color: '#fff' }}>אין פוסטים עדיין</div>
+          <div className="text-sm mb-5" style={{ color: 'rgba(255,255,255,0.45)' }}>צור את הפוסט הראשון שלך</div>
           <a href="/dashboard/create"
             className="inline-block px-6 py-2.5 rounded-full text-white text-sm font-bold"
             style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 4px 14px rgba(161,70,255,0.25)' }}>
@@ -76,18 +76,18 @@ export default async function QueuePage() {
                     🎬
                   </div>
                 )}
-                <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: 'var(--text-dark)' }}>
+                <div className="text-sm leading-relaxed whitespace-pre-wrap" style={{ color: '#fff' }}>
                   {post.content_text || post.caption}
                 </div>
                 {post.hashtags && (
                   <div className="text-xs mt-2 font-semibold" style={{ color: 'var(--purple)' }}>{post.hashtags}</div>
                 )}
                 {post.source === 'uploaded' && (
-                  <div className="text-xs mt-1 font-semibold" style={{ color: 'var(--text-light)' }}>
+                  <div className="text-xs mt-1 font-semibold" style={{ color: 'rgba(255,255,255,0.45)' }}>
                     📂 הועלה ידנית
                   </div>
                 )}
-                <div className="text-xs mt-3" style={{ color: 'var(--text-light)' }}>
+                <div className="text-xs mt-3" style={{ color: 'rgba(255,255,255,0.45)' }}>
                   {new Date(post.created_at).toLocaleDateString('he-IL', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}
                 </div>
                 {post.status === 'pending_approval' && (
