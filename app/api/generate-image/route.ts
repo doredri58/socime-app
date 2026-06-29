@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generateImage } from '@/lib/gemini'
 import { createServiceClient } from '@/lib/supabase'
 import { getQuotaForTier } from '@/lib/image-quota'
+import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 const BUCKET = 'generated-images'
 
@@ -39,6 +40,15 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // 1b. בדיקת יתרת טוקנים
+    const tokenCheck = await checkTokenBalance(userId, 'generate_image')
+    if (!tokenCheck.ok) {
+      return NextResponse.json(
+        { error: `אין מספיק טוקנים (נדרש ${tokenCheck.required}, נותר ${tokenCheck.balance})`, insufficientTokens: true },
+        { status: 402 }
+      )
+    }
+
     // 2. יצירת התמונה דרך Gemini (Nano Banana)
     const dataUrl = await generateImage(prompt.trim())
 
@@ -61,12 +71,12 @@ export async function POST(req: NextRequest) {
     const { data: pub } = db.storage.from(BUCKET).getPublicUrl(fileName)
     const imageUrl = pub.publicUrl
 
-    // 4. עדכון מונה + לוג שימוש
-    await db.from('users')
-      .update({ image_count_this_month: used + 1 })
-      .eq('id', userId)
-
-    await db.from('image_usage_log').insert({ user_id: userId })
+    // 4. עדכון מונה + ניכוי טוקנים + לוג שימוש
+    await Promise.all([
+      db.from('users').update({ image_count_this_month: used + 1 }).eq('id', userId),
+      db.from('image_usage_log').insert({ user_id: userId }),
+      deductTokens(userId, 'generate_image'),
+    ])
 
     return NextResponse.json({
       imageUrl,

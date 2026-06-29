@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generatePost } from '@/lib/llm'
-import { createServiceClient } from '@/lib/supabase'
+import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,27 +10,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'תיאור עסק קצר מדי' }, { status: 400 })
     }
 
-    // Generate post
-    const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
-
-    // Log to token_ledger if user is logged in
     if (userId) {
-      const db = createServiceClient()
-      await db.from('token_ledger').insert({
-        user_id: userId,
-        tokens_used: tokensUsed,
-        api_cost_usd: costUsd,
-        action_type: 'generate_post',
-      })
-      // Deduct from balance
-      await db.rpc('decrement_tokens', { uid: userId, amount: tokensUsed })
+      const check = await checkTokenBalance(userId, 'generate_post')
+      if (!check.ok) {
+        return NextResponse.json(
+          { error: `אין מספיק טוקנים (נדרש ${check.required}, נותר ${check.balance})`, insufficientTokens: true },
+          { status: 402 }
+        )
+      }
     }
 
-    return NextResponse.json({
-      text,
-      hashtags,
-      tokensUsed,
-    })
+    const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
+
+    if (userId) {
+      await deductTokens(userId, 'generate_post', tokensUsed, costUsd)
+    }
+
+    return NextResponse.json({ text, hashtags, tokensUsed })
   } catch (err: unknown) {
     console.error('[/api/generate]', err)
     const message = err instanceof Error ? err.message : 'שגיאה פנימית'

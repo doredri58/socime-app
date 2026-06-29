@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { generateIdeas } from '@/lib/gemini'
+import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 const CATEGORIES = ['value', 'marketing', 'vibe'] as const
 
@@ -21,6 +22,15 @@ export async function POST(_req: NextRequest) {
   const systemPrompt = profile?.parsed_system_prompt
     ?? `אתה עוזר שיווק לעסק בשם ${profile?.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
 
+  // בדיקת יתרת טוקנים לפני קריאת AI
+  const tokenCheck = await checkTokenBalance(user.id, 'generate_ideas')
+  if (!tokenCheck.ok) {
+    return NextResponse.json(
+      { error: `אין מספיק טוקנים (נדרש ${tokenCheck.required}, נותר ${tokenCheck.balance})`, insufficientTokens: true },
+      { status: 402 }
+    )
+  }
+
   // Generate ~3 ideas per category in parallel, then shuffle
   const batches = await Promise.allSettled(
     CATEGORIES.map(cat => generateIdeas(cat, systemPrompt).then(texts =>
@@ -38,6 +48,8 @@ export async function POST(_req: NextRequest) {
     const j = Math.floor(Math.random() * (i + 1));
     [ideas[i], ideas[j]] = [ideas[j], ideas[i]]
   }
+
+  await deductTokens(user.id, 'generate_ideas')
 
   return NextResponse.json({ ideas: ideas.slice(0, 12) })
 }

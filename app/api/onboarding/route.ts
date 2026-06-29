@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
 import { GoogleGenerativeAI } from '@google/generative-ai'
+import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
@@ -25,6 +26,14 @@ export async function POST(req: NextRequest) {
 
     if (!userId || !businessName || !rawDescription) {
       return NextResponse.json({ error: 'שדות חסרים' }, { status: 400 })
+    }
+
+    const tokenCheck = await checkTokenBalance(userId, 'onboarding')
+    if (!tokenCheck.ok) {
+      return NextResponse.json(
+        { error: `אין מספיק טוקנים (נדרש ${tokenCheck.required}, נותר ${tokenCheck.balance})`, insufficientTokens: true },
+        { status: 402 }
+      )
     }
 
     const toneLabel = TONE_MAP[toneOfVoice] ?? 'טבעי ואותנטי'
@@ -87,6 +96,8 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
       : await db.from('business_profiles').insert(payload)
 
     if (error) throw error
+
+    await deductTokens(userId, 'onboarding')
 
     return NextResponse.json({ parsedSystemPrompt })
   } catch (err: unknown) {

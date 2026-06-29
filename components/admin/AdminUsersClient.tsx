@@ -84,10 +84,17 @@ export default function AdminUsersClient({ users: initial }: { users: User[] }) 
 
   async function impersonate(id: string) {
     setBusy(id)
-    const res = await fetch('/api/admin/impersonate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId: id }) })
+    const res = await fetch('/api/admin/impersonate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId: id }),
+    })
     setBusy(null)
-    if (res.ok) window.location.href = '/dashboard'
-    else showToast('שגיאה בהתחברות', false)
+    if (!res.ok) { showToast('שגיאה בהתחברות', false); return }
+    const { magicLink, targetName } = await res.json()
+    showToast(`מתחבר כ-${targetName ?? '...'}`, true)
+    /* Magic link swaps the session then redirects to /dashboard */
+    window.location.href = magicLink
   }
 
   function exportCsv() {
