@@ -589,6 +589,13 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
   const [done, setDone]                   = useState(false)
   const [toast, setToast]                 = useState<{ msg: string; ok: boolean } | null>(null)
 
+  /* real upload / render state */
+  const [uploadProgress, setUploadProgress]   = useState(0)
+  const [cloudinaryPublicId, setCloudinaryPublicId] = useState<string | null>(null)
+  const [cloudinaryUrl, setCloudinaryUrl]     = useState<string | null>(null)
+  const [transcribeJobId, setTranscribeJobId] = useState<string | null>(null)
+  const [outputUrl, setOutputUrl]             = useState<string | null>(null)
+
   const playRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   /* simulate playback progress */
@@ -601,33 +608,127 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
     return () => { if (playRef.current) clearInterval(playRef.current) }
   }, [playing])
 
-  function showToast(msg: string, ok: boolean) { setToast({ msg, ok }); setTimeout(() => setToast(null), 3000) }
+  function showToast(msg: string, ok: boolean) { setToast({ msg, ok }); setTimeout(() => setToast(null), 4000) }
 
   function handleFile(f: File) {
     setVideoFile(f); setProgress(0); setPlaying(false); setDone(false)
-    showToast(`${f.name} הועלה בהצלחה ✓`, true)
+    setCloudinaryPublicId(null); setCloudinaryUrl(null); setOutputUrl(null)
+    showToast(`${f.name} נבחר — לחץ עבד וידאו להעלאה`, true)
   }
 
   async function handleRender() {
+    if (!videoFile) return
     if (tokens < VIDEO_COST_TOKENS) { showToast('אין מספיק טוקנים לעיבוד', false); return }
-    setProcessing(true); setProcProgress(0)
-    const steps = [
-      [10, 'מנתח את הסרטון...'],
-      [25, 'מזהה שתיקות וקטעים מתים...'],
-      [40, 'מחתך חכם ומארגן את הקצב...'],
-      [60, 'יוצר כתוביות אוטומטיות...'],
-      [75, 'מוסיף מוזיקת רקע ואפקטים...'],
-      [90, 'מרנדר את הסרטון הסופי...'],
-      [100, 'הסרטון מוכן! 🎉'],
-    ] as [number, string][]
-    for (const [pct, step] of steps) {
-      await new Promise(r => setTimeout(r, 900 + Math.random() * 400))
-      setProcProgress(pct); setProcStep(step)
+    setProcessing(true); setProcProgress(0); setOutputUrl(null)
+
+    try {
+      // ── Stage 1: upload to Cloudinary ──
+      setProcStep('מעלה סרטון לענן...'); setProcProgress(5)
+
+      const signRes = await fetch('/api/video/sign-upload', { method: 'POST' })
+      if (!signRes.ok) throw new Error('שגיאה בהשגת הרשאת העלאה')
+      const { signature, timestamp, api_key, cloud_name, folder } = await signRes.json() as {
+        signature: string; timestamp: number; api_key: string; cloud_name: string; folder: string
+      }
+
+      const formData = new FormData()
+      formData.append('file', videoFile)
+      formData.append('signature', signature)
+      formData.append('timestamp', String(timestamp))
+      formData.append('api_key', api_key)
+      formData.append('folder', folder)
+      formData.append('resource_type', 'video')
+
+      const uploadedPublicId = await new Promise<string>((resolve, reject) => {
+        const xhr = new XMLHttpRequest()
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`)
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const pct = Math.round((e.loaded / e.total) * 30) + 5
+            setUploadProgress(pct); setProcProgress(pct)
+          }
+        }
+        xhr.onload = () => {
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText) as { public_id: string; secure_url: string }
+            setCloudinaryPublicId(data.public_id)
+            setCloudinaryUrl(data.secure_url)
+            resolve(data.public_id)
+          } else {
+            reject(new Error('שגיאה בהעלאת הסרטון לענן'))
+          }
+        }
+        xhr.onerror = () => reject(new Error('שגיאת רשת בהעלאה'))
+        xhr.send(formData)
+      })
+
+      setProcProgress(40); setProcStep('העלאה הושלמה — מעבד כתוביות...')
+
+      // ── Stage 2: transcribe (if subtitles enabled) ──
+      let _srtText: string | undefined
+      if (subtitles && cloudinaryUrl) {
+        setProcStep('שולח לתמלול AI...'); setProcProgress(45)
+
+        const transcribeRes = await fetch('/api/video/transcribe', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ cloudinary_url: cloudinaryUrl, language: 'he' }),
+        })
+        if (!transcribeRes.ok) throw new Error('שגיאה בתמלול')
+        const { job_id } = await transcribeRes.json() as { job_id: string }
+        setTranscribeJobId(job_id)
+
+        // Poll for completion
+        setProcStep('ממתין לתמלול Hebrew...')
+        let attempts = 0
+        while (attempts < 40) {
+          await new Promise(r => setTimeout(r, 3000))
+          const pollRes = await fetch(`/api/video/transcribe?job_id=${job_id}`)
+          const pollData = await pollRes.json() as { status: string; srt?: string; text?: string }
+          if (pollData.status === 'completed') {
+            _srtText = pollData.srt
+            setProcProgress(70); setProcStep('כתוביות מוכנות!')
+            break
+          }
+          if (pollData.status === 'error') throw new Error('שגיאה בתמלול הסרטון')
+          attempts++
+          setProcProgress(45 + Math.min(attempts, 20))
+        }
+      } else {
+        setProcProgress(70)
+      }
+
+      // ── Stage 3: render ──
+      setProcStep('מרנדר סרטון סופי עם Cloudinary...')
+      setProcProgress(75)
+
+      const renderRes = await fetch('/api/video/render', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          public_id: uploadedPublicId,
+          options: {
+            smartTrim,
+            musicTrack: aiAudio ? musicStyle : undefined,
+            subtitleStyle: subtitlePreset,
+          },
+        }),
+      })
+      if (!renderRes.ok) throw new Error('שגיאה בעיבוד הסרטון')
+      const { output_url } = await renderRes.json() as { output_url: string }
+
+      setProcProgress(100); setProcStep('הסרטון מוכן! 🎉')
+      await new Promise(r => setTimeout(r, 600))
+
+      setOutputUrl(output_url)
+      setProcessing(false); setDone(true)
+      setTokens(t => t - VIDEO_COST_TOKENS)
+      showToast('הסרטון עובד ונשמר בהצלחה ✓', true)
+
+    } catch (err) {
+      setProcessing(false)
+      showToast((err instanceof Error ? err.message : 'שגיאה לא ידועה'), false)
     }
-    await new Promise(r => setTimeout(r, 500))
-    setProcessing(false); setDone(true)
-    setTokens(t => t - VIDEO_COST_TOKENS)
-    showToast('הסרטון עובד ונשמר בהצלחה ✓', true)
   }
 
   const canRender = !!videoFile && tokens >= VIDEO_COST_TOKENS
@@ -863,11 +964,13 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
                 מחכה להורדה / פרסום
               </div>
               <div style={{ display: 'flex', gap: 8 }}>
-                <button style={{ flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
-                  background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  boxShadow: '0 4px 16px rgba(152,80,255,0.35)' }}>
-                  <i className="ti ti-download" style={{ fontSize: 14 }} /> הורד
+                <button
+                  onClick={() => outputUrl && window.open(outputUrl, '_blank')}
+                  style={{ flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
+                    background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                    boxShadow: '0 4px 16px rgba(152,80,255,0.35)' }}>
+                  <i className="ti ti-download" style={{ fontSize: 14 }} /> {outputUrl ? 'הורד סרטון' : 'הורד'}
                 </button>
                 <button style={{ flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
                   background: 'rgba(59,130,239,0.12)', border: '1px solid rgba(59,130,239,0.25)', color: BLUE,

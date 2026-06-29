@@ -7,22 +7,17 @@ import { useState } from 'react'
 /* ── Nav structure ─────────────────────────────────────────── */
 
 const WORKSPACE = [
-  { href: '/dashboard',           label: 'דאשבורד',              icon: 'ti-layout-dashboard' },
-  { href: '/dashboard/create',    label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
-  { href: '/dashboard/bulk',      label: 'העלאה מרוכזת',         icon: 'ti-files' },
-  { href: '/dashboard/queue',     label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
-  { href: '/dashboard/timing',    label: 'תזמון חכם',             icon: 'ti-clock-bolt' },
-  { href: '/dashboard/ideas',     label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
-  { href: '/dashboard/bank',      label: 'בנק רעיונות',           icon: 'ti-bulb' },
-  { href: '/dashboard/community', label: 'ניהול קהילה',           icon: 'ti-message-2-heart' },
-  { href: '/dashboard/business',  label: 'תיק עסק',              icon: 'ti-building-store' },
+  { href: '/dashboard',          label: 'דאשבורד',              icon: 'ti-layout-dashboard' },
+  { href: '/dashboard/create',   label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
+  { href: '/dashboard/video',    label: 'עורך וידאו AI',         icon: 'ti-video' },
+  { href: '/dashboard/queue',    label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
+  { href: '/dashboard/ideas',    label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
+  { href: '/dashboard/business', label: 'תיק עסק',              icon: 'ti-building-store' },
 ]
 
 const MANAGEMENT = [
-  { href: '/dashboard/profile',       label: 'מצב חשבון',        icon: 'ti-coins' },
-  { href: '/dashboard/notifications', label: 'התראות',            icon: 'ti-bell' },
-  { href: '/dashboard/social',        label: 'חיבורי רשתות',     icon: 'ti-plug-connected' },
-  { href: '/dashboard/settings',      label: 'הגדרות',            icon: 'ti-settings' },
+  { href: '/dashboard/profile',  label: 'מצב חשבון',            icon: 'ti-coins' },
+  { href: '/dashboard/settings', label: 'הגדרות',               icon: 'ti-settings' },
 ]
 
 const SUPPORT = [
@@ -51,7 +46,7 @@ function SectionLabel({ label }: { label: string }) {
   return (
     <div style={{
       fontSize: 9, fontWeight: 700, letterSpacing: '1.5px',
-      textTransform: 'uppercase', color: 'var(--dash-sidebar-label)',
+      textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)',
       padding: '14px 12px 6px',
       userSelect: 'none',
     }}>
@@ -73,15 +68,15 @@ function NavItem({
       borderRadius: 10,
       fontSize: small ? 12 : 13,
       fontWeight: active ? 600 : 400,
-      color: active ? 'var(--dash-sidebar-text-active)' : 'var(--dash-sidebar-text)',
-      background: active ? 'var(--dash-sidebar-active-bg)' : 'transparent',
-      borderRight: active ? '2px solid var(--dash-sidebar-active-border)' : '2px solid transparent',
+      color: active ? '#fff' : 'rgba(255,255,255,0.52)',
+      background: active ? 'rgba(152,80,255,0.18)' : 'transparent',
+      borderRight: active ? '2px solid #9850FF' : '2px solid transparent',
       textDecoration: 'none',
       transition: 'background 0.15s, color 0.15s',
     }}>
       <i className={`ti ${icon}`} style={{
         fontSize: small ? 14 : 15, flexShrink: 0,
-        color: active ? '#9850FF' : 'var(--dash-sidebar-label)',
+        color: active ? '#BE56FF' : 'rgba(255,255,255,0.35)',
       }} aria-hidden="true" />
       <span style={{ flex: 1 }}>{label}</span>
       {active && (
@@ -96,7 +91,7 @@ function NavItem({
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: 'var(--dash-sidebar-border)', margin: '6px 0' }} />
+  return <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '6px 0' }} />
 }
 
 /* ── Main component ────────────────────────────────────────── */
@@ -139,10 +134,10 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
             style={{ objectFit: 'cover' }} onError={() => {}} />
         </div>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--dash-sidebar-text-active)', letterSpacing: '-0.3px', lineHeight: 1 }}>
+          <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1 }}>
             SociMe
           </div>
-          <div style={{ fontSize: 9, color: 'var(--dash-sidebar-label)', letterSpacing: '1.8px', textTransform: 'uppercase', marginTop: 2 }}>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', letterSpacing: '1.8px', textTransform: 'uppercase', marginTop: 2 }}>
             AI Social
           </div>
         </div>
@@ -190,13 +185,13 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
       </nav>
 
       {/* ── User footer ── */}
-      <div style={{ flexShrink: 0, paddingTop: 10, borderTop: '1px solid var(--dash-sidebar-border)' }}>
+      <div style={{ flexShrink: 0, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
         {/* User row */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 9,
           padding: '10px 10px', borderRadius: 12,
-          background: 'var(--dash-sidebar-active-bg)',
-          border: '1px solid var(--dash-sidebar-border)',
+          background: 'rgba(255,255,255,0.04)',
+          border: '1px solid rgba(255,255,255,0.07)',
           marginBottom: 8,
         }}>
           <div style={{
@@ -210,7 +205,7 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontSize: 12, fontWeight: 600, color: 'var(--dash-sidebar-text-active)',
+              fontSize: 12, fontWeight: 600, color: '#fff',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {userName}
@@ -226,7 +221,7 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
             </span>
           </div>
           <Link href="/dashboard/profile" style={{
-            color: 'var(--dash-sidebar-label)', textDecoration: 'none',
+            color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
             fontSize: 14, flexShrink: 0,
           }}>
             <i className="ti ti-settings" />
@@ -238,8 +233,8 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
           width: '100%', padding: '8px', borderRadius: 9,
           fontSize: 12, fontWeight: 500, cursor: 'pointer',
           background: 'transparent',
-          color: 'var(--dash-sidebar-label)',
-          border: '1px solid var(--dash-sidebar-border)',
+          color: 'rgba(255,255,255,0.38)',
+          border: '1px solid rgba(255,255,255,0.08)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
           transition: 'all 0.15s',
         }}>
@@ -251,10 +246,9 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
   )
 
   const sidebarStyle: React.CSSProperties = {
-    background: 'var(--dash-sidebar-bg)',
+    background: 'rgba(10,6,26,0.6)',
     backdropFilter: 'blur(24px)',
-    WebkitBackdropFilter: 'blur(24px)',
-    borderLeft: '1px solid var(--dash-sidebar-border)',
+    borderLeft: '1px solid rgba(152,80,255,0.13)',
     padding: '20px 12px 16px',
     width: 220,
     flexShrink: 0,
