@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Heebo, Arimo, Space_Grotesk } from 'next/font/google'
 import './globals.css'
-import IntroAnimation from '@/components/IntroAnimation'
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from '@/components/ui/tooltip'
 
@@ -44,7 +43,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-full antialiased" style={{ fontFamily: 'var(--font-heebo), Heebo, sans-serif' }}>
         <TooltipProvider>
-          <IntroAnimation />
           {children}
         </TooltipProvider>
       </body>
