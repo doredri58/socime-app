@@ -7,23 +7,29 @@ const TEXT = '#0F172A', TEXT_MID = '#475569', TEXT_LOW = '#94A3B8'
 
 /* ── static API source definitions ───────────────────────────────────── */
 const API_SOURCES = [
-  { id: 'google_trends', name: 'Google Trends',       category: 'trends', icon: 'ti-brand-google',    key: 'GOOGLE_TRENDS_API_KEY',     endpoint: '/api/trends/google' },
-  { id: 'tiktok_rss',   name: 'TikTok RSS',           category: 'trends', icon: 'ti-brand-tiktok',    key: 'TIKTOK_RSS_URL',            endpoint: '/api/trends/tiktok'  },
-  { id: 'youtube_rss',  name: 'YouTube Trending',     category: 'trends', icon: 'ti-brand-youtube',   key: 'YOUTUBE_API_KEY',           endpoint: '/api/trends/youtube' },
-  { id: 'serpapi',      name: 'SerpAPI',              category: 'search', icon: 'ti-search',          key: 'SERPAPI_KEY',               endpoint: '/api/search/serp'    },
-  { id: 'openai',       name: 'OpenAI',               category: 'ai',     icon: 'ti-brand-openai',    key: 'OPENAI_API_KEY',            endpoint: '/api/ai/openai'      },
-  { id: 'anthropic',    name: 'Anthropic Claude',     category: 'ai',     icon: 'ti-brain',           key: 'ANTHROPIC_API_KEY',         endpoint: '/api/ai/anthropic'   },
-  { id: 'supabase',     name: 'Supabase DB',          category: 'infra',  icon: 'ti-database',        key: 'SUPABASE_SERVICE_ROLE_KEY', endpoint: '/api/health/db'      },
-  { id: 'payplus',      name: 'PayPlus',              category: 'payment',icon: 'ti-credit-card',     key: 'PAYPLUS_API_KEY',           endpoint: '/api/health/payplus' },
-  { id: 'cloudinary',   name: 'Cloudinary (Images)',  category: 'media',  icon: 'ti-cloud-upload',    key: 'CLOUDINARY_API_KEY',        endpoint: '/api/health/media'   },
-  { id: 'instagram',    name: 'Instagram Graph API',  category: 'social', icon: 'ti-brand-instagram', key: 'INSTAGRAM_APP_SECRET',      endpoint: '/api/social/ig'      },
-  { id: 'facebook',     name: 'Facebook Graph API',   category: 'social', icon: 'ti-brand-facebook',  key: 'FACEBOOK_APP_SECRET',       endpoint: '/api/social/fb'      },
-  { id: 'linkedin',     name: 'LinkedIn API',         category: 'social', icon: 'ti-brand-linkedin',  key: 'LINKEDIN_CLIENT_SECRET',    endpoint: '/api/social/li'      },
+  { id: 'google_trends', name: 'Google Trends',       category: 'trends', icon: 'ti-brand-google',    key: 'GOOGLE_TRENDS_API_KEY',     endpoint: '/api/health?service=google_trends' },
+  { id: 'tiktok_rss',   name: 'TikTok RSS',           category: 'trends', icon: 'ti-brand-tiktok',    key: 'TIKTOK_RSS_URL',            endpoint: '/api/health?service=tiktok_rss'   },
+  { id: 'youtube_rss',  name: 'YouTube Trending',     category: 'trends', icon: 'ti-brand-youtube',   key: 'YOUTUBE_API_KEY',           endpoint: '/api/health?service=youtube_rss'  },
+  { id: 'serpapi',      name: 'SerpAPI',              category: 'search', icon: 'ti-search',          key: 'SERPAPI_KEY',               endpoint: '/api/health?service=serpapi'      },
+  { id: 'openai',       name: 'OpenAI',               category: 'ai',     icon: 'ti-brand-openai',    key: 'OPENAI_API_KEY',            endpoint: '/api/health?service=openai'       },
+  { id: 'anthropic',    name: 'Anthropic Claude',     category: 'ai',     icon: 'ti-brain',           key: 'ANTHROPIC_API_KEY',         endpoint: '/api/health?service=anthropic'    },
+  { id: 'supabase',     name: 'Supabase DB',          category: 'infra',  icon: 'ti-database',        key: 'SUPABASE_SERVICE_ROLE_KEY', endpoint: '/api/health?service=db'           },
+  { id: 'payplus',      name: 'PayPlus',              category: 'payment',icon: 'ti-credit-card',     key: 'PAYPLUS_API_KEY',           endpoint: '/api/health?service=payplus'      },
+  { id: 'cloudinary',   name: 'Cloudinary (Images)',  category: 'media',  icon: 'ti-cloud-upload',    key: 'CLOUDINARY_API_KEY',        endpoint: '/api/health?service=media'        },
+  { id: 'instagram',    name: 'Instagram Graph API',  category: 'social', icon: 'ti-brand-instagram', key: 'INSTAGRAM_APP_SECRET',      endpoint: '/api/health?service=ig'           },
+  { id: 'facebook',     name: 'Facebook Graph API',   category: 'social', icon: 'ti-brand-facebook',  key: 'FACEBOOK_APP_SECRET',       endpoint: '/api/health?service=fb'           },
+  { id: 'linkedin',     name: 'LinkedIn API',         category: 'social', icon: 'ti-brand-linkedin',  key: 'LINKEDIN_CLIENT_SECRET',    endpoint: '/api/health?service=li'           },
 ]
 
-type Status = 'ok' | 'warn' | 'error' | 'loading' | 'idle'
-const STATUS_COLOR: Record<Status, string> = { ok: GREEN, warn: YELLOW, error: RED, loading: ACCENT, idle: TEXT_LOW }
-const STATUS_LABEL: Record<Status, string> = { ok: 'OK', warn: 'WARN', error: 'ERROR', loading: '...', idle: 'IDLE' }
+type Status = 'ok' | 'warn' | 'error' | 'loading' | 'idle' | 'configured' | 'missing'
+const STATUS_COLOR: Record<Status, string> = {
+  ok: GREEN, warn: YELLOW, error: RED, loading: ACCENT, idle: TEXT_LOW,
+  configured: GREEN, missing: YELLOW,
+}
+const STATUS_LABEL: Record<Status, string> = {
+  ok: 'OK', warn: 'WARN', error: 'ERROR', loading: '...', idle: 'IDLE',
+  configured: 'SET', missing: 'MISSING',
+}
 
 const CATEGORIES = ['הכל', 'trends', 'ai', 'social', 'payment', 'infra', 'search', 'media']
 const CAT_HE: Record<string, string> = {
@@ -43,20 +49,20 @@ function StatusDot({ status }: { status: Status }) {
   )
 }
 
+type ServiceState = { status: Status; latency: string; lastChecked: string }
+
 export default function AdminApisClient() {
-  const [statuses, setStatuses] = useState<Record<string, { status: Status; latency: string; lastChecked: string }>>({})
+  const [statuses, setStatuses] = useState<Record<string, ServiceState>>({})
   const [catFilter, setCatFilter] = useState('הכל')
   const [pinging, setPinging]   = useState(false)
   const [pingLog, setPingLog]   = useState<string[]>([])
   const logRef = useRef<HTMLDivElement>(null)
 
+  // Initialise all services as idle
   useEffect(() => {
-    const initial: Record<string, { status: Status; latency: string; lastChecked: string }> = {}
+    const initial: Record<string, ServiceState> = {}
     for (const s of API_SOURCES) {
-      const statuses: Status[] = ['ok', 'ok', 'ok', 'ok', 'warn', 'ok', 'ok', 'ok', 'ok', 'error', 'ok', 'ok']
-      const latencies = ['120ms', '310ms', '88ms', '540ms', '980ms', '220ms', '44ms', '190ms', '260ms', 'timeout', '340ms', '410ms']
-      const idx = API_SOURCES.indexOf(s)
-      initial[s.id] = { status: statuses[idx] ?? 'ok', latency: latencies[idx] ?? '—', lastChecked: '2 דק\' אחורה' }
+      initial[s.id] = { status: 'idle', latency: '—', lastChecked: '—' }
     }
     setStatuses(initial)
   }, [])
@@ -65,22 +71,48 @@ export default function AdminApisClient() {
     setPinging(true)
     setPingLog([])
     const log: string[] = []
+
     for (const src of API_SOURCES) {
+      // Mark as loading
       setStatuses(p => ({ ...p, [src.id]: { ...p[src.id], status: 'loading', lastChecked: 'בודק...' } }))
-      await new Promise(r => setTimeout(r, 180 + Math.random() * 200))
-      const ok   = src.id !== 'instagram' && Math.random() > 0.05
-      const ms   = Math.floor(80 + Math.random() * 600)
-      const stat: Status = ok ? (ms > 400 ? 'warn' : 'ok') : 'error'
-      setStatuses(p => ({ ...p, [src.id]: { status: stat, latency: ok ? `${ms}ms` : 'timeout', lastChecked: 'עכשיו' } }))
-      log.push(`[${new Date().toLocaleTimeString('he-IL')}] ${src.name}: ${stat.toUpperCase()} ${ok ? ms + 'ms' : '– timeout'}`)
+
+      const t0 = Date.now()
+      let stat: Status = 'error'
+      let latencyStr   = 'timeout'
+
+      try {
+        const res  = await fetch(src.endpoint)
+        const data = await res.json() as { status?: string; latency_ms?: number; message?: string }
+
+        const serverLatency = data.latency_ms ?? (Date.now() - t0)
+        latencyStr = `${serverLatency}ms`
+
+        const rawStatus = data.status ?? (res.ok ? 'ok' : 'error')
+        if (rawStatus === 'ok')         stat = serverLatency > 1000 ? 'warn' : 'ok'
+        else if (rawStatus === 'warn')  stat = 'warn'
+        else if (rawStatus === 'configured') stat = 'configured'
+        else if (rawStatus === 'missing')    stat = 'missing'
+        else                            stat = 'error'
+      } catch {
+        latencyStr = 'timeout'
+        stat = 'error'
+      }
+
+      setStatuses(p => ({
+        ...p,
+        [src.id]: { status: stat, latency: latencyStr, lastChecked: 'עכשיו' },
+      }))
+
+      log.push(`[${new Date().toLocaleTimeString('he-IL')}] ${src.name}: ${stat.toUpperCase()} ${latencyStr}`)
       setPingLog([...log])
       if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight
     }
+
     setPinging(false)
   }
 
   const filtered = API_SOURCES.filter(s => catFilter === 'הכל' || s.category === catFilter)
-  const okCount  = Object.values(statuses).filter(s => s.status === 'ok').length
+  const okCount  = Object.values(statuses).filter(s => s.status === 'ok' || s.status === 'configured').length
   const errCount = Object.values(statuses).filter(s => s.status === 'error').length
 
   return (
@@ -116,10 +148,10 @@ export default function AdminApisClient() {
           style={{ fontSize: 18, color: errCount > 0 ? RED : GREEN }} />
         <div>
           <div style={{ fontSize: 13, fontWeight: 800, color: TEXT }}>
-            {errCount > 0 ? `${errCount} שירות(ים) לא מגיב/ים` : 'כל המקורות פעילים'}
+            {errCount > 0 ? `${errCount} שירות(ים) לא מגיב/ים` : 'לחץ "Ping All APIs" לבדיקה אמיתית'}
           </div>
           <div style={{ fontSize: 11, color: TEXT_MID }}>
-            {okCount}/{API_SOURCES.length} שירותים תקינים · בדיקה אחרונה: לפני 2 דקות
+            {okCount}/{API_SOURCES.length} שירותים תקינים · {pingLog.length > 0 ? 'נבדק עכשיו' : 'טרם נבדק'}
           </div>
         </div>
       </div>
@@ -172,7 +204,7 @@ export default function AdminApisClient() {
                   <div style={{ flex: 1, padding: '7px 9px', borderRadius: 8, background: BG_PAGE, border: `1px solid ${BD}` }}>
                     <div style={{ fontSize: 9, color: TEXT_LOW, marginBottom: 2 }}>LATENCY</div>
                     <div style={{ fontSize: 12, fontWeight: 800, fontFamily: 'monospace',
-                      color: s.status === 'error' ? RED : s.latency.replace('ms','').length > 2 && Number(s.latency.replace('ms','')) > 400 ? YELLOW : GREEN }}>
+                      color: s.status === 'error' ? RED : s.latency !== '—' && Number(s.latency.replace('ms','')) > 1000 ? YELLOW : GREEN }}>
                       {s.latency}
                     </div>
                   </div>
@@ -215,7 +247,7 @@ export default function AdminApisClient() {
                   </div>
                 : pingLog.map((line, i) => {
                     const isErr = line.includes('ERROR') || line.includes('timeout')
-                    const isWarn = line.includes('WARN')
+                    const isWarn = line.includes('WARN') || line.includes('MISSING')
                     return (
                       <div key={i} style={{ color: isErr ? RED : isWarn ? YELLOW : GREEN, padding: '1px 0' }}>
                         {line}

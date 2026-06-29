@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const ACCENT = '#1A73E8', GREEN = '#0F9E60', RED = '#D93025', YELLOW = '#F9AB00', PURPLE = '#7C3AED'
 const BG = '#FFFFFF', BD = '#E2E8F0', BG_PAGE = '#F8FAFD'
@@ -14,7 +14,7 @@ const PROMPT_META: Record<PromptKey, { label: string; sub: string; icon: string;
   image:      { label: 'יצירת תמונות',  sub: 'Image generation prompt',  icon: 'ti-photo-ai',   color: PURPLE, vars: ['{{style}}', '{{platform}}', '{{brand_colors}}', '{{subject}}'] },
 }
 
-const MODELS = ['claude-sonnet-4-6', 'claude-haiku-4-5-20251001', 'claude-opus-4-8', 'gpt-4o', 'gpt-4o-mini']
+const MODELS = ['gemini-2.5-flash', 'gemini-2.0-flash-exp', 'claude-sonnet-4-6', 'gpt-4o', 'gpt-4o-mini']
 
 interface Props { defaultPrompts: Record<PromptKey, string> }
 
@@ -40,23 +40,66 @@ export default function AdminAiClient({ defaultPrompts }: Props) {
   const [saving, setSaving]       = useState(false)
   const [toast, setToast]         = useState<{ msg: string; ok: boolean } | null>(null)
   const [testOutput, setTestOutput] = useState('')
+  const [testMeta, setTestMeta]   = useState<{ latency_ms: number; tokens_used: number } | null>(null)
   const [testing, setTesting]     = useState(false)
+
+  // Load persisted prompts from DB on mount; fall back to defaultPrompts if table is empty
+  useEffect(() => {
+    fetch('/api/admin/system-prompts')
+      .then(r => r.json())
+      .then((data: Record<string, string>) => {
+        if (data && typeof data === 'object' && !('error' in data)) {
+          setPrompts(prev => {
+            const merged = { ...prev }
+            for (const k of Object.keys(data) as PromptKey[]) {
+              if (k in PROMPT_META) merged[k] = data[k]
+            }
+            return merged
+          })
+        }
+      })
+      .catch(() => { /* silently fall back to defaultPrompts */ })
+  }, [])
 
   function showToast(msg: string, ok: boolean) { setToast({ msg, ok }); setTimeout(() => setToast(null), 3200) }
 
   async function save() {
     setSaving(true)
-    await new Promise(r => setTimeout(r, 600))
-    setSaving(false)
-    showToast('System Prompts נשמרו בהצלחה ✓', true)
+    try {
+      const res = await fetch('/api/admin/system-prompts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: activeKey, content: prompts[activeKey] }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error ?? 'שגיאה לא ידועה')
+      showToast('System Prompt נשמר בהצלחה ✓', true)
+    } catch (err: unknown) {
+      showToast(`שגיאה בשמירה: ${err instanceof Error ? err.message : String(err)}`, false)
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function testPrompt() {
     setTesting(true)
     setTestOutput('')
-    await new Promise(r => setTimeout(r, 1200))
-    setTestOutput(`[סימולציה] תגובת ${model}:\n\n✓ הפרומפט תקין ומובן ל-AI.\n✓ משתנים שזוהו: ${PROMPT_META[activeKey].vars.join(', ')}\n✓ אורך הפרומפט: ${prompts[activeKey].length} תווים\n⚡ זמן תגובה משוער: 1.2-2.4 שניות\n\nדוגמת פלט:\nהעסק שלך נראה כמו חנות אופנה מדהימה שמתמחה ב-{{business_type}}. הנה 3 רעיונות מנצחים...`)
-    setTesting(false)
+    setTestMeta(null)
+    try {
+      const res = await fetch('/api/admin/test-prompt', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: activeKey, content: prompts[activeKey], model }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data?.error ?? 'שגיאה לא ידועה')
+      setTestOutput(data.output ?? '')
+      setTestMeta({ latency_ms: data.latency_ms ?? 0, tokens_used: data.tokens_used ?? 0 })
+    } catch (err: unknown) {
+      setTestOutput(`שגיאה: ${err instanceof Error ? err.message : String(err)}`)
+    } finally {
+      setTesting(false)
+    }
   }
 
   const meta = PROMPT_META[activeKey]
@@ -200,6 +243,11 @@ export default function AdminAiClient({ defaultPrompts }: Props) {
             <div style={{ background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.18)', borderRadius: 14, padding: '16px' }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE, marginBottom: 10, display: 'flex', alignItems: 'center', gap: 7 }}>
                 <i className="ti ti-terminal-2" style={{ fontSize: 13 }} /> פלט בדיקה — {model}
+                {testMeta && (
+                  <span style={{ marginRight: 'auto', fontSize: 10, color: TEXT_LOW, fontFamily: 'monospace', fontWeight: 400 }}>
+                    {testMeta.latency_ms}ms · {testMeta.tokens_used} tokens
+                  </span>
+                )}
               </div>
               {testing
                 ? <div style={{ color: TEXT_MID, fontSize: 12, fontFamily: 'monospace' }}>מריץ בדיקה...</div>
