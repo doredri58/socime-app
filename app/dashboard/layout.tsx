@@ -21,28 +21,26 @@ export default async function DashboardLayout({ children }: { children: React.Re
   const tokens   = profile?.token_balance ?? 0
   const isAdmin  = ['admin', 'founder'].includes(profile?.role ?? '')
 
-  const BG = `radial-gradient(ellipse at 20% 0%, rgba(190,86,255,0.3) 0%, transparent 55%),
-              radial-gradient(ellipse at 80% 100%, rgba(59,130,239,0.2) 0%, transparent 50%),
-              linear-gradient(160deg, #0D0829 0%, #160C3D 45%, #0F1654 100%)`
-
   return (
     <>
       <style>{`
-        body { background: #0D0829 !important; color: #ffffff !important; }
+        body {
+          background: var(--dash-body-bg, #0D0829) !important;
+        }
         body::before {
           content: '';
           position: fixed;
           inset: 0;
           z-index: -1;
-          background: ${BG};
+          background: var(--dash-page-bg);
           pointer-events: none;
         }
       `}</style>
 
       <div style={{
         display: 'flex', flexDirection: 'column', minHeight: '100vh',
-        background: BG,
-        color: '#fff',
+        background: 'var(--dash-page-bg)',
+        color: 'var(--dash-sidebar-text-active)',
       }}>
         <TopBar userName={userName} tokens={tokens} tier={tier} />
         <div style={{ display: 'flex', flex: 1 }}>

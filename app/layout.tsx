@@ -3,6 +3,7 @@ import { Heebo, Arimo, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 const heebo = Heebo({
   subsets: ['hebrew', 'latin'],
@@ -42,9 +43,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
       </head>
       <body className="min-h-full antialiased" style={{ fontFamily: 'var(--font-heebo), Heebo, sans-serif' }}>
-        <TooltipProvider>
-          {children}
-        </TooltipProvider>
+        <ThemeProvider>
+          <TooltipProvider>
+            {children}
+          </TooltipProvider>
+        </ThemeProvider>
       </body>
     </html>
   )
