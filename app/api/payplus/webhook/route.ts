@@ -11,8 +11,8 @@ function verifyPayPlusSignature(body: string, signature: string | null): boolean
 }
 
 const PLAN_CONFIG = {
-  basic: { tier: 'basic', tokens: 100 },
-  pro:   { tier: 'pro',   tokens: 300 },
+  basic: { tier: 'basic', tokens: 500,  amountIls: 79  },
+  pro:   { tier: 'pro',   tokens: 1500, amountIls: 149 },
 }
 
 export async function POST(req: NextRequest) {
@@ -39,22 +39,19 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient()
 
-    // עדכון tier + token_balance של המשתמש
-    await db.from('users')
-      .update({
-        plan:          plan,
-        tier:          config.tier,
-        token_balance: config.tokens,
-      })
-      .eq('id', userId)
+    // עדכון tier ומתן טוקנים אטומי
+    await Promise.all([
+      db.from('users').update({ tier: config.tier }).eq('id', userId),
+      db.rpc('grant_tokens', { uid: userId, amount: config.tokens }),
+    ])
 
     // רישום העסקה
     await db.from('transactions').insert({
       user_id:           userId,
       transaction_type:  'subscription',
-      amount_paid_ils:   plan === 'basic' ? 49 : 99,
+      amount_paid_ils:   config.amountIls,
       tokens_granted:    config.tokens,
-      stripe_payment_id: transactionId ?? null, // שדה קיים — משתמשים בו ל-PayPlus transaction id
+      stripe_payment_id: transactionId ?? null,
     })
 
     return NextResponse.json({ ok: true })
