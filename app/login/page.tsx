@@ -143,7 +143,6 @@ function LoginInner() {
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(255,255,255,0.14)',
               maxWidth: 320,
-              animation: 'slideIn .6s ease .3s both',
             }}>
               <div style={{
                 width: 40, height: 40, borderRadius: 12, flexShrink: 0,
@@ -165,7 +164,6 @@ function LoginInner() {
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(255,255,255,0.1)',
               maxWidth: 320,
-              animation: 'slideIn .6s ease .55s both',
             }}>
               <div style={{ display: 'flex', gap: 2 }}>
                 {[...Array(5)].map((_, i) => (
@@ -352,10 +350,6 @@ function LoginInner() {
       </div>
 
       <style>{`
-        @keyframes slideIn {
-          from { opacity: 0; transform: translateX(20px); }
-          to   { opacity: 1; transform: translateX(0); }
-        }
       `}</style>
     </div>
   )

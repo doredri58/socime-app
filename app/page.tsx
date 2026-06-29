@@ -211,7 +211,7 @@ function PricingSection() {
 
   return (
     <section id="pricing" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-      <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
+      <div className=""style={{ textAlign: 'center', marginBottom: 40 }}>
         <div style={{
           display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
           background: 'rgba(152,80,255,0.15)', color: PURPLE2,
@@ -252,7 +252,7 @@ function PricingSection() {
         </div>
       </div>
 
-      <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
+      <div className=""style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
         {plans.map((plan, i) => (
           <NCard key={plan.name} delay={i * 0.1} style={{
             padding: '36px 30px', display: 'flex', flexDirection: 'column', position: 'relative',
@@ -311,7 +311,7 @@ function PricingSection() {
         ))}
       </div>
 
-      <p className="reveal" style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
+      <p className=""style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
         מחירים לא כוללים מע&quot;מ · ביטול בכל עת · טוקן = יחידת AI אחת (~200–400 טוקנים לפוסט)
       </p>
     </section>
@@ -336,17 +336,7 @@ function HomeInner() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  useEffect(() => {
-    const els = document.querySelectorAll('.reveal')
-    const io = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
-      }),
-      { threshold: 0.06 }
-    )
-    els.forEach(el => io.observe(el))
-    return () => io.disconnect()
-  }, [])
+  // scroll-reveal removed
 
   if (needsOnboarding && oauthUid) {
     return (
@@ -490,7 +480,7 @@ function HomeInner() {
 
       {/* ══ FEATURES ══ */}
       <section id="features" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div className=""style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
             background: 'rgba(152,80,255,0.15)', color: PURPLE2,
@@ -502,7 +492,7 @@ function HomeInner() {
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.38)', margin: 0 }}>כלים שנבנו לתוצאות, לא לרשמים</p>
         </div>
 
-        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        <div className=""style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
           {[
             {
               num: '01', icon: 'ti-brain', color: PURPLE2,
@@ -546,7 +536,7 @@ function HomeInner() {
 
       {/* ══ ABOUT ══ */}
       <section id="about" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
+        <div className=""style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
           <NCard style={{ padding: '52px 52px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>EDRI GROUP</div>
             <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,2.8vw,2.1rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 20px', lineHeight: 1.25 }}>
