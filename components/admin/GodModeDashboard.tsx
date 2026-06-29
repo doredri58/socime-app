@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 /* ── design tokens — light theme ─────────────────────────────────────── */
@@ -21,12 +21,20 @@ interface User {
   status: string; created_at: string; last_login_at: string | null
 }
 
-interface Stats {
-  totalUsers: number; payingUsers: number; totalRevenue: number
-  postCount: number; imageCount: number
+interface LiveStats {
+  total_users: number
+  active_users: number
+  paying_users: number
+  posts_created: number
+  free_users: number
+  basic_users: number
+  pro_users: number
+  revenue_mtd: number
+  total_revenue: number
+  image_count: number
 }
 
-interface Props { users: User[]; stats: Stats }
+interface Props { users: User[]; stats: { totalUsers: number; payingUsers: number; totalRevenue: number; postCount: number; imageCount: number } }
 
 /* ── helpers ─────────────────────────────────────────────────────────── */
 function ago(iso: string | null) {
@@ -68,6 +76,22 @@ function Toast({ msg, ok }: { msg: string; ok: boolean }) {
       <i className={`ti ${ok ? 'ti-circle-check' : 'ti-alert-circle'}`}
         style={{ fontSize: 15, color: '#fff' }} />
       <span style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>{msg}</span>
+    </div>
+  )
+}
+
+/* ── KPI skeleton ────────────────────────────────────────────────────── */
+function KpiSkeleton() {
+  return (
+    <div style={{ ...BG_CARD_STYLE, padding: '18px 20px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+        <div style={{ flex: 1 }}>
+          <div style={{ height: 10, width: 80, borderRadius: 4, background: '#E2E8F0', marginBottom: 12 }} />
+          <div style={{ height: 26, width: 60, borderRadius: 4, background: '#E2E8F0', marginBottom: 8 }} />
+          <div style={{ height: 10, width: 100, borderRadius: 4, background: '#E2E8F0' }} />
+        </div>
+        <div style={{ width: 38, height: 38, borderRadius: 10, background: '#E2E8F0' }} />
+      </div>
     </div>
   )
 }
@@ -200,13 +224,42 @@ const TREND_SOURCES = [
 /* ════════════════════════════════════════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════════════════════════════════════════ */
-export default function GodModeDashboard({ users: initial, stats }: Props) {
+export default function GodModeDashboard({ users: initial, stats: initialStats }: Props) {
   const [users, setUsers]         = useState(initial)
   const [busy, setBusy]           = useState<string | null>(null)
   const [editTokenId, setEditTokenId] = useState<string | null>(null)
   const [search, setSearch]       = useState('')
   const [tierFilter, setTierFilter] = useState<string>('all')
   const [toast, setToast]         = useState<{ msg: string; ok: boolean } | null>(null)
+
+  /* ── live stats fetched from /api/admin/stats ── */
+  const [liveStats, setLiveStats] = useState<LiveStats | null>(null)
+  const [statsLoading, setStatsLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    async function fetchStats() {
+      try {
+        const res = await fetch('/api/admin/stats')
+        if (!res.ok) return
+        const data = await res.json() as LiveStats
+        if (!cancelled) setLiveStats(data)
+      } catch {
+        // silently fall back to server-side stats
+      } finally {
+        if (!cancelled) setStatsLoading(false)
+      }
+    }
+    void fetchStats()
+    return () => { cancelled = true }
+  }, [])
+
+  /* resolve stats: prefer live fetch, fall back to server-rendered props */
+  const totalUsers   = liveStats?.total_users   ?? initialStats.totalUsers
+  const payingUsers  = liveStats?.paying_users  ?? initialStats.payingUsers
+  const totalRevenue = liveStats?.total_revenue ?? initialStats.totalRevenue
+  const postCount    = liveStats?.posts_created ?? initialStats.postCount
+  const imageCount   = liveStats?.image_count   ?? initialStats.imageCount
 
   function showToast(msg: string, ok: boolean) {
     setToast({ msg, ok })
@@ -271,6 +324,8 @@ export default function GodModeDashboard({ users: initial, stats }: Props) {
     return Date.now() - new Date(u.last_login_at).getTime() < 86400000
   }).length
 
+  const conversionPct = Math.round(payingUsers / Math.max(totalUsers, 1) * 100)
+
   return (
     <div style={{ direction: 'rtl' }}>
 
@@ -302,35 +357,46 @@ export default function GodModeDashboard({ users: initial, stats }: Props) {
           ROW 1 — KPI CARDS
       ═══════════════════════════════════════════ */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 24 }}>
-        <KpiCard
-          icon="ti-currency-shekel" iconColor={GREEN} iconBg="rgba(15,158,96,0.10)"
-          label="MRR — הכנסה חודשית"
-          value={`₪${mrr.toLocaleString()}`}
-          sub={`₪${stats.totalRevenue.toLocaleString()} הכנסות כולל`}
-          trend="+12% לעומת החודש שעבר" trendUp
-        />
-        <KpiCard
-          icon="ti-users-group" iconColor={ACCENT} iconBg="rgba(26,115,232,0.10)"
-          label="Active Users"
-          value={stats.totalUsers}
-          sub={`DAU: ${dau} · משלמים: ${stats.payingUsers}`}
-          trend={`${Math.round(stats.payingUsers / Math.max(stats.totalUsers, 1) * 100)}% conversion`}
-          trendUp={stats.payingUsers > 0}
-        />
-        <KpiCard
-          icon="ti-brand-openai" iconColor={YELLOW} iconBg="rgba(249,171,0,0.10)"
-          label="AI API Costs"
-          value="$0"
-          sub="OpenAI / Claude — חודש זה"
-          trend="במסגרת תקציב" trendUp
-        />
-        <KpiCard
-          icon="ti-flame" iconColor={RED} iconBg="rgba(217,48,37,0.08)"
-          label="Token Burn Rate"
-          value={`${stats.imageCount * 50 + stats.postCount * 10}`}
-          sub={`${stats.postCount} פוסטים · ${stats.imageCount} תמונות`}
-          trend="ממוצע 84 טוקן/משתמש" trendUp={false}
-        />
+        {statsLoading ? (
+          <>
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+            <KpiSkeleton />
+          </>
+        ) : (
+          <>
+            <KpiCard
+              icon="ti-currency-shekel" iconColor={GREEN} iconBg="rgba(15,158,96,0.10)"
+              label="MRR — הכנסה חודשית"
+              value={`₪${mrr.toLocaleString()}`}
+              sub={`₪${totalRevenue.toLocaleString()} הכנסות כולל`}
+              trend="+12% לעומת החודש שעבר" trendUp
+            />
+            <KpiCard
+              icon="ti-users-group" iconColor={ACCENT} iconBg="rgba(26,115,232,0.10)"
+              label="Active Users"
+              value={totalUsers}
+              sub={`DAU: ${dau} · משלמים: ${payingUsers}`}
+              trend={`${conversionPct}% conversion`}
+              trendUp={payingUsers > 0}
+            />
+            <KpiCard
+              icon="ti-brand-openai" iconColor={YELLOW} iconBg="rgba(249,171,0,0.10)"
+              label="AI API Costs"
+              value="$0"
+              sub="OpenAI / Claude — חודש זה"
+              trend="במסגרת תקציב" trendUp
+            />
+            <KpiCard
+              icon="ti-flame" iconColor={RED} iconBg="rgba(217,48,37,0.08)"
+              label="Token Burn Rate"
+              value={`${imageCount * 50 + postCount * 10}`}
+              sub={`${postCount} פוסטים · ${imageCount} תמונות`}
+              trend="ממוצע 84 טוקן/משתמש" trendUp={false}
+            />
+          </>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════════
@@ -533,9 +599,9 @@ export default function GodModeDashboard({ users: initial, stats }: Props) {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
             {[
-              { label: 'Total Requests', val: '4,281', color: ACCENT },
-              { label: 'Avg Latency',    val: '1.45s', color: GREEN  },
-              { label: 'Error Rate',     val: '0.3%',  color: YELLOW },
+              { label: 'Total Requests', val: postCount.toLocaleString(), color: ACCENT },
+              { label: 'Avg Latency',    val: '1.45s',                    color: GREEN  },
+              { label: 'Error Rate',     val: '0.3%',                     color: YELLOW },
             ].map(m => (
               <div key={m.label} style={{ padding: '10px 12px', borderRadius: 10,
                 background: '#F8FAFD', border: `1px solid ${BORDER}` }}>

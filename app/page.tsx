@@ -72,14 +72,39 @@ function NCard({ children, style, delay = 0 }: {
 /* ─── Bait Section ─── */
 function BaitSection() {
   const [input, setInput] = useState('')
-  const [stage, setStage] = useState<'idle'|'loading'|'done'>('idle')
+  const [stage, setStage] = useState<'idle'|'loading'|'done'|'error'>('idle')
+  const [generatedPost, setGeneratedPost] = useState('')
+  const [errorMsg, setErrorMsg] = useState('')
 
   async function handleBait() {
     if (!input.trim()) return
     setStage('loading')
-    await new Promise(r => setTimeout(r, 1800))
-    setStage('done')
+    setGeneratedPost('')
+    setErrorMsg('')
+    try {
+      const res = await fetch('/api/demo-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pain_point: input.trim() }),
+      })
+      const data = await res.json() as { post?: string; error?: string }
+      if (!res.ok) {
+        setErrorMsg(data.error ?? 'שגיאה בלתי צפויה')
+        setStage('error')
+        return
+      }
+      setGeneratedPost(data.post ?? '')
+      setStage('done')
+    } catch {
+      setErrorMsg('שגיאת רשת — נסה שוב')
+      setStage('error')
+    }
   }
+
+  /* split generated post: first sentence visible, rest blurred */
+  const firstSentenceEnd = generatedPost.search(/(?<=[.!?])\s/)
+  const visibleText = firstSentenceEnd > 0 ? generatedPost.slice(0, firstSentenceEnd + 1) : generatedPost.slice(0, 80)
+  const blurredText = firstSentenceEnd > 0 ? generatedPost.slice(firstSentenceEnd + 1) : generatedPost.slice(80)
 
   return (
     <section id="bait" style={{ padding: '20px 40px 80px', maxWidth: 860, margin: '0 auto' }}>
@@ -128,49 +153,54 @@ function BaitSection() {
               ? <><span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" /></>
               : 'תפוצצו לי את הפיד 🚀'}
           </button>
+          {stage === 'error' && (
+            <p style={{ fontSize: 13, color: '#F87171', margin: 0 }}>{errorMsg}</p>
+          )}
         </div>
 
-        {stage === 'done' && (
+        {stage === 'done' && generatedPost && (
           <div style={{ textAlign: 'right', position: 'relative' }}>
             <div style={{ ...glass({ padding: '24px 28px', borderRadius: 16 }) }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 10 }}>
                 ✨ פוסט שנוצר ע&quot;י AI
               </div>
+
+              {/* visible first sentence */}
               <p className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 12, lineHeight: 1.5 }}>
-                {input.length > 0
-                  ? `רוב הלקוחות שלנו מגיעים אלינו אחרי שניסו הכל ולא הצליחו להתמודד עם ${input.substring(0, 40)}...`
-                  : 'הלקוחות שלכם כבר מחפשים פתרון — השאלה היא אם הם ימצאו אתכם ראשונים.'}
+                {visibleText}
               </p>
 
               {/* blurred body with reg-wall */}
-              <div style={{ position: 'relative' }}>
-                <p style={{
-                  fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.8,
-                  filter: 'blur(5px)', userSelect: 'none', margin: 0,
-                }}>
-                  ולכן החלטנו לעשות משהו שונה לגמרי. במקום להמתין שהדברים ישתנו, לקחנו את העניינים לידיים. כי מי שמחכה למחר מפסיד את היום. ההזדמנות שלכם לשנות את המשחק היא ממש כאן, ממש עכשיו. אל תתנו לה לעבור. #מותג #תוכן #עסקים #ישראל #סושיאל
-                </p>
-                <div style={{
-                  position: 'absolute', inset: 0,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <div style={{
-                    background: 'rgba(13,8,41,0.88)', backdropFilter: 'blur(6px)',
-                    borderRadius: 16, padding: '20px 28px', textAlign: 'center',
-                    border: '1px solid rgba(190,86,255,0.4)',
-                    boxShadow: '0 0 40px rgba(152,80,255,0.25)',
+              {blurredText && (
+                <div style={{ position: 'relative' }}>
+                  <p style={{
+                    fontSize: 14, color: 'rgba(255,255,255,0.8)', lineHeight: 1.8,
+                    filter: 'blur(5px)', userSelect: 'none', margin: 0,
                   }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: '0 0 14px', lineHeight: 1.6 }}>
-                      הפוסט הזה מוכן להביא לכם לידים.<br />
-                      <span style={{ color: PURPLE2 }}>קליק אחד, הרשמה חינמית, והוא שלכם.</span>
-                    </p>
-                    <a href="/login?mode=register" style={btn({ fontSize: 13, padding: '10px 24px' })}>
-                      <i className="ti ti-sparkles" style={{ fontSize: 14 }} />
-                      קחו את הפוסט בחינם
-                    </a>
+                    {blurredText}
+                  </p>
+                  <div style={{
+                    position: 'absolute', inset: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}>
+                    <div style={{
+                      background: 'rgba(13,8,41,0.88)', backdropFilter: 'blur(6px)',
+                      borderRadius: 16, padding: '20px 28px', textAlign: 'center',
+                      border: '1px solid rgba(190,86,255,0.4)',
+                      boxShadow: '0 0 40px rgba(152,80,255,0.25)',
+                    }}>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: '0 0 14px', lineHeight: 1.6 }}>
+                        הפוסט הזה מוכן להביא לכם לידים.<br />
+                        <span style={{ color: PURPLE2 }}>קליק אחד, הרשמה חינמית, והוא שלכם.</span>
+                      </p>
+                      <a href="/login?mode=register" style={btn({ fontSize: 13, padding: '10px 24px' })}>
+                        <i className="ti ti-sparkles" style={{ fontSize: 14 }} />
+                        קחו את הפוסט בחינם
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -211,7 +241,7 @@ function PricingSection() {
 
   return (
     <section id="pricing" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-      <div className=""style={{ textAlign: 'center', marginBottom: 40 }}>
+      <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
         <div style={{
           display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
           background: 'rgba(152,80,255,0.15)', color: PURPLE2,
@@ -252,7 +282,7 @@ function PricingSection() {
         </div>
       </div>
 
-      <div className=""style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
+      <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
         {plans.map((plan, i) => (
           <NCard key={plan.name} delay={i * 0.1} style={{
             padding: '36px 30px', display: 'flex', flexDirection: 'column', position: 'relative',
@@ -311,7 +341,7 @@ function PricingSection() {
         ))}
       </div>
 
-      <p className=""style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
+      <p className="reveal" style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
         מחירים לא כוללים מע&quot;מ · ביטול בכל עת · טוקן = יחידת AI אחת (~200–400 טוקנים לפוסט)
       </p>
     </section>
@@ -336,7 +366,17 @@ function HomeInner() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
-  // scroll-reveal removed
+  useEffect(() => {
+    const els = document.querySelectorAll('.reveal')
+    const io = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target) }
+      }),
+      { threshold: 0.06 }
+    )
+    els.forEach(el => io.observe(el))
+    return () => io.disconnect()
+  }, [])
 
   if (needsOnboarding && oauthUid) {
     return (
@@ -428,7 +468,7 @@ function HomeInner() {
             </h1>
 
             <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, margin: '0 0 40px', maxWidth: 580 }}>
-              הכירו את SociMe — מנהל הסושיאל החכם שלכם. כותב פוסטים בעברית, מייצר תמונות AI, מתזמן לפייסבוק, אינסטגרם ולינקדאין — ומנהל את הקהילה שלכם. הכל אוטומטי, כדי שתחזרו לנהל את העסק.
+              הכירו את SociMe — מנהלת הסושיאל הדיגיטלית שלכם. היא חוקרת, כותבת ומתזמנת תוכן ויראלי שעובד על אוטומט, כדי שאתם תוכלו לחזור לנהל את העסק.
             </p>
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 36 }}>
@@ -444,7 +484,7 @@ function HomeInner() {
             </div>
 
             <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
-              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת','פייסבוק + אינסטגרם + לינקדאין'].map(t => (
+              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת'].map(t => (
                 <span key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontWeight: 900, color: '#A3E635' }}>✓</span>{t}
                 </span>
@@ -480,93 +520,63 @@ function HomeInner() {
 
       {/* ══ FEATURES ══ */}
       <section id="features" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
             background: 'rgba(152,80,255,0.15)', color: PURPLE2,
             fontSize: 11, fontWeight: 700, border: '1px solid rgba(190,86,255,0.3)', marginBottom: 16,
-          }}>הכלים שלנו</div>
+          }}>איך זה עובד</div>
           <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            6 כלים שמחליפים צוות שלם.
+            שלושה צעדים. תוצאה אחת.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.38)', margin: 0 }}>כל מה שצריך כדי לנהל סושיאל כמו תאגיד — בלי להיות תאגיד</p>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.38)', margin: 0 }}>כלים שנבנו לתוצאות, לא לרשמים</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
           {[
             {
-              icon: 'ti-sparkles', color: PURPLE2,
-              title: 'סטודיו יצירה עם AI',
-              desc: 'כתבו פרומפט, קבלו פוסט מלוטש בעברית אותנטית עם האשטאגים, קריאה לפעולה ותמונה מותאמת AI — הכל בלחיצה אחת.',
-              tag: 'Gemini 2.5 Flash',
+              num: '01', icon: 'ti-brain', color: PURPLE2,
+              title: 'מוח של קופירייטר שעובד 24/7',
+              desc: 'AI שכותב תוכן בעברית אותנטית, בסגנון הייחודי שלכם, עם הבנה של הקהל והכאבים של הלקוחות שלכם — בלי עייפות, בלי ימי חולה.',
+              outcome: 'תוכן שממיר, לא רק ממלא פיד',
             },
             {
-              icon: 'ti-calendar-event', color: BLUE,
-              title: 'לוח תזמון חכם',
-              desc: 'תזמנו פוסטים לפייסבוק, אינסטגרם ולינקדאין מתי שתרצו. SociMe תפרסם אוטומטית, תנסה שוב אם נכשל, ותשלח לכם אישור.',
-              tag: 'פרסום אוטומטי',
+              num: '02', icon: 'ti-send', color: BLUE,
+              title: 'שגרו ושכחו',
+              desc: 'אשרו פוסטים מראש ו-SociMe תפרסם בזמנים הכי אפקטיביים לפלטפורמה. פייסבוק, אינסטגרם — הכל אוטומטי, הכל במועד.',
+              outcome: 'שעות חזרה לידיים שלכם',
             },
             {
-              icon: 'ti-clock-bolt', color: '#10D4A8',
-              title: 'תזמון חכם מבוסס AI',
-              desc: 'האלגוריתם מנתח מתי הקהל שלכם הכי פעיל ומציע את השעות שיניבו הכי הרבה חשיפה — לכל פלטפורמה בנפרד.',
-              tag: 'המלצות AI',
+              num: '03', icon: 'ti-chart-line', color: '#10D4A8',
+              title: 'תפסיקו לנחש — קבלו מספרים ירוקים',
+              desc: 'דאשבורד ברור שמראה מה עובד, מה פחות, ומה לשנות. קבלו החלטות מבוססות נתונים, לא תחושות בטן.',
+              outcome: 'ROI שאפשר למדוד ולהראות',
             },
-            {
-              icon: 'ti-files', color: '#F59E0B',
-              title: 'העלאה מרוכזת',
-              desc: 'יש תוכן מוכן? העלו עשרות פוסטים בבת אחת מקובץ. SociMe תתזמן, תפרסם ותעדכן — בלי לגעת בכל פוסט בנפרד.',
-              tag: 'Bulk Upload',
-            },
-            {
-              icon: 'ti-message-2-heart', color: '#EC4899',
-              title: 'ניהול קהילה',
-              desc: 'כל התגובות, ההודעות והאינטראקציות מכל הרשתות — במקום אחד. ענו, תייגו ועקבו בלי לעבור בין אפליקציות.',
-              tag: 'Community Inbox',
-            },
-            {
-              icon: 'ti-bulb', color: '#34D399',
-              title: 'בנק רעיונות',
-              desc: 'AI שמייצר עבורכם עשרות רעיונות לתוכן לפי נישה, קהל יעד ועונת השנה — שמרו, ערכו, ותמיד תהיה לכם השראה.',
-              tag: 'Content Ideas',
-            },
-          ].map((feat, i) => (
-            <NCard key={i} delay={i * 0.08} style={{ padding: '32px 28px' }}>
-              <div style={{ width: 48, height: 48, borderRadius: 14, background: `${feat.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-                <i className={`ti ${feat.icon}`} style={{ fontSize: 22, color: feat.color }} />
+          ].map((step, i) => (
+            <NCard key={i} delay={i * 0.12} style={{ padding: '36px 30px' }}>
+              <div className="font-arimo" style={{ fontSize: 64, fontWeight: 900, letterSpacing: '-4px', lineHeight: 1, color: 'rgba(255,255,255,0.05)', marginBottom: 20 }}>
+                {step.num}
               </div>
-              <div className="font-arimo" style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.3 }}>{feat.title}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.52)', lineHeight: 1.75, marginBottom: 16 }}>{feat.desc}</div>
+              <div style={{ width: 50, height: 50, borderRadius: 16, background: `${step.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
+                <i className={`ti ${step.icon}`} style={{ fontSize: 24, color: step.color }} />
+              </div>
+              <div className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 12, lineHeight: 1.3 }}>{step.title}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.52)', lineHeight: 1.75, marginBottom: 18 }}>{step.desc}</div>
               <div style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '4px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700,
-                background: `${feat.color}15`, color: feat.color, border: `1px solid ${feat.color}30`,
+                padding: '5px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700,
+                background: `${step.color}15`, color: step.color, border: `1px solid ${step.color}30`,
               }}>
-                {feat.tag}
+                <i className="ti ti-arrow-up-right" style={{ fontSize: 11 }} />{step.outcome}
               </div>
             </NCard>
-          ))}
-        </div>
-
-        {/* Platform strip */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 32, marginTop: 48, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.25)', letterSpacing: '2px', textTransform: 'uppercase' }}>עובד עם</span>
-          {[
-            { icon: 'ti-brand-facebook', label: 'Facebook', color: '#1877F2' },
-            { icon: 'ti-brand-instagram', label: 'Instagram', color: '#E1306C' },
-            { icon: 'ti-brand-linkedin', label: 'LinkedIn', color: '#0A66C2' },
-          ].map(p => (
-            <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, fontWeight: 600, color: 'rgba(255,255,255,0.45)' }}>
-              <i className={`ti ${p.icon}`} style={{ fontSize: 18, color: p.color }} />
-              {p.label}
-            </div>
           ))}
         </div>
       </section>
 
       {/* ══ ABOUT ══ */}
       <section id="about" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div className=""style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
+        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
           <NCard style={{ padding: '52px 52px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>EDRI GROUP</div>
             <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,2.8vw,2.1rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 20px', lineHeight: 1.25 }}>

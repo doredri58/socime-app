@@ -57,15 +57,6 @@ type SubtitlePreset = typeof SUBTITLE_PRESETS[number]['id']
 /* Background music options */
 const MUSIC_STYLES = ['אנרגטי 🔥', 'השראה ✨', 'דרמטי 🎭', 'רגוע 🌊', 'קורפורייט 💼', 'ללא מוזיקה']
 
-/* Rotating demo captions */
-const DEMO_CAPTIONS = [
-  { bold: 'טיפ', rest: ' אחד שישנה את העסק שלך' },
-  { bold: 'כך', rest: ' הכפלנו את המכירות' },
-  { bold: '3 שניות', rest: ' לתשומת לב הלקוח' },
-  { bold: 'סוד', rest: ' שהמתחרים לא יגידו לך' },
-  { bold: 'תוצאות', rest: ' בתוך שבוע אחד בלבד' },
-]
-
 /* Smart cut positions on the video track (percent of width) */
 const SMART_CUTS = [18, 36, 54, 72]
 
@@ -249,10 +240,10 @@ function MiniTimeline({ smartTrim, subtitles, audio }: { smartTrim: boolean; sub
 }
 
 /* Subtitle preview card */
-function SubtitleCard({ preset, selected, onSelect, caption }: {
+function SubtitleCard({ preset, selected, onSelect, previewLabel }: {
   preset: typeof SUBTITLE_PRESETS[number]
   selected: boolean; onSelect: () => void
-  caption: { bold: string; rest: string }
+  previewLabel: string
 }) {
   const p = preset.preview
   return (
@@ -275,9 +266,8 @@ function SubtitleCard({ preset, selected, onSelect, caption }: {
         <div style={{ fontSize: 9, lineHeight: 1.3, textAlign: 'center' }}>
           <span style={{ color: p.mainColor, fontWeight: p.weight,
             textShadow: p.shadow ? `0 0 8px ${p.mainColor}` : 'none' }}>
-            {caption.bold}
+            {previewLabel}
           </span>
-          <span style={{ color: p.accentColor, fontWeight: 600 }}>{caption.rest}</span>
         </div>
       </div>
       <i className={`ti ${preset.icon}`} style={{ fontSize: 13, color: selected ? PURPLE2 : 'rgba(255,255,255,0.3)', display: 'block', marginBottom: 3 }} />
@@ -330,11 +320,20 @@ function DropZone({ onFile }: { onFile: (f: File) => void }) {
           <i className="ti ti-video-plus" style={{ fontSize: 38, color: drag ? PURPLE2 : 'rgba(255,255,255,0.3)' }} />
         </div>
         {/* sparkle dots */}
-        {[['-top-2', '-right-2', PURPLE2], ['-bottom-1', '-left-3', BLUE], ['top-8', '-right-5', YELLOW]].map(([t, r, c], i) => (
-          <div key={i} style={{ position: 'absolute', top: i === 0 ? -6 : i === 1 ? 'auto' : 28,
-            bottom: i === 1 ? -4 : 'auto', right: i === 0 ? -6 : i === 2 ? -16 : 'auto', left: i === 1 ? -8 : 'auto',
-            width: 8, height: 8, borderRadius: '50%', background: c as string,
-            boxShadow: `0 0 8px ${c}`, animation: `pulse ${1.2 + i * 0.3}s infinite` }} />
+        {[
+          { top: -6, right: -6, color: PURPLE2 },
+          { bottom: -4, left: -8, color: BLUE },
+          { top: 28, right: -16, color: YELLOW },
+        ].map(({ top, right, bottom, left, color }, i) => (
+          <div key={i} style={{
+            position: 'absolute',
+            ...(top !== undefined ? { top } : {}),
+            ...(bottom !== undefined ? { bottom } : {}),
+            ...(right !== undefined ? { right } : {}),
+            ...(left !== undefined ? { left } : {}),
+            width: 8, height: 8, borderRadius: '50%', background: color,
+            boxShadow: `0 0 8px ${color}`, animation: `pulse ${1.2 + i * 0.3}s infinite`,
+          }} />
         ))}
       </div>
 
@@ -373,136 +372,174 @@ function DropZone({ onFile }: { onFile: (f: File) => void }) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════
-   VIDEO PLAYER (simulated)
+   VIDEO PLAYER — real <video> element with blob URL
 ══════════════════════════════════════════════════════════════════════ */
-function VideoPlayer({ file, subtitles, subtitlePreset, playing, onPlayPause, progress }: {
-  file: File | null; subtitles: boolean; subtitlePreset: SubtitlePreset
-  playing: boolean; onPlayPause: () => void; progress: number
+function VideoPlayer({ file, subtitles, subtitlePreset, onPlayPause }: {
+  file: File; subtitles: boolean; subtitlePreset: SubtitlePreset
+  onPlayPause: () => void
 }) {
-  const [captionIdx, setCaptionIdx] = useState(0)
-  const [showCaption, setShowCaption] = useState(true)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [blobUrl, setBlobUrl] = useState<string | null>(null)
+  const [playing, setPlaying] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
   const preset = SUBTITLE_PRESETS.find(p => p.id === subtitlePreset)!
-  const caption = DEMO_CAPTIONS[captionIdx]
 
-  /* rotate captions every 2s while playing */
+  /* create blob URL and clean up on unmount or file change */
   useEffect(() => {
-    if (!playing || !subtitles) return
-    const t = setInterval(() => {
-      setShowCaption(false)
-      setTimeout(() => { setCaptionIdx(p => (p + 1) % DEMO_CAPTIONS.length); setShowCaption(true) }, 200)
-    }, 2000)
-    return () => clearInterval(t)
-  }, [playing, subtitles])
+    const url = URL.createObjectURL(file)
+    setBlobUrl(url)
+    setProgress(0)
+    setPlaying(false)
+    return () => {
+      URL.revokeObjectURL(url)
+    }
+  }, [file])
 
-  const videoBg = file
-    ? 'linear-gradient(135deg, #1a0a3a 0%, #0a1642 100%)'
-    : 'linear-gradient(135deg, #120828 0%, #0A0A1A 100%)'
+  function handlePlayPause() {
+    const vid = videoRef.current
+    if (!vid) return
+    if (vid.paused) {
+      void vid.play()
+      setPlaying(true)
+    } else {
+      vid.pause()
+      setPlaying(false)
+    }
+    onPlayPause()
+  }
+
+  function handleTimeUpdate() {
+    const vid = videoRef.current
+    if (!vid || !vid.duration) return
+    setProgress((vid.currentTime / vid.duration) * 100)
+  }
+
+  function handleLoadedMetadata() {
+    if (videoRef.current) setDuration(videoRef.current.duration)
+  }
+
+  function handleEnded() {
+    setPlaying(false)
+    setProgress(0)
+  }
+
+  function seekTo(e: React.MouseEvent<HTMLDivElement>) {
+    const vid = videoRef.current
+    if (!vid || !vid.duration) return
+    const rect = e.currentTarget.getBoundingClientRect()
+    const ratio = (e.clientX - rect.left) / rect.width
+    vid.currentTime = ratio * vid.duration
+  }
+
+  const currentSec = duration > 0 ? Math.floor((progress / 100) * duration) : 0
+  const durMin = Math.floor(duration / 60)
+  const durSec = Math.floor(duration % 60)
+  const curMin = Math.floor(currentSec / 60)
+  const curSec = currentSec % 60
+  const timeStr = `${curMin}:${String(curSec).padStart(2, '0')} / ${durMin}:${String(durSec).padStart(2, '0')}`
 
   return (
-    <div style={{ position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 16, overflow: 'hidden',
-      background: videoBg, boxShadow: '0 0 0 1px rgba(255,255,255,0.07), 0 20px 60px rgba(0,0,0,0.5)',
-      cursor: 'pointer' }}
-      onClick={onPlayPause}>
+    <div style={{ position: 'relative', width: '100%', borderRadius: 16, overflow: 'hidden',
+      boxShadow: '0 0 0 1px rgba(255,255,255,0.07), 0 20px 60px rgba(0,0,0,0.5)',
+      background: '#000', cursor: 'pointer' }}
+      onClick={handlePlayPause}>
 
-      {/* simulated video content */}
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {file ? (
-          /* video loaded state — show gradient film-grain effect */
-          <div style={{ position: 'absolute', inset: 0, opacity: 0.08,
-            backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-            backgroundSize: 'cover' }} />
-        ) : (
-          <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.15)' }}>
-            <i className="ti ti-video-off" style={{ fontSize: 40 }} />
-          </div>
-        )}
-        {/* play overlay */}
-        {!playing && file && (
-          <div style={{ width: 56, height: 56, borderRadius: '50%', zIndex: 10,
+      {blobUrl && (
+        <video
+          ref={videoRef}
+          src={blobUrl}
+          style={{ width: '100%', display: 'block', borderRadius: 16 }}
+          onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
+          onEnded={handleEnded}
+          playsInline
+        />
+      )}
+
+      {/* subtitle overlay */}
+      {subtitles && playing && (
+        <div style={{
+          position: 'absolute', bottom: '15%', left: '50%', transform: 'translateX(-50%)',
+          zIndex: 20, textAlign: 'center',
+          padding: '6px 14px', borderRadius: 8,
+          background: preset.preview.bg, backdropFilter: 'blur(4px)',
+          maxWidth: '80%',
+        }}>
+          <span style={{ fontSize: 16, fontWeight: preset.preview.weight,
+            color: preset.preview.mainColor,
+            textShadow: preset.preview.shadow ? `0 0 12px ${preset.preview.mainColor}` : 'none' }}>
+            כתוביות AI
+          </span>
+        </div>
+      )}
+
+      {/* top bar: file name + status */}
+      <div style={{ position: 'absolute', top: 10, right: 10, left: 10, display: 'flex', justifyContent: 'space-between', zIndex: 20 }}>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', background: 'rgba(0,0,0,0.5)',
+          padding: '3px 8px', borderRadius: 6, backdropFilter: 'blur(8px)',
+          maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {file.name}
+        </div>
+        <div style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: 'rgba(0,0,0,0.5)',
+          padding: '3px 8px', borderRadius: 6, backdropFilter: 'blur(8px)',
+          display: 'flex', alignItems: 'center', gap: 4 }}>
+          <div style={{ width: 5, height: 5, borderRadius: '50%', background: playing ? RED : 'rgba(255,255,255,0.3)',
+            boxShadow: playing ? `0 0 5px ${RED}` : 'none', animation: playing ? 'pulse 1s infinite' : 'none' }} />
+          {playing ? 'LIVE' : 'PAUSED'}
+        </div>
+      </div>
+
+      {/* play overlay when paused */}
+      {!playing && (
+        <div style={{
+          position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10,
+          pointerEvents: 'none',
+        }}>
+          <div style={{ width: 56, height: 56, borderRadius: '50%',
             background: 'rgba(255,255,255,0.14)', backdropFilter: 'blur(8px)',
             border: '1.5px solid rgba(255,255,255,0.2)',
             display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <i className="ti ti-player-play-filled" style={{ fontSize: 22, color: '#fff', marginRight: -2 }} />
           </div>
-        )}
-      </div>
-
-      {/* subtitle overlay */}
-      {subtitles && file && (
-        <div style={{ position: 'absolute', bottom: '15%', left: '50%', transform: 'translateX(-50%)',
-          zIndex: 20, textAlign: 'center', transition: 'opacity 0.2s', opacity: showCaption ? 1 : 0,
-          padding: '6px 14px', borderRadius: 8,
-          background: preset.preview.bg, backdropFilter: 'blur(4px)',
-          maxWidth: '80%', whiteSpace: 'nowrap',
-        }}>
-          <span style={{ fontSize: 16, fontWeight: preset.preview.weight,
-            color: preset.preview.mainColor,
-            textShadow: preset.preview.shadow ? `0 0 12px ${preset.preview.mainColor}` : 'none' }}>
-            {caption.bold}
-          </span>
-          <span style={{ fontSize: 15, fontWeight: 600, color: preset.preview.accentColor }}>
-            {caption.rest}
-          </span>
         </div>
       )}
 
-      {/* smart trim red flash indicator */}
-      {playing && (
-        <div style={{ position: 'absolute', inset: 0, border: '2px solid transparent',
-          borderColor: progress > 17 && progress < 20 ? 'rgba(239,68,68,0.6)' : 'transparent',
-          borderRadius: 16, transition: 'border-color 0.1s', pointerEvents: 'none', zIndex: 15 }} />
-      )}
-
-      {/* top bar overlay: file name + platform badge */}
-      {file && (
-        <div style={{ position: 'absolute', top: 10, right: 10, left: 10, display: 'flex', justifyContent: 'space-between', zIndex: 20 }}>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', background: 'rgba(0,0,0,0.5)',
-            padding: '3px 8px', borderRadius: 6, backdropFilter: 'blur(8px)',
-            maxWidth: '60%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {file.name}
-          </div>
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#fff', background: 'rgba(0,0,0,0.5)',
-            padding: '3px 8px', borderRadius: 6, backdropFilter: 'blur(8px)',
-            display: 'flex', alignItems: 'center', gap: 4 }}>
-            <div style={{ width: 5, height: 5, borderRadius: '50%', background: playing ? RED : 'rgba(255,255,255,0.3)',
-              boxShadow: playing ? `0 0 5px ${RED}` : 'none', animation: playing ? 'pulse 1s infinite' : 'none' }} />
-            {playing ? 'LIVE' : 'PAUSED'}
-          </div>
+      {/* bottom controls */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 20,
+        background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '24px 12px 10px' }}>
+        {/* progress bar */}
+        <div
+          style={{ height: 3, background: 'rgba(255,255,255,0.15)', borderRadius: 99, marginBottom: 8, cursor: 'pointer' }}
+          onClick={e => { e.stopPropagation(); seekTo(e) }}
+        >
+          <div style={{ height: '100%', width: `${progress}%`, borderRadius: 99,
+            background: `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})`,
+            boxShadow: `0 0 6px ${PURPLE}` }} />
         </div>
-      )}
-
-      {/* bottom controls bar */}
-      {file && (
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 20,
-          background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', padding: '24px 12px 10px' }}>
-          {/* progress bar */}
-          <div style={{ height: 3, background: 'rgba(255,255,255,0.15)', borderRadius: 99, marginBottom: 8, cursor: 'pointer' }}>
-            <div style={{ height: '100%', width: `${progress}%`, borderRadius: 99,
-              background: `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})`,
-              boxShadow: `0 0 6px ${PURPLE}` }} />
-          </div>
-          {/* control row */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <button onClick={e => { e.stopPropagation(); onPlayPause() }} style={{
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              color: '#fff', display: 'flex', alignItems: 'center' }}>
-              <i className={`ti ${playing ? 'ti-player-pause-filled' : 'ti-player-play-filled'}`}
-                style={{ fontSize: 16 }} />
+        {/* control row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button onClick={e => { e.stopPropagation(); handlePlayPause() }} style={{
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            color: '#fff', display: 'flex', alignItems: 'center' }}>
+            <i className={`ti ${playing ? 'ti-player-pause-filled' : 'ti-player-play-filled'}`}
+              style={{ fontSize: 16 }} />
+          </button>
+          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace' }}>
+            {timeStr}
+          </span>
+          <div style={{ marginRight: 'auto', display: 'flex', gap: 8 }}>
+            <button onClick={e => e.stopPropagation()} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
+              <i className="ti ti-volume" style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }} />
             </button>
-            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)', fontFamily: 'monospace' }}>
-              {Math.floor(progress / 100 * 62)}s / 1:02
-            </span>
-            <div style={{ marginRight: 'auto', display: 'flex', gap: 8 }}>
-              <button onClick={e => e.stopPropagation()} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
-                <i className="ti ti-volume" style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }} />
-              </button>
-              <button onClick={e => e.stopPropagation()} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
-                <i className="ti ti-maximize" style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }} />
-              </button>
-            </div>
+            <button
+              onClick={e => { e.stopPropagation(); videoRef.current?.requestFullscreen?.() }}
+              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
+              <i className="ti ti-maximize" style={{ fontSize: 14, color: 'rgba(255,255,255,0.5)' }} />
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -536,7 +573,6 @@ function ProcessingOverlay({ progress, step }: { progress: number; step: string 
         </div>
         <div style={{ fontSize: 18, fontWeight: 900, color: '#fff', marginBottom: 8 }}>מעבד את הסרטון שלך</div>
         <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 24 }}>{step}</div>
-        {/* step pills */}
         {['ניתוח שתיקות וחיתוך חכם', 'יצירת כתוביות אוטומטיות', 'עיבוד אודיו ומוזיקה', 'רנדור הסרטון הסופי'].map((s, i) => {
           const done = i * 25 < progress
           const active = i * 25 <= progress && progress < (i + 1) * 25
@@ -570,8 +606,6 @@ interface VideoEditorProps { tokenBalance: number }
 
 export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
   const [videoFile, setVideoFile]         = useState<File | null>(null)
-  const [playing, setPlaying]             = useState(false)
-  const [progress, setProgress]           = useState(0)
   const [tokens, setTokens]               = useState(tokenBalance)
 
   /* AI module toggles */
@@ -596,22 +630,13 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
   const [transcribeJobId, setTranscribeJobId] = useState<string | null>(null)
   const [outputUrl, setOutputUrl]             = useState<string | null>(null)
 
-  const playRef = useRef<ReturnType<typeof setInterval> | null>(null)
-
-  /* simulate playback progress */
-  useEffect(() => {
-    if (playing) {
-      playRef.current = setInterval(() => setProgress(p => p >= 99 ? (setPlaying(false), 0) : p + 0.5), 100)
-    } else {
-      if (playRef.current) clearInterval(playRef.current)
-    }
-    return () => { if (playRef.current) clearInterval(playRef.current) }
-  }, [playing])
+  /* playing state — tracked by VideoPlayer internally, lifted here for timeline */
+  const [playing, setPlaying] = useState(false)
 
   function showToast(msg: string, ok: boolean) { setToast({ msg, ok }); setTimeout(() => setToast(null), 4000) }
 
   function handleFile(f: File) {
-    setVideoFile(f); setProgress(0); setPlaying(false); setDone(false)
+    setVideoFile(f); setPlaying(false); setDone(false)
     setCloudinaryPublicId(null); setCloudinaryUrl(null); setOutputUrl(null)
     showToast(`${f.name} נבחר — לחץ עבד וידאו להעלאה`, true)
   }
@@ -678,7 +703,6 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
         const { job_id } = await transcribeRes.json() as { job_id: string }
         setTranscribeJobId(job_id)
 
-        // Poll for completion
         setProcStep('ממתין לתמלול Hebrew...')
         let attempts = 0
         while (attempts < 40) {
@@ -730,6 +754,9 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
       showToast((err instanceof Error ? err.message : 'שגיאה לא ידועה'), false)
     }
   }
+
+  /* suppress unused variable warnings for real upload state */
+  void uploadProgress; void cloudinaryPublicId; void transcribeJobId
 
   const canRender = !!videoFile && tokens >= VIDEO_COST_TOKENS
 
@@ -791,7 +818,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
                 <i className="ti ti-sparkles" style={{ fontSize: 11 }} />{activeCount} כלים פעילים
               </div>
             )}
-            <button onClick={() => { setVideoFile(null); setPlaying(false); setProgress(0); setDone(false) }}
+            <button onClick={() => { setVideoFile(null); setPlaying(false); setDone(false) }}
               style={{ padding: '5px 11px', borderRadius: 9, cursor: 'pointer', fontSize: 11, fontWeight: 700,
                 background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.4)',
                 display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -800,10 +827,12 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
           </div>
         </div>
 
-        {/* video player */}
+        {/* real video player */}
         <VideoPlayer
-          file={videoFile} subtitles={subtitles} subtitlePreset={subtitlePreset}
-          playing={playing} onPlayPause={() => setPlaying(p => !p)} progress={progress}
+          file={videoFile}
+          subtitles={subtitles}
+          subtitlePreset={subtitlePreset}
+          onPlayPause={() => setPlaying(p => !p)}
         />
 
         {/* mini timeline */}
@@ -865,7 +894,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
               <SubtitleCard key={preset.id} preset={preset}
                 selected={subtitlePreset === preset.id}
                 onSelect={() => setSubtitlePreset(preset.id)}
-                caption={DEMO_CAPTIONS[0]}
+                previewLabel={preset.label}
               />
             ))}
           </div>
@@ -912,7 +941,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
               background: 'rgba(59,130,239,0.06)', border: '1px solid rgba(59,130,239,0.15)',
               fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
               <i className="ti ti-microphone" style={{ color: BLUE, marginLeft: 5 }} />
-              טקסט הוידאו ינוקה ויוקרא ע"י קריין AI בעברית
+              טקסט הוידאו ינוקה ויוקרא ע&quot;י קריין AI בעברית
             </div>
           )}
         </Module>
