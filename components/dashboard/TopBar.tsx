@@ -75,23 +75,6 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
       {/* Left: Theme toggle + Notification + Avatar */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
 
-        {/* Theme toggle */}
-        <button
-          onClick={toggle}
-          title={isDark ? 'מעבר למצב בהיר' : 'מעבר למצב כהה'}
-          style={{
-            width: 34, height: 34, borderRadius: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(109,40,217,0.08)',
-            border: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(109,40,217,0.18)'}`,
-            color: isDark ? 'rgba(255,255,255,0.65)' : '#6D28D9',
-            cursor: 'pointer', fontSize: 15,
-            transition: 'all 0.2s',
-          }}
-        >
-          <i className={`ti ${isDark ? 'ti-sun' : 'ti-moon'}`} />
-        </button>
-
         <NotificationBell />
 
         <Link href="/dashboard/profile" style={{ textDecoration: 'none' }}>

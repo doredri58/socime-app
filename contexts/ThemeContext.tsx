@@ -15,9 +15,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<AppTheme>('dark')
 
   useEffect(() => {
-    const saved = (localStorage.getItem('socime-theme') as AppTheme) ?? 'dark'
-    apply(saved)
-    setTheme(saved)
+    // Light mode temporarily disabled — always dark
+    apply('dark')
+    setTheme('dark')
   }, [])
 
   function apply(t: AppTheme) {
