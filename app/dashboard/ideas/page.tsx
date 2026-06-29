@@ -1,21 +1,33 @@
 import { redirect } from 'next/navigation'
-import { createServerSupabaseClient } from '@/lib/supabase'
-import IdeasBank from '@/components/dashboard/IdeasBank'
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
+import AnalyticsDashboard from '@/components/dashboard/AnalyticsDashboard'
 
 export default async function IdeasPage() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/?login=required')
+  const db = createServiceClient()
+
+  // fetch scheduler posts for real analytics
+  const { data: posts } = await db
+    .from('scheduler')
+    .select('id, content_text, platform, status, scheduled_at, created_at, hashtags')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(100)
+
+  const { data: profile } = await db
+    .from('users')
+    .select('name, token_balance, plan')
+    .eq('id', user.id)
+    .single()
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-extrabold mb-1" style={{ color: '#fff', letterSpacing: '-0.5px' }}>
-        בנק רעיונות
-      </h1>
-      <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.45)' }}>
-        AI מגנרל רעיונות — שמור את המוצלחים בסוויפ
-      </p>
-      <IdeasBank />
-    </div>
+    <AnalyticsDashboard
+      posts={posts ?? []}
+      userName={profile?.name ?? ''}
+      plan={profile?.plan ?? 'free'}
+      tokenBalance={profile?.token_balance ?? 0}
+    />
   )
 }

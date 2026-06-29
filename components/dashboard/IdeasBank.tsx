@@ -1,256 +1,577 @@
 'use client'
-import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
+import { useState, useMemo } from 'react'
+import { useRouter } from 'next/navigation'
+import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
-interface Idea { text: string; category: string }
-interface SavedIdea extends Idea { id: string }
+/* ── design tokens ────────────────────────────────────────────────────── */
+const PURPLE  = '#9850FF'
+const PURPLE2 = '#BE56FF'
+const BLUE    = '#3B82EF'
+const GREEN   = '#34D399'
+const YELLOW  = '#FBBF24'
 
-const CAT: Record<string, { label: string; bg: string; color: string; emoji: string }> = {
-  value:     { label: 'תוכן ערך',  bg: '#dbeafe', color: '#1d4ed8', emoji: '📚' },
-  marketing: { label: 'שיווק',     bg: '#dcfce7', color: '#16a34a', emoji: '🚀' },
-  vibe:      { label: 'אווירה',    bg: '#fce7f3', color: '#be185d', emoji: '✨' },
+const GLASS: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.06)',
+  backdropFilter: 'blur(20px)',
+  border: '1px solid rgba(255,255,255,0.10)',
+  borderRadius: 20,
 }
 
-const THRESHOLD = 80
+/* ── types ────────────────────────────────────────────────────────────── */
+type Tab        = 'posts' | 'video'
+type CategoryId = 'all' | 'sales' | 'behind' | 'tips' | 'events' | 'viral'
 
-export default function IdeasBank() {
-  const [ideas, setIdeas]     = useState<Idea[]>([])
-  const [idx, setIdx]         = useState(0)
-  const [loading, setLoading] = useState(false)
-  const [saved, setSaved]     = useState<SavedIdea[]>([])
+interface PostIdea {
+  id: string; title: string; description: string; why: string
+  category: CategoryId; personalized?: boolean; emoji: string
+}
 
-  // drag state
-  const [dragX, setDragX]     = useState(0)
-  const [dragging, setDragging] = useState(false)
-  const [animDir, setAnimDir] = useState<'left' | 'right' | null>(null)
-  const startX = useRef(0)
-  const cardRef = useRef<HTMLDivElement>(null)
+interface VideoIdea {
+  id: string; title: string; concept: string; hook: string
+  direction: string; script: string; category: CategoryId
+  personalized?: boolean; emoji: string
+}
 
-  useEffect(() => {
-    fetch('/api/ideas').then(r => r.json()).then(d => setSaved(d.ideas ?? []))
-  }, [])
+interface Props {
+  userName: string; plan: string; tokenBalance: number
+  businessName: string; businessType: string
+}
 
-  async function loadIdeas() {
-    setLoading(true)
-    setIdx(0)
-    setDragX(0)
-    setAnimDir(null)
-    try {
-      const res = await fetch('/api/ideas/generate', { method: 'POST' })
-      const data = await res.json()
-      setIdeas(data.ideas ?? [])
-    } catch { /* ignore */ }
-    setLoading(false)
+/* ── static idea data ─────────────────────────────────────────────────── */
+const POST_IDEAS: PostIdea[] = [
+  { id: 'p1', personalized: true, emoji: '🎯', category: 'tips',
+    title: 'הסוד שהלקוחות שלנו לא ידעו לבקש',
+    description: 'שתף טיפ פנימי שרק הלקוחות הכי נאמנים שלך מכירים.',
+    why: 'יוצר תחושת אקסקלוסיביות ומגביר נאמנות — קהל מרגיש "מועדפים".' },
+  { id: 'p2', personalized: true, emoji: '📸', category: 'behind',
+    title: 'יום אופייני — מה קורה מאחורי הקלעים?',
+    description: 'תצלום/סרטון קצר של שגרת העבודה האמיתית שלך.',
+    why: 'אנשים קונים מאנשים. אותנטיות מייצרת אמון גבוה פי 3 מפרסום ישיר.' },
+  { id: 'p3', personalized: true, emoji: '🏆', category: 'sales',
+    title: 'Case Study: לקוח אחד, תוצאה אחת מדהימה',
+    description: 'ספר סיפור הצלחה ספציפי עם מספרים אמיתיים.',
+    why: 'Social proof עם נתונים קונקרטיים ממיר פי 4 יותר מהמלצה כללית.' },
+  { id: 'p4', emoji: '💥', category: 'sales',
+    title: '48 שעות בלבד — מבצע ברק',
+    description: 'צור תחושת דחיפות עם מבצע מוגבל בזמן.',
+    why: 'FOMO (fear of missing out) מגביר המרות ב-40% בממוצע.' },
+  { id: 'p5', emoji: '🎁', category: 'sales',
+    title: 'הפתעה לעוקבים הנאמנים ביותר',
+    description: 'הכרז על מתנה/הנחה ייחודית לעוקבים בלבד.',
+    why: 'מתגמל קהל קיים ומעודד שיתוף אורגני בין חברים.' },
+  { id: 'p6', emoji: '❓', category: 'sales',
+    title: '"כמה עולה?" — שאלות נפוצות על המחיר',
+    description: 'ענה בפומבי על השאלה הנפוצה ביותר על התמחור.',
+    why: 'מסיר חסם פסיכולוגי ראשי — שקיפות מחיר מגדילה אמון ופניות.' },
+  { id: 'p7', emoji: '🔧', category: 'behind',
+    title: 'כך נוצר המוצר שלנו — מהרעיון לגמר',
+    description: 'הצג את תהליך היצירה/ייצור בצורה ויזואלית.',
+    why: 'תוכן "מאחורי הקלעים" מקבל 30% יותר מעורבות מפוסטים שיווקיים.' },
+  { id: 'p8', emoji: '🤝', category: 'behind',
+    title: 'הצוות שלנו — הפנים מאחורי המותג',
+    description: 'הצג חבר צוות ואת הסיפור שלו בעסק.',
+    why: 'הומניזציה של מותג מגבירה חיבור רגשי ונאמנות לטווח ארוך.' },
+  { id: 'p9', emoji: '💡', category: 'tips',
+    title: '5 טעויות שכולם עושים (ואיך להימנע)',
+    description: 'רשימת טעויות נפוצות בתחום שלך עם פתרונות.',
+    why: 'תוכן "טעויות" מייצר זדהות ומציב אותך כסמכות מקצועית.' },
+  { id: 'p10', emoji: '📋', category: 'tips',
+    title: "הצ'קליסט שכל לקוח צריך לפני...",
+    description: "תן ערך מיידי עם צ'קליסט שניתן לשמור.",
+    why: 'תוכן שניתן לשמור מקבל שיעור bookmarks גבוה פי 5 מפוסט רגיל.' },
+  { id: 'p11', emoji: '🔥', category: 'tips',
+    title: 'הטיפ שאף אחד לא מדבר עליו',
+    description: 'שתף insight לא שגרתי שרק מומחה בתחום יודע.',
+    why: 'תוכן קאונטר-אינטואיטיבי מגביר שיתופים ב-60%.' },
+  { id: 'p12', emoji: '🎉', category: 'events',
+    title: 'ראש השנה מתקרב — תוכן חגיגי לקהל',
+    description: 'ברכת חג מקצועית בשילוב ערך רלוונטי לעונה.',
+    why: 'פוסטים חגיגיים מייצרים engagement רגשי גבוה ומחזקים קשר אישי.' },
+  { id: 'p13', emoji: '📅', category: 'events',
+    title: 'יום הולדת לעסק — X שנים של...',
+    description: 'חגוג אבן דרך עסקית עם נתונים ותובנות.',
+    why: 'אבני דרך מייצרות authenticity ומעודדות תגובות ברכה.' },
+  { id: 'p14', emoji: '🚀', category: 'viral',
+    title: 'זה הטרנד שמשתלט על הפיד כרגע',
+    description: 'התאם את הטרנד הוויראלי הנוכחי לתחום שלך.',
+    why: 'תוכן שרוכב על טרנד מקבל 10x חשיפה אורגנית תוך 24 שעות.' },
+  { id: 'p15', emoji: '🎯', category: 'viral',
+    title: 'הסאונד הזה שובר את האינסטגרם — הגרסה שלנו',
+    description: 'השתמש ב-trending audio ויצור גרסה עסקית.',
+    why: 'Instagram מקדם תוכן עם trending audio פי 7 יותר.' },
+]
+
+const VIDEO_IDEAS: VideoIdea[] = [
+  { id: 'v1', personalized: true, emoji: '🎬', category: 'tips',
+    title: '3 טעויות נפוצות שעסקים עושים',
+    concept: 'חשיפת 3 טעויות קריטיות שמונעות מעסקים לצמוח',
+    hook: '90% מהעסקים עושים את הטעות הזאת — ואני הייתי אחד מהם.',
+    direction: 'צילום סלפי בהליכה. זום-אין מהיר בכל "טעות". טקסט על המסך עם מספר הטעות.',
+    script: 'טעות ראשונה: לא לדעת מי הלקוח האידיאלי. טעות שנייה: לדבר על מוצרים במקום על תוצאות. טעות שלישית: להמתין לפרפקט לפני שמתחילים.' },
+  { id: 'v2', personalized: true, emoji: '✨', category: 'behind',
+    title: 'יום בחיים שלי',
+    concept: 'Vlog קצר של 24 שעות בחיי העסק',
+    hook: 'רוצה לראות איך נראה יום טיפוסי? הנה האמת ללא פילטרים.',
+    direction: 'מעברים מהירים. מוזיקת רקע אנרגטית. כיתוב של השעה בכל קטע. סגנון "day in my life".',
+    script: 'בוקר 7:00 — בדיקת הודעות. 9:00 — פגישה עם לקוח. 12:00 — עבודה. 18:00 — סיכום יום.' },
+  { id: 'v3', personalized: true, emoji: '💰', category: 'sales',
+    title: 'כמה אני מרוויח? (שקיפות מלאה)',
+    concept: 'חשיפת מספרים אמיתיים — בונה אמון עצום',
+    hook: 'אף אחד לא מדבר על זה — אז אני אדבר. הכנסות אמיתיות, הוצאות אמיתיות.',
+    direction: 'ישיבה מול מצלמה, טון אישי. גרפיקה פשוטה עם המספרים.',
+    script: 'החודש הכנסנו X שקל. ההוצאות היו Y. הרווח הנקי Z. מה שלמדתי: [תובנה מפתיעה].' },
+  { id: 'v4', emoji: '⚡', category: 'tips',
+    title: 'הטריק שחוסך לי 3 שעות ביום',
+    concept: 'productivity hack ספציפי ורלוונטי',
+    hook: 'אם אתה עדיין עושה את זה ידנית, אתה מבזבז את הזמן הכי יקר שלך.',
+    direction: 'Screen recording + קמרה. מעבר מהיר בין לפני לאחרי. דמו חי.',
+    script: 'הבעיה: [תאר כאב הזמן]. הפתרון: [הצג את הכלי]. התוצאה: חסכתי X שעות ביום.' },
+  { id: 'v5', emoji: '🧠', category: 'tips',
+    title: 'מה שלמדתי אחרי 100 לקוחות',
+    concept: 'distilled wisdom — patterns from experience',
+    hook: 'אחרי 100 לקוחות, שמתי לב לדפוס אחד שחוזר על עצמו.',
+    direction: 'Talking head, רקע נקי. B-roll של עבודה. סגנון mentor.',
+    script: 'לקוחות מצליחים עושים 3 דברים שמרביתם לא עושים: [1], [2], [3].' },
+  { id: 'v6', emoji: '🎁', category: 'sales',
+    title: 'מה מקבלים בפועל כשעובדים איתי',
+    concept: 'unboxing-style של החוויה עם העסק שלך',
+    hook: 'לפני שאתה מחליט — הנה בדיוק מה קורה מהרגע הראשון.',
+    direction: 'Walk-through של התהליך. Screen share של תוצרים. Testimonial.',
+    script: 'שלב 1: שיחת היכרות. שלב 2: תוכנית אישית. שלב 3: ביצוע. שלב 4: תוצאות.' },
+  { id: 'v7', emoji: '🎊', category: 'events',
+    title: 'חגגנו X שנים — כך זה התחיל',
+    concept: 'Origin story עם נגיעה של נוסטלגיה',
+    hook: 'לפני X שנים, פתחתי את העסק הזה מהסלון של הבית.',
+    direction: 'תמונות ישנות + חדשות. מעבר זמן ויזואלי. רגשי ואותנטי.',
+    script: 'ההתחלה: [סיפור]. הנקודת שבירה: [ניצחון]. היום: [מצב נוכחי]. לאן: [חזון].' },
+  { id: 'v8', emoji: '🔥', category: 'viral',
+    title: 'POV: הלקוח שלי גילה את...',
+    concept: 'POV format שהולך ויראלי — ממשיקות לחוויית לקוח',
+    hook: 'POV: גיליתם ש[ההבטחה המרכזית של העסק שלך].',
+    direction: 'Aesthetic b-roll. כיתוב מינימליסטי. Trending audio. ידיים ומוצר בלבד.',
+    script: 'ויזואל 1: הבעיה. ויזואל 2: הפתרון. ויזואל 3: התוצאה. Overlay text, ללא דיבור.' },
+]
+
+const CATEGORIES: { id: CategoryId; label: string; icon: string; pro?: boolean }[] = [
+  { id: 'all',    label: 'הכל',              icon: 'ti-layout-grid' },
+  { id: 'sales',  label: 'מכירות ומבצעים',   icon: 'ti-tag' },
+  { id: 'behind', label: 'מאחורי הקלעים',    icon: 'ti-movie' },
+  { id: 'tips',   label: 'טיפים וערך',       icon: 'ti-bulb' },
+  { id: 'events', label: 'אירועים ומועדים',   icon: 'ti-calendar-event' },
+  { id: 'viral',  label: 'טרנדים ויראליים',   icon: 'ti-flame', pro: true },
+]
+
+/* ── reusable bookmark button ─────────────────────────────────────────── */
+function BookmarkBtn({ saved, onToggle }: { saved: boolean; onToggle: () => void }) {
+  return (
+    <button onClick={onToggle} title={saved ? 'הסר שמירה' : 'שמור רעיון'} style={{
+      width: 36, height: 36, borderRadius: 10, flexShrink: 0, cursor: 'pointer',
+      background: saved ? 'rgba(251,191,36,0.12)' : 'rgba(255,255,255,0.06)',
+      border: `1px solid ${saved ? 'rgba(251,191,36,0.3)' : 'rgba(255,255,255,0.10)'}`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+    }}>
+      <i className={`ti ${saved ? 'ti-bookmark-filled' : 'ti-bookmark'}`}
+        style={{ fontSize: 15, color: saved ? YELLOW : 'rgba(255,255,255,0.4)' }} />
+    </button>
+  )
+}
+
+/* ── post idea card ───────────────────────────────────────────────────── */
+function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
+  idea: PostIdea; saved: boolean; onSave: () => void
+  onGenerate: () => void; personalized?: boolean
+}) {
+  return (
+    <div className="neon-card" style={{
+      ...GLASS, padding: '22px', display: 'flex', flexDirection: 'column', gap: 14,
+      position: 'relative', overflow: 'hidden', height: '100%', boxSizing: 'border-box',
+      border: personalized ? '1px solid rgba(152,80,255,0.28)' : '1px solid rgba(255,255,255,0.09)',
+      background: personalized ? 'rgba(152,80,255,0.07)' : 'rgba(255,255,255,0.05)',
+    }}>
+      {personalized && (
+        <div style={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100,
+          borderRadius: '50%', background: 'rgba(152,80,255,0.14)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+      )}
+
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+        <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{idea.emoji}</div>
+        <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.45 }}>{idea.title}</h3>
+      </div>
+
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.58)', margin: 0, lineHeight: 1.7 }}>{idea.description}</p>
+
+      {/* why it works pill */}
+      <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(59,130,239,0.08)',
+        border: '1px solid rgba(59,130,239,0.16)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+        <i className="ti ti-brain" style={{ fontSize: 14, color: BLUE, flexShrink: 0, marginTop: 2 }} />
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.48)', margin: 0, lineHeight: 1.65 }}>
+          <strong style={{ color: 'rgba(59,130,239,0.8)', fontWeight: 700 }}>למה זה עובד: </strong>
+          {idea.why}
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 'auto' }}>
+        <button onClick={onGenerate} style={{
+          flex: 1, padding: '10px 16px', borderRadius: 12, cursor: 'pointer',
+          background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+          border: 'none', color: '#fff', fontSize: 12, fontWeight: 800,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+          boxShadow: '0 4px 16px rgba(152,80,255,0.3)', transition: 'transform 0.15s, box-shadow 0.15s',
+        }}
+        onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = 'translateY(-1px)'; b.style.boxShadow = '0 6px 22px rgba(152,80,255,0.45)' }}
+        onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = ''; b.style.boxShadow = '0 4px 16px rgba(152,80,255,0.3)' }}
+        >
+          <i className="ti ti-sparkles" style={{ fontSize: 13 }} /> צור פוסט מזה
+        </button>
+        <BookmarkBtn saved={saved} onToggle={onSave} />
+      </div>
+    </div>
+  )
+}
+
+/* ── video / storyboard card ──────────────────────────────────────────── */
+function VideoCard({ idea, saved, onSave, onSend, personalized }: {
+  idea: VideoIdea; saved: boolean; onSave: () => void
+  onSend: () => void; personalized?: boolean
+}) {
+  return (
+    <div className="neon-card" style={{
+      ...GLASS, padding: '22px', display: 'flex', flexDirection: 'column',
+      position: 'relative', overflow: 'hidden', height: '100%', boxSizing: 'border-box',
+      border: personalized ? '1px solid rgba(251,191,36,0.22)' : '1px solid rgba(255,255,255,0.09)',
+      background: personalized ? 'rgba(251,191,36,0.04)' : 'rgba(255,255,255,0.04)',
+    }}>
+      {personalized && (
+        <div style={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100,
+          borderRadius: '50%', background: 'rgba(251,191,36,0.08)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+      )}
+
+      {/* card header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: 14 }}>
+        <div style={{ width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+          background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.22)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18 }}>
+          {idea.emoji}
+        </div>
+        <div style={{ flex: 1 }}>
+          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999,
+            background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.22)',
+            color: '#F87171', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 5 }}>
+            <i className="ti ti-video" style={{ fontSize: 10 }} />Reel / TikTok
+          </span>
+          <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.4 }}>{idea.title}</h3>
+          <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', margin: '3px 0 0' }}>{idea.concept}</p>
+        </div>
+      </div>
+
+      <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', marginBottom: 14 }} />
+
+      {/* storyboard — 3 color-coded sections */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 16, flex: 1 }}>
+
+        {/* hook — red */}
+        <div style={{ borderRadius: 14, padding: '12px 14px',
+          background: 'rgba(248,113,113,0.07)', border: '1px solid rgba(248,113,113,0.16)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(248,113,113,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="ti ti-bolt" style={{ fontSize: 11, color: '#F87171' }} />
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#F87171', letterSpacing: '0.06em' }}>
+              הוק • 0–3 שניות
+            </span>
+          </div>
+          <p style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.85)',
+            margin: 0, lineHeight: 1.5, fontStyle: 'italic' }}>
+            "{idea.hook}"
+          </p>
+        </div>
+
+        {/* direction — blue */}
+        <div style={{ borderRadius: 14, padding: '12px 14px',
+          background: 'rgba(59,130,239,0.07)', border: '1px solid rgba(59,130,239,0.14)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(59,130,239,0.18)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="ti ti-camera" style={{ fontSize: 11, color: BLUE }} />
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 800, color: BLUE, letterSpacing: '0.06em' }}>
+              הוראות בימוי וצילום
+            </span>
+          </div>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)',
+            margin: 0, lineHeight: 1.65, fontStyle: 'italic' }}>
+            {idea.direction}
+          </p>
+        </div>
+
+        {/* script — green */}
+        <div style={{ borderRadius: 14, padding: '12px 14px',
+          background: 'rgba(52,211,153,0.06)', border: '1px solid rgba(52,211,153,0.14)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(52,211,153,0.15)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <i className="ti ti-microphone" style={{ fontSize: 11, color: GREEN }} />
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 800, color: GREEN, letterSpacing: '0.06em' }}>
+              תסריט / אודיו
+            </span>
+          </div>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.58)', margin: 0, lineHeight: 1.7 }}>
+            {idea.script}
+          </p>
+        </div>
+      </div>
+
+      {/* actions */}
+      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+        <button onClick={onSend} style={{
+          flex: 1, padding: '10px 16px', borderRadius: 12, cursor: 'pointer',
+          background: 'linear-gradient(135deg, #F87171, #EF4444)',
+          border: 'none', color: '#fff', fontSize: 12, fontWeight: 800,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
+          boxShadow: '0 4px 16px rgba(248,113,113,0.28)', transition: 'transform 0.15s',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)' }}
+        onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}
+        >
+          <i className="ti ti-send" style={{ fontSize: 13 }} /> שלח לסטודיו ליצירה
+        </button>
+        <BookmarkBtn saved={saved} onToggle={onSave} />
+      </div>
+    </div>
+  )
+}
+
+/* ── section header ───────────────────────────────────────────────────── */
+function SectionHeader({ icon, iconBg, iconColor, title, subtitle, count }: {
+  icon: string; iconBg: string; iconColor: string
+  title: string; subtitle?: string; count?: number
+}) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <div style={{ width: 30, height: 30, borderRadius: 9, background: iconBg,
+          border: `1px solid ${iconColor}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <i className={`ti ${icon}`} style={{ fontSize: 14, color: iconColor }} />
+        </div>
+        <div>
+          <h2 style={{ fontSize: 14, fontWeight: 800, color: '#fff', margin: 0 }}>{title}</h2>
+          {subtitle && <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>{subtitle}</p>}
+        </div>
+      </div>
+      {count !== undefined && (
+        <span style={{ fontSize: 11, padding: '2px 10px', borderRadius: 999,
+          background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.3)',
+          border: '1px solid rgba(255,255,255,0.09)' }}>
+          {count}
+        </span>
+      )}
+    </div>
+  )
+}
+
+function EmptyState() {
+  return (
+    <div style={{ textAlign: 'center', padding: '60px 0', color: 'rgba(255,255,255,0.25)' }}>
+      <i className="ti ti-mood-empty" style={{ fontSize: 40, display: 'block', marginBottom: 12 }} />
+      <div style={{ fontSize: 14 }}>אין רעיונות בקטגוריה זו</div>
+    </div>
+  )
+}
+
+/* ── main export ──────────────────────────────────────────────────────── */
+export default function IdeasBank({ userName, plan, businessName }: Props) {
+  const router = useRouter()
+  const isPro  = plan === 'pro' || plan === 'basic'
+
+  const [tab,         setTab]         = useState<Tab>('posts')
+  const [category,    setCategory]    = useState<CategoryId>('all')
+  const [savedIds,    setSavedIds]    = useState<Set<string>>(new Set())
+  const [showUpgrade, setShowUpgrade] = useState(false)
+
+  function toggleSave(id: string) {
+    setSavedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
-  // pointer handlers
-  function onPointerDown(e: React.PointerEvent) {
-    if (animDir) return
-    setDragging(true)
-    startX.current = e.clientX
-    cardRef.current?.setPointerCapture(e.pointerId)
-  }
-  function onPointerMove(e: React.PointerEvent) {
-    if (!dragging) return
-    setDragX(e.clientX - startX.current)
-  }
-  async function onPointerUp() {
-    if (!dragging) return
-    setDragging(false)
-    if (dragX > THRESHOLD) swipe('right')
-    else if (dragX < -THRESHOLD) swipe('left')
-    else setDragX(0)
+  function generatePost(idea: PostIdea) {
+    const prompt = encodeURIComponent(`כתוב פוסט על: ${idea.title}\n${idea.description}`)
+    router.push(`/dashboard/create?prompt=${prompt}`)
   }
 
-  async function swipe(dir: 'left' | 'right') {
-    if (!current || animDir) return
-    setAnimDir(dir)
-    if (dir === 'right') {
-      try {
-        const res = await fetch('/api/ideas/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: current.text, category: current.category }),
-        })
-        const data = await res.json()
-        if (data.idea) setSaved(prev => [data.idea, ...prev])
-      } catch { /* ignore */ }
-    }
-    setTimeout(() => {
-      setIdx(i => i + 1)
-      setDragX(0)
-      setAnimDir(null)
-    }, 280)
+  function sendToStudio(idea: VideoIdea) {
+    const prompt = encodeURIComponent(`צור תסריט וידאו:\nכותרת: ${idea.title}\nהוק: ${idea.hook}\nתסריט: ${idea.script}`)
+    router.push(`/dashboard/create?prompt=${prompt}`)
   }
 
-  const current = ideas[idx]
-  const next    = ideas[idx + 1]
+  const postIdeas  = useMemo(() => POST_IDEAS.filter(i => category === 'all' || i.category === category), [category])
+  const videoIdeas = useMemo(() => VIDEO_IDEAS.filter(i => category === 'all' || i.category === category), [category])
 
-  const likeAlpha = Math.max(0, Math.min(1, dragX / THRESHOLD))
-  const skipAlpha = Math.max(0, Math.min(1, -dragX / THRESHOLD))
+  const personalizedPosts  = postIdeas.filter(i => i.personalized)
+  const standardPosts      = postIdeas.filter(i => !i.personalized)
+  const personalizedVideos = videoIdeas.filter(i => i.personalized)
+  const standardVideos     = videoIdeas.filter(i => !i.personalized)
 
-  function frontStyle() {
-    if (animDir === 'right') return { transform: 'translateX(120%) rotate(25deg)', transition: 'transform 0.28s ease' }
-    if (animDir === 'left')  return { transform: 'translateX(-120%) rotate(-25deg)', transition: 'transform 0.28s ease' }
-    return {
-      transform: `translateX(${dragX}px) rotate(${dragX * 0.07}deg)`,
-      transition: dragging ? 'none' : 'transform 0.3s ease',
-      cursor: dragging ? 'grabbing' : 'grab',
-    }
-  }
+  const firstName = userName ? userName.split(' ')[0] : ''
 
   return (
-    <div dir="rtl">
+    <div style={{ direction: 'rtl', paddingBottom: 60 }}>
 
-      {/* Empty state — generate button */}
-      {ideas.length === 0 && (
-        <div className="bg-white rounded-3xl p-12 text-center mb-8"
-          style={{ border: '1px solid var(--purple-border)' }}>
-          <div className="text-5xl mb-4">💡</div>
-          <div className="text-xl font-black mb-2" style={{ color: 'var(--text-dark)' }}>בנק רעיונות</div>
-          <div className="text-sm mb-6" style={{ color: 'var(--text-light)' }}>
-            AI יגנרל ~12 רעיונות לפוסטים בהתאם לעסק שלך.<br />
-            החלק ימינה 💚 לשמור, שמאלה ✕ לדלג
-          </div>
-          <button onClick={loadIdeas} disabled={loading}
-            className="px-8 py-3 rounded-2xl text-white font-bold text-sm"
-            style={{
-              background: loading ? '#c4b5fd' : 'linear-gradient(135deg,var(--purple),var(--purple-deep))',
-              boxShadow: loading ? 'none' : '0 4px 14px rgba(161,70,255,0.3)',
-            }}>
-            {loading ? '⏳ מגנרל רעיונות...' : '✨ גנרל רעיונות'}
+      {/* ── page header ── */}
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 4px', letterSpacing: '-0.5px' }}>
+          בנק רעיונות
+        </h1>
+        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
+          רעיונות מותאמים ל{businessName || 'העסק שלך'} — לחץ ליצירת תוכן מיידי
+        </p>
+      </div>
+
+      {/* ── main tab toggle ── */}
+      <div style={{ display: 'flex', background: 'rgba(255,255,255,0.04)',
+        border: '1px solid rgba(255,255,255,0.09)', borderRadius: 16,
+        padding: 4, gap: 4, marginBottom: 20, width: 'fit-content' }}>
+        {([
+          { id: 'posts' as Tab, label: 'רעיונות לפוסטים',                  icon: 'ti-photo' },
+          { id: 'video' as Tab, label: 'תסריטי וידאו (Reels / TikTok)',    icon: 'ti-video' },
+        ]).map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)} style={{
+            padding: '10px 22px', borderRadius: 13, cursor: 'pointer', fontSize: 13, fontWeight: 700,
+            background: tab === t.id ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'transparent',
+            border: 'none', color: tab === t.id ? '#fff' : 'rgba(255,255,255,0.38)',
+            display: 'flex', alignItems: 'center', gap: 8,
+            boxShadow: tab === t.id ? '0 4px 16px rgba(152,80,255,0.35)' : 'none',
+            transition: 'all 0.2s',
+          }}>
+            <i className={`ti ${t.icon}`} style={{ fontSize: 14 }} />{t.label}
           </button>
-        </div>
-      )}
+        ))}
+      </div>
 
-      {/* Swipe deck */}
-      {ideas.length > 0 && idx < ideas.length && (
-        <>
-          <div className="text-xs font-bold mb-4 text-center" style={{ color: 'var(--text-light)' }}>
-            {idx + 1} / {ideas.length}
-            <span className="mx-3" style={{ opacity: 0.3 }}>|</span>
-            <span style={{ color: '#16a34a' }}>💚 ימינה לשמור</span>
-            <span className="mx-2" style={{ opacity: 0.3 }}>·</span>
-            <span style={{ color: '#dc2626' }}>✕ שמאלה לדלג</span>
-          </div>
-
-          {/* Card stack */}
-          <div className="relative mx-auto mb-6" style={{ height: 300, maxWidth: 420 }}>
-
-            {/* Back card */}
-            {next && (
-              <div className="absolute inset-0 rounded-3xl bg-white"
-                style={{ transform: 'scale(0.95) translateY(10px)', zIndex: 0, opacity: 0.5, border: '1px solid var(--purple-border)' }} />
-            )}
-
-            {/* Front card */}
-            <div
-              ref={cardRef}
-              className="absolute inset-0 rounded-3xl bg-white p-6 flex flex-col select-none"
-              style={{ ...frontStyle(), zIndex: 1, border: '1px solid var(--purple-border)', boxShadow: '0 8px 32px rgba(0,0,0,0.08)' } as React.CSSProperties}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={onPointerUp}
-              onPointerCancel={onPointerUp}
-            >
-              {/* Like overlay */}
-              <div className="absolute inset-0 rounded-3xl flex items-center justify-center pointer-events-none"
-                style={{ background: 'rgba(22,163,74,0.12)', opacity: likeAlpha }}>
-                <span style={{ fontSize: 64, transform: 'rotate(12deg)' }}>💚</span>
-              </div>
-              {/* Skip overlay */}
-              <div className="absolute inset-0 rounded-3xl flex items-center justify-center pointer-events-none"
-                style={{ background: 'rgba(239,68,68,0.1)', opacity: skipAlpha }}>
-                <span style={{ fontSize: 64, transform: 'rotate(-12deg)', color: '#dc2626', fontWeight: 900 }}>✕</span>
-              </div>
-
-              <div className="flex-1 flex flex-col justify-between pointer-events-none">
-                <div>
-                  {current.category && CAT[current.category] && (
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full"
-                      style={{ background: CAT[current.category].bg, color: CAT[current.category].color }}>
-                      {CAT[current.category].emoji} {CAT[current.category].label}
-                    </span>
-                  )}
-                  <p className="mt-4 text-base leading-relaxed font-medium" style={{ color: 'var(--text-dark)' }}>
-                    {current.text}
-                  </p>
-                </div>
-                <p className="text-xs text-center" style={{ color: 'var(--text-light)' }}>
-                  גרור או השתמש בכפתורים למטה
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Buttons */}
-          <div className="flex items-center justify-center gap-6 mb-10">
-            <button onClick={() => swipe('left')} disabled={!!animDir}
-              className="w-14 h-14 rounded-full flex items-center justify-center text-xl font-black shadow-md transition-all hover:scale-110"
-              style={{ background: '#fee2e2', color: '#dc2626', border: '2px solid #fca5a5' }}>✕</button>
-            <button onClick={loadIdeas} disabled={loading || !!animDir}
-              className="px-4 py-2 rounded-full text-xs font-bold"
-              style={{ background: '#FAFAFE', color: 'var(--text-light)', border: '1px solid var(--purple-border)' }}>
-              🔄 חדשים
+      {/* ── category filter chips ── */}
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 28 }}>
+        {CATEGORIES.map(cat => {
+          const active  = category === cat.id
+          const blocked = !!cat.pro && !isPro
+          return (
+            <button key={cat.id}
+              onClick={() => blocked ? setShowUpgrade(true) : setCategory(cat.id)}
+              style={{
+                padding: '7px 16px', borderRadius: 999, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                background: active
+                  ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`
+                  : blocked ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
+                border: active ? 'none'
+                  : blocked ? '1px solid rgba(152,80,255,0.2)' : '1px solid rgba(255,255,255,0.10)',
+                color: active ? '#fff' : blocked ? PURPLE2 : 'rgba(255,255,255,0.55)',
+                display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.18s',
+                boxShadow: active ? '0 3px 12px rgba(152,80,255,0.3)' : 'none',
+              }}>
+              <i className={`ti ${cat.icon}`} style={{ fontSize: 12 }} />
+              {cat.label}
+              {blocked && <i className="ti ti-lock" style={{ fontSize: 10, opacity: 0.7 }} />}
             </button>
-            <button onClick={() => swipe('right')} disabled={!!animDir}
-              className="w-14 h-14 rounded-full flex items-center justify-center text-xl shadow-md transition-all hover:scale-110"
-              style={{ background: '#dcfce7', border: '2px solid #86efac' }}>💚</button>
-          </div>
+          )
+        })}
+      </div>
+
+      {/* ═══════════════ POSTS TAB ═══════════════════════════════════════ */}
+      {tab === 'posts' && (
+        <>
+          {personalizedPosts.length > 0 && (
+            <section style={{ marginBottom: 36 }}>
+              <SectionHeader
+                icon="ti-sparkles" iconBg="rgba(152,80,255,0.15)" iconColor={PURPLE2}
+                title={`הותאם במיוחד בשבילך${firstName ? `, ${firstName}` : ''}`}
+                subtitle="על סמך פרופיל העסק שלך"
+              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+                {personalizedPosts.map(idea => (
+                  <PostCard key={idea.id} idea={idea} personalized
+                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                    onGenerate={() => generatePost(idea)} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {standardPosts.length > 0 && (
+            <section>
+              <SectionHeader
+                icon="ti-layout-grid" iconBg="rgba(255,255,255,0.06)" iconColor="rgba(255,255,255,0.4)"
+                title={category === 'all' ? 'כל הרעיונות' : (CATEGORIES.find(c => c.id === category)?.label ?? '')}
+                count={standardPosts.length}
+              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+                {standardPosts.map(idea => (
+                  <PostCard key={idea.id} idea={idea}
+                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                    onGenerate={() => generatePost(idea)} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {postIdeas.length === 0 && <EmptyState />}
         </>
       )}
 
-      {/* All done */}
-      {ideas.length > 0 && idx >= ideas.length && (
-        <div className="bg-white rounded-3xl p-10 text-center mb-8"
-          style={{ border: '1px solid var(--purple-border)' }}>
-          <div className="text-4xl mb-3">🎉</div>
-          <div className="text-lg font-black mb-1" style={{ color: 'var(--text-dark)' }}>עברת על כל הרעיונות!</div>
-          <div className="text-sm mb-5" style={{ color: 'var(--text-light)' }}>
-            {saved.length} רעיונות נשמרו
-          </div>
-          <button onClick={loadIdeas} disabled={loading}
-            className="px-6 py-2.5 rounded-2xl text-white font-bold text-sm"
-            style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))', boxShadow: '0 4px 14px rgba(161,70,255,0.25)' }}>
-            {loading ? '⏳ מגנרל...' : '✨ גנרל 12 רעיונות חדשים'}
-          </button>
+      {/* ═══════════════ VIDEO TAB ═══════════════════════════════════════ */}
+      {tab === 'video' && (
+        <>
+          {personalizedVideos.length > 0 && (
+            <section style={{ marginBottom: 36 }}>
+              <SectionHeader
+                icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#F87171"
+                title={`תסריטים מותאמים${firstName ? ` לך, ${firstName}` : ''}`}
+                subtitle="כל תסריט מוכן להפקה — פשוט לחץ שלח לסטודיו"
+              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+                {personalizedVideos.map(idea => (
+                  <VideoCard key={idea.id} idea={idea} personalized
+                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                    onSend={() => sendToStudio(idea)} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {standardVideos.length > 0 && (
+            <section>
+              <SectionHeader
+                icon="ti-layout-grid" iconBg="rgba(255,255,255,0.06)" iconColor="rgba(255,255,255,0.4)"
+                title={category === 'all' ? 'כל תסריטי הוידאו' : (CATEGORIES.find(c => c.id === category)?.label ?? '')}
+                count={standardVideos.length}
+              />
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+                {standardVideos.map(idea => (
+                  <VideoCard key={idea.id} idea={idea}
+                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                    onSend={() => sendToStudio(idea)} />
+                ))}
+              </div>
+            </section>
+          )}
+
+          {videoIdeas.length === 0 && <EmptyState />}
+        </>
+      )}
+
+      {/* ── saved ideas floating pill ── */}
+      {savedIds.size > 0 && (
+        <div style={{
+          position: 'fixed', bottom: 28, left: '50%', transform: 'translateX(-50%)',
+          display: 'flex', alignItems: 'center', gap: 10, padding: '12px 22px',
+          borderRadius: 999, background: 'rgba(16,9,44,0.94)', backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(251,191,36,0.3)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          zIndex: 50, pointerEvents: 'none',
+        }}>
+          <i className="ti ti-bookmark-filled" style={{ fontSize: 16, color: YELLOW }} />
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{savedIds.size} רעיונות שמורים</span>
         </div>
       )}
 
-      {/* Saved list */}
-      {saved.length > 0 && (
-        <>
-          <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-light)' }}>
-            💾 רעיונות שמורים ({saved.length})
-          </div>
-          <div className="flex flex-col gap-3">
-            {saved.map(idea => (
-              <div key={idea.id} className="bg-white rounded-2xl p-4"
-                style={{ border: '1px solid var(--purple-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.03)' }}>
-                <div className="flex items-start gap-3">
-                  <div className="flex-1">
-                    {idea.category && CAT[idea.category] && (
-                      <span className="text-xs font-bold px-2 py-0.5 rounded-full"
-                        style={{ background: CAT[idea.category].bg, color: CAT[idea.category].color }}>
-                        {CAT[idea.category].emoji} {CAT[idea.category].label}
-                      </span>
-                    )}
-                    <p className="mt-2 text-sm leading-relaxed" style={{ color: 'var(--text-dark)' }}>
-                      {idea.text}
-                    </p>
-                  </div>
-                  <Link
-                    href={`/dashboard/create?idea=${encodeURIComponent(idea.text)}`}
-                    className="flex-shrink-0 px-3 py-1.5 rounded-xl text-xs font-bold text-white whitespace-nowrap"
-                    style={{ background: 'linear-gradient(135deg,var(--purple),var(--purple-deep))' }}>
-                    ✨ צור פוסט
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+      {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} trigger="generic" />}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
+import VideoEditor  from '@/components/dashboard/VideoEditor'
 
 // ─── constants ───────────────────────────────────────────────────────────────
 const PURPLE  = '#9850FF'
@@ -187,7 +188,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [platform, setPlatform]       = useState<Platform>('facebook')
-  const [prompt, setPrompt]           = useState(initialPrompt)
+  const [prompt, setPrompt]           = useState(initialPrompt ?? '')
   const [postText, setPostText]       = useState('')
   const [hashtags, setHashtags]       = useState('')
   const [imageUrl, setImageUrl]       = useState<string | null>(null)
@@ -203,6 +204,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
   const [charCount, setCharCount]     = useState(0)
   const [imgAttempts, setImgAttempts] = useState(2)
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [mode, setMode]               = useState<'post' | 'video'>('post')
 
   const maxChars = platform === 'instagram' ? 2200 : platform === 'linkedin' ? 3000 : 63206
 
@@ -324,11 +326,41 @@ export default function CreateStudio({ userId, businessName, businessDescription
         overflowY: 'auto', minWidth: 0,
       }}>
 
-        {/* Page header + token indicator */}
+        {/* Page header + mode tabs + token indicator */}
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
           <div>
-            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: '0 0 3px' }}>סטודיו יצירה</h1>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>צור תוכן מותאם אישית לעסק שלך</p>
+            <h1 style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: '0 0 10px' }}>סטודיו יצירה</h1>
+            {/* Mode tabs */}
+            <div style={{ display: 'flex', gap: 6 }}>
+              {([
+                { id: 'post',  icon: 'ti-pencil',        label: 'עורך פוסטים' },
+                { id: 'video', icon: 'ti-video',         label: 'עורך וידאו AI',   badge: 'חדש' },
+              ] as const).map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setMode(tab.id)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    padding: '7px 16px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                    cursor: 'pointer', border: 'none', transition: 'all 0.2s', position: 'relative',
+                    background: mode === tab.id
+                      ? `linear-gradient(135deg, ${PURPLE}33, ${PURPLE2}22)`
+                      : 'rgba(255,255,255,0.04)',
+                    color: mode === tab.id ? '#fff' : 'rgba(255,255,255,0.4)',
+                    boxShadow: mode === tab.id ? `0 0 0 1px ${PURPLE}55` : '0 0 0 1px rgba(255,255,255,0.08)',
+                  }}
+                >
+                  <i className={`ti ${tab.icon}`} style={{ fontSize: 13, color: mode === tab.id ? PURPLE2 : 'rgba(255,255,255,0.3)' }} />
+                  {tab.label}
+                  {'badge' in tab && (
+                    <span style={{ fontSize: 8, fontWeight: 900, padding: '1px 5px', borderRadius: 999,
+                      background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff', marginRight: 2 }}>
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 7,
@@ -340,6 +372,16 @@ export default function CreateStudio({ userId, businessName, businessDescription
             <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>טוקנים</span>
           </div>
         </div>
+
+        {/* ── Video Editor Mode ── */}
+        {mode === 'video' && (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+            <VideoEditor tokenBalance={tokens} />
+          </div>
+        )}
+
+        {/* ── Post Editor Mode (hidden when video) ── */}
+        {mode !== 'video' && (<>
 
         {/* ── 1. AI Prompt ── */}
         <div className="neon-card" style={{ ...GLASS, padding: '18px 20px', marginBottom: 14 }}>
@@ -544,12 +586,13 @@ export default function CreateStudio({ userId, businessName, businessDescription
             }
           </button>
         </div>
+        </>)}
       </div>
 
       {/* ═══════════════════════════════════════════════════
-          LEFT COLUMN — Live Preview (sticky)
+          LEFT COLUMN — Live Preview (sticky, hidden in video mode)
       ═══════════════════════════════════════════════════ */}
-      <div style={{
+      {mode !== 'video' && <div style={{
         width: 340, flexShrink: 0,
         padding: '24px 24px 80px',
         overflowY: 'auto', borderRight: '1px solid rgba(255,255,255,0.06)',
@@ -589,7 +632,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
             {platform === 'linkedin' && '💼 לינקדאין: 1,300 תווים ראשונים נראים לפני "ראה עוד". תוכן מקצועי מקבל בוסט.'}
           </div>
         </div>
-      </div>
+      </div>}
 
       {/* ═══════════════════════════════════════════════════
           BOTTOM STICKY ACTION BAR

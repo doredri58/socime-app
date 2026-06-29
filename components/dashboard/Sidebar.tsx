@@ -11,7 +11,9 @@ const WORKSPACE = [
   { href: '/dashboard/create',   label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
   { href: '/dashboard/queue',    label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
   { href: '/dashboard/ideas',    label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
-  { href: '/dashboard/business', label: 'תיק עסק',              icon: 'ti-building-store' },
+  { href: '/dashboard/bank',      label: 'בנק רעיונות',           icon: 'ti-bulb' },
+  { href: '/dashboard/community', label: 'ניהול קהילה',          icon: 'ti-message-2-heart' },
+  { href: '/dashboard/business',  label: 'תיק עסק',              icon: 'ti-building-store' },
 ]
 
 const MANAGEMENT = [

@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
-import ProfileClient from '@/components/dashboard/ProfileClient'
+import BillingDashboard from '@/components/dashboard/BillingDashboard'
 
 export default async function ProfilePage() {
   const supabase = await createServerSupabaseClient()
@@ -8,6 +8,7 @@ export default async function ProfilePage() {
   if (!user) redirect('/login')
 
   const db = createServiceClient()
+
   const { data: profile } = await db
     .from('users')
     .select('id, email, name, role, plan, tier, token_balance, created_at')
@@ -19,17 +20,19 @@ export default async function ProfilePage() {
     .select('amount_paid_ils, tokens_granted, created_at')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(5)
+    .limit(20)
+
+  const { data: business } = await db
+    .from('business_profiles')
+    .select('business_name, company_id, address, phone')
+    .eq('user_id', user.id)
+    .single()
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-extrabold mb-1" style={{ color: '#fff', letterSpacing: '-0.5px' }}>
-        פרופיל וחשבון
-      </h1>
-      <p className="text-sm mb-7" style={{ color: 'rgba(255,255,255,0.45)' }}>
-        ניהול פרטים אישיים, מנוי ומחיקת חשבון
-      </p>
-      <ProfileClient profile={profile} transactions={txns ?? []} />
-    </div>
+    <BillingDashboard
+      profile={profile}
+      transactions={txns ?? []}
+      business={business}
+    />
   )
 }
