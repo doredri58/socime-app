@@ -38,11 +38,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={cn(heebo.variable, arimo.variable, spaceGrotesk.variable)}>
+    <html lang="he" dir="rtl" className={cn(heebo.variable, arimo.variable, spaceGrotesk.variable)} suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
       </head>
-      <body className="min-h-full antialiased" style={{ fontFamily: 'var(--font-heebo), Heebo, sans-serif' }}>
+      <body className="min-h-full antialiased" style={{ fontFamily: 'var(--font-heebo), Heebo, sans-serif' }} suppressHydrationWarning>
         <ThemeProvider>
           <TooltipProvider>
             {children}
