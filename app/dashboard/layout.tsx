@@ -45,7 +45,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <TopBar userName={userName} tokens={tokens} tier={tier} />
         <div style={{ display: 'flex', flex: 1 }}>
           <Sidebar userName={userName} tier={tier} isAdmin={isAdmin} />
-          <main style={{
+          <main id="dash-content" style={{
             flex: 1, minWidth: 0,
             padding: '28px 32px',
             direction: 'rtl',

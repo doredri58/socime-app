@@ -10,6 +10,15 @@
 ═══════════════════════════════════════ */
 
 :root, [data-theme="dark"] {
+  /* ── Text ── */
+  --dash-text:     #ffffff;
+  --dash-text-mid: rgba(255,255,255,0.65);
+  --dash-text-low: rgba(255,255,255,0.38);
+  --dash-card-bg:      rgba(255,255,255,0.05);
+  --dash-card-border:  rgba(152,80,255,0.14);
+  --dash-input-bg:     rgba(255,255,255,0.06);
+  --dash-input-border: rgba(255,255,255,0.12);
+
   --dash-page-bg: linear-gradient(160deg, #0D0829 0%, #160C3D 55%, #0F1654 100%);
   --dash-body-bg: #0D0829;
   --dash-topbar-bg: rgba(13,8,41,0.88);
@@ -30,6 +39,15 @@
 }
 
 [data-theme="light"] {
+  /* ── Text ── */
+  --dash-text:     #12082E;
+  --dash-text-mid: #3D2B6B;
+  --dash-text-low: #8B7AB0;
+  --dash-card-bg:      #ffffff;
+  --dash-card-border:  rgba(109,40,217,0.12);
+  --dash-input-bg:     #F4F2FF;
+  --dash-input-border: rgba(109,40,217,0.18);
+
   --dash-page-bg: linear-gradient(160deg, #F0F2FF 0%, #EBF0FF 55%, #EEF3FF 100%);
   --dash-body-bg: #F0F2FF;
   --dash-topbar-bg: rgba(255,255,255,0.92);
@@ -203,6 +221,60 @@ body {
 
 @media (min-width: 768px) {
   .dash-sidebar { display: flex !important; flex-direction: column; }
+}
+
+/* ═══════════════════════════════════════
+   LIGHT MODE TEXT OVERRIDE
+   !important beats inline styles —
+   makes all dashboard text readable in light mode
+═══════════════════════════════════════ */
+
+/* Force all text in the main dashboard content to use CSS var */
+[data-theme="light"] #dash-content,
+[data-theme="light"] #dash-content span:not([style*="background-clip"]):not([style*="-webkit-text-fill"]),
+[data-theme="light"] #dash-content p,
+[data-theme="light"] #dash-content h1,
+[data-theme="light"] #dash-content h2,
+[data-theme="light"] #dash-content h3,
+[data-theme="light"] #dash-content h4,
+[data-theme="light"] #dash-content label,
+[data-theme="light"] #dash-content td,
+[data-theme="light"] #dash-content th,
+[data-theme="light"] #dash-content li {
+  color: var(--dash-text) !important;
+}
+
+/* Divs that are purely text containers (not colored bg containers) */
+[data-theme="light"] #dash-content div {
+  color: var(--dash-text);
+}
+
+/* Buttons: force dark text unless they have explicit colored bg (gradient buttons keep white text) */
+[data-theme="light"] #dash-content button:not([style*="gradient"]):not([style*="background: rgba"]:not([style*="#9850FF"])) {
+  color: var(--dash-text);
+}
+
+/* Keep gradient/shimmer text effects working */
+[data-theme="light"] #dash-content [style*="-webkit-background-clip"],
+[data-theme="light"] #dash-content [style*="background-clip: text"],
+[data-theme="light"] #dash-content [style*="WebkitBackgroundClip"] {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* Preserve pure white text on intentionally dark backgrounds (buttons with gradient bg) */
+[data-theme="light"] #dash-content [style*="linear-gradient"][style*="color: #fff"],
+[data-theme="light"] #dash-content [style*="linear-gradient"][style*="color: rgb(255"] {
+  color: #ffffff !important;
+}
+
+/* Input fields in light mode */
+[data-theme="light"] #dash-content input,
+[data-theme="light"] #dash-content textarea,
+[data-theme="light"] #dash-content select {
+  color: var(--dash-text) !important;
+  background: var(--dash-input-bg) !important;
+  border-color: var(--dash-input-border) !important;
 }
 
 .sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(152,80,255,0.2) transparent; }
