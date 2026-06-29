@@ -518,6 +518,58 @@ function HomeInner() {
 
       <BaitSection />
 
+      {/* ══ HOW IT WORKS — 3 צעדים ══ */}
+      <section style={{ padding: '0 40px 64px', maxWidth: 1160, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <div style={{
+            display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
+            background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)', marginBottom: 14,
+          }}>איך זה עובד</div>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.6rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 8px' }}>
+            שלושה צעדים. ואז אתם חופשיים.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)', margin: 0 }}>הגדרה חד-פעמית של 2 דקות — ו-SociMe עובדת בשבילכם מכאן</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 0, position: 'relative' }}>
+          {/* connector line */}
+          <div style={{ position: 'absolute', top: 36, right: '16.5%', left: '16.5%', height: 1, background: 'rgba(255,255,255,0.08)', zIndex: 0 }} />
+          {[
+            {
+              num: '01', icon: 'ti-building-store', color: PURPLE2,
+              title: 'ספרו לנו על העסק',
+              desc: 'בריף קצר — תחום, קהל יעד, טון הדיבור. פעם אחת. SociMe זוכרת הכל ומשתמשת בזה בכל פוסט.',
+            },
+            {
+              num: '02', icon: 'ti-sparkles', color: BLUE,
+              title: 'AI כותב, אתם מאשרים',
+              desc: 'פוסטים, תמונות, סרטונים — מוכנים בשניות. עברו, ערכו אם רוצים, ואשרו בלחיצה.',
+            },
+            {
+              num: '03', icon: 'ti-send', color: '#10D4A8',
+              title: 'SociMe מפרסמת לבד',
+              desc: 'בזמן הנכון, בפלטפורמה הנכונה — אוטומטית. אתם מקבלים אישור ומרוויחים שעות בחזרה.',
+            },
+          ].map((step, i) => (
+            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+              <div style={{
+                width: 72, height: 72, borderRadius: '50%', marginBottom: 22,
+                background: `radial-gradient(circle, ${step.color}22 0%, transparent 70%)`,
+                border: `1.5px solid ${step.color}40`,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <i className={`ti ${step.icon}`} style={{ fontSize: 28, color: step.color }} />
+              </div>
+              <div style={{ fontSize: 10, fontWeight: 900, color: step.color, letterSpacing: '2px', marginBottom: 8, opacity: 0.6 }}>{step.num}</div>
+              <div className="font-arimo" style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75 }}>{step.desc}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* ══ FEATURES — כל הכלים ══ */}
       <section id="features" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
@@ -720,11 +772,18 @@ function HomeInner() {
           </div>
           <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', margin: 0 }}>AI-Powered Social Media Manager · Made in Israel by EDRI GROUP</p>
           <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {['ראשי','אודות','תכונות','מחירים','תנאי שימוש','מדיניות פרטיות'].map(l => (
-              <a key={l} href="#" style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', textDecoration: 'none', transition: 'color .15s' }}
+            {[
+              { label: 'ראשי',            href: '/' },
+              { label: 'אודות',           href: '/#about' },
+              { label: 'תכונות',          href: '/#features' },
+              { label: 'מחירים',          href: '/#pricing' },
+              { label: 'תנאי שימוש',      href: '/dashboard/terms' },
+              { label: 'מדיניות פרטיות', href: '/dashboard/privacy' },
+            ].map(({ label, href }) => (
+              <a key={label} href={href} style={{ fontSize: 13, color: 'rgba(255,255,255,0.25)', textDecoration: 'none', transition: 'color .15s' }}
                 onMouseEnter={e => (e.currentTarget.style.color = PURPLE2)}
                 onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.25)')}>
-                {l}
+                {label}
               </a>
             ))}
           </div>
