@@ -241,7 +241,7 @@ function PricingSection() {
 
   return (
     <section id="pricing" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-      <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
+      <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <div style={{
           display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
           background: 'rgba(152,80,255,0.15)', color: PURPLE2,
@@ -282,7 +282,7 @@ function PricingSection() {
         </div>
       </div>
 
-      <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
         {plans.map((plan, i) => (
           <NCard key={plan.name} delay={i * 0.1} style={{
             padding: '36px 30px', display: 'flex', flexDirection: 'column', position: 'relative',
@@ -341,7 +341,7 @@ function PricingSection() {
         ))}
       </div>
 
-      <p className="reveal" style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
+      <p style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
         מחירים לא כוללים מע&quot;מ · ביטול בכל עת · טוקן = יחידת AI אחת (~200–400 טוקנים לפוסט)
       </p>
     </section>
@@ -484,7 +484,7 @@ function HomeInner() {
             </div>
 
             <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
-              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת'].map(t => (
+              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת','פייסבוק · אינסטגרם · לינקדאין'].map(t => (
                 <span key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontWeight: 900, color: '#A3E635' }}>✓</span>{t}
                 </span>
@@ -518,65 +518,114 @@ function HomeInner() {
 
       <BaitSection />
 
-      {/* ══ FEATURES ══ */}
+      {/* ══ FEATURES — כל הכלים ══ */}
       <section id="features" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div className="reveal" style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
             background: 'rgba(152,80,255,0.15)', color: PURPLE2,
             fontSize: 11, fontWeight: 700, border: '1px solid rgba(190,86,255,0.3)', marginBottom: 16,
-          }}>איך זה עובד</div>
+          }}>9 כלים. פלטפורמה אחת.</div>
           <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            שלושה צעדים. תוצאה אחת.
+            כל מה שצוות שיווק עושה — SociMe עושה לבד.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.38)', margin: 0 }}>כלים שנבנו לתוצאות, לא לרשמים</p>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', margin: 0 }}>פייסבוק · אינסטגרם · לינקדאין — כל הכלים במקום אחד</p>
         </div>
 
-        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
-          {[
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+          {([
             {
-              num: '01', icon: 'ti-brain', color: PURPLE2,
-              title: 'מוח של קופירייטר שעובד 24/7',
-              desc: 'AI שכותב תוכן בעברית אותנטית, בסגנון הייחודי שלכם, עם הבנה של הקהל והכאבים של הלקוחות שלכם — בלי עייפות, בלי ימי חולה.',
-              outcome: 'תוכן שממיר, לא רק ממלא פיד',
+              icon: 'ti-sparkles', color: PURPLE2,
+              title: 'סטודיו יצירה AI',
+              desc: 'פרומפט קצר → פוסט מלוטש בעברית עם תמונה, האשטאגים וקריאה לפעולה. גם לינקדאין, גם אינסטגרם, גם פייסבוק.',
+              cta: 'נסו עכשיו', href: '/login?mode=register',
             },
             {
-              num: '02', icon: 'ti-send', color: BLUE,
-              title: 'שגרו ושכחו',
-              desc: 'אשרו פוסטים מראש ו-SociMe תפרסם בזמנים הכי אפקטיביים לפלטפורמה. פייסבוק, אינסטגרם — הכל אוטומטי, הכל במועד.',
-              outcome: 'שעות חזרה לידיים שלכם',
+              icon: 'ti-video', color: '#A78BFA',
+              title: 'עורך וידאו AI',
+              desc: 'העלו סרטון — AI חותך שתיקות, מוסיף כתוביות בעברית אוטומטיות ומייצא MP4 מוכן לפרסום.',
+              cta: 'נסו עכשיו', href: '/login?mode=register',
             },
             {
-              num: '03', icon: 'ti-chart-line', color: '#10D4A8',
-              title: 'תפסיקו לנחש — קבלו מספרים ירוקים',
-              desc: 'דאשבורד ברור שמראה מה עובד, מה פחות, ומה לשנות. קבלו החלטות מבוססות נתונים, לא תחושות בטן.',
-              outcome: 'ROI שאפשר למדוד ולהראות',
+              icon: 'ti-calendar-event', color: BLUE,
+              title: 'לוח תזמון חכם',
+              desc: 'תזמנו פוסטים שבועות קדימה. SociMe מפרסמת אוטומטית, מנסה שוב אם נכשל, ושולחת אישור.',
+              cta: 'ראו הדגמה', href: '/login?mode=register',
             },
-          ].map((step, i) => (
-            <NCard key={i} delay={i * 0.12} style={{ padding: '36px 30px' }}>
-              <div className="font-arimo" style={{ fontSize: 64, fontWeight: 900, letterSpacing: '-4px', lineHeight: 1, color: 'rgba(255,255,255,0.05)', marginBottom: 20 }}>
-                {step.num}
+            {
+              icon: 'ti-clock-bolt', color: '#10D4A8',
+              title: 'תזמון AI',
+              desc: 'האלגוריתם מנתח מתי הקהל שלכם הכי פעיל — ומציע שעות שמקסמות חשיפה בכל פלטפורמה.',
+              cta: 'גלו את השעות שלכם', href: '/login?mode=register',
+            },
+            {
+              icon: 'ti-files', color: '#F59E0B',
+              title: 'העלאה מרוכזת',
+              desc: 'יש תוכן מוכן? העלו עשרות פוסטים בבת אחת — SociMe מתזמנת ומפרסמת הכל בלי לגעת בכל פוסט.',
+              cta: 'נסו עכשיו', href: '/login?mode=register',
+            },
+            {
+              icon: 'ti-message-2-heart', color: '#EC4899',
+              title: 'ניהול קהילה',
+              desc: 'כל התגובות וההודעות מפייסבוק, אינסטגרם ולינקדאין — Inbox מאוחד אחד. ענו מבלי לעבור בין אפליקציות.',
+              cta: 'ראו איך זה עובד', href: '/login?mode=register',
+            },
+            {
+              icon: 'ti-bulb', color: '#34D399',
+              title: 'בנק רעיונות AI',
+              desc: 'אף פעם לא תגמרו לכם הרעיונות. AI מייצר עשרות רעיונות מותאמים לנישה שלכם — שמרו, ערכו, פרסמו.',
+              cta: 'קבלו רעיונות', href: '/login?mode=register',
+            },
+            {
+              icon: 'ti-chart-bar', color: '#60A5FA',
+              title: 'ניתוחים סטטיסטיים',
+              desc: 'דאשבורד שמראה מה עובד — reach, engagement, מגמות צמיחה. קבלו החלטות מבוססות נתונים, לא תחושות בטן.',
+              cta: 'ראו דוגמה', href: '/login?mode=register',
+            },
+            {
+              icon: 'ti-bell', color: '#FB923C',
+              title: 'התראות חכמות',
+              desc: 'Push notification ברגע שפוסט פורסם, כשיש תגובה חשובה, או כשהטוקנים עומדים להסתיים — תמיד בשליטה.',
+              cta: 'הפעילו עכשיו', href: '/login?mode=register',
+            },
+          ] as { icon: string; color: string; title: string; desc: string; cta: string; href: string }[]).map((feat, i) => (
+            <NCard key={i} delay={i * 0.06} style={{ padding: '28px 26px', display: 'flex', flexDirection: 'column' }}>
+              <div style={{ width: 46, height: 46, borderRadius: 14, background: `${feat.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, flexShrink: 0 }}>
+                <i className={`ti ${feat.icon}`} style={{ fontSize: 22, color: feat.color }} />
               </div>
-              <div style={{ width: 50, height: 50, borderRadius: 16, background: `${step.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 18 }}>
-                <i className={`ti ${step.icon}`} style={{ fontSize: 24, color: step.color }} />
-              </div>
-              <div className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 12, lineHeight: 1.3 }}>{step.title}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.52)', lineHeight: 1.75, marginBottom: 18 }}>{step.desc}</div>
-              <div style={{
+              <div className="font-arimo" style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>{feat.title}</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, flex: 1 }}>{feat.desc}</div>
+              <a href={feat.href} style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '5px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700,
-                background: `${step.color}15`, color: step.color, border: `1px solid ${step.color}30`,
+                marginTop: 18, padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                background: `${feat.color}18`, color: feat.color, border: `1px solid ${feat.color}35`,
+                textDecoration: 'none', transition: 'all .2s', width: 'fit-content',
               }}>
-                <i className="ti ti-arrow-up-right" style={{ fontSize: 11 }} />{step.outcome}
-              </div>
+                {feat.cta} <i className="ti ti-arrow-left" style={{ fontSize: 12 }} />
+              </a>
             </NCard>
+          ))}
+        </div>
+
+        {/* platform strip */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 40, marginTop: 52, flexWrap: 'wrap' }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.2)', letterSpacing: '2px', textTransform: 'uppercase' }}>פועל עם</span>
+          {[
+            { icon: 'ti-brand-facebook', label: 'Facebook', color: '#1877F2' },
+            { icon: 'ti-brand-instagram', label: 'Instagram', color: '#E1306C' },
+            { icon: 'ti-brand-linkedin', label: 'LinkedIn', color: '#0A66C2' },
+          ].map(p => (
+            <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>
+              <i className={`ti ${p.icon}`} style={{ fontSize: 20, color: p.color }} />
+              {p.label}
+            </div>
           ))}
         </div>
       </section>
 
       {/* ══ ABOUT ══ */}
       <section id="about" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <div className="reveal" style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
           <NCard style={{ padding: '52px 52px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>EDRI GROUP</div>
             <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,2.8vw,2.1rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 20px', lineHeight: 1.25 }}>
