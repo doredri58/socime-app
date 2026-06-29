@@ -24,8 +24,18 @@ export async function generatePost(businessDesc: string, systemPromptOverride?: 
     generationConfig: { temperature: 0.8, maxOutputTokens: 500 },
   })
 
-  const raw = result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
-  const parsed = JSON.parse(raw) as { text: string; hashtags: string }
+  const rawText = result.response.text().trim()
+  // Strip markdown code fences and any leading/trailing noise
+  const raw = rawText
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/, '')
+    .trim()
+
+  // Find first { ... } block in case model adds prose around the JSON
+  const jsonMatch = raw.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) throw new Error(`Gemini לא החזיר JSON תקין: ${raw.slice(0, 100)}`)
+  const parsed = JSON.parse(jsonMatch[0]) as { text: string; hashtags: string }
 
   const usage = result.response.usageMetadata
   const inputTokens = usage?.promptTokenCount ?? 0
@@ -83,7 +93,14 @@ export async function generateIdeas(
     generationConfig: { temperature: 0.9, maxOutputTokens: 800 },
   })
 
-  const raw = result.response.text().trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
-  const parsed = JSON.parse(raw) as { ideas: string[] }
-  return parsed.ideas
+  const rawText = result.response.text().trim()
+  const raw = rawText
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/, '')
+    .trim()
+  const jsonMatch = raw.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) return []
+  const parsed = JSON.parse(jsonMatch[0]) as { ideas: string[] }
+  return Array.isArray(parsed.ideas) ? parsed.ideas : []
 }
