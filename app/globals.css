@@ -229,50 +229,32 @@ body {
    makes all dashboard text readable in light mode
 ═══════════════════════════════════════ */
 
-/* Force all text in the main dashboard content to use CSS var */
-[data-theme="light"] #dash-content,
-[data-theme="light"] #dash-content span:not([style*="background-clip"]):not([style*="-webkit-text-fill"]),
-[data-theme="light"] #dash-content p,
-[data-theme="light"] #dash-content h1,
-[data-theme="light"] #dash-content h2,
-[data-theme="light"] #dash-content h3,
-[data-theme="light"] #dash-content h4,
-[data-theme="light"] #dash-content label,
-[data-theme="light"] #dash-content td,
-[data-theme="light"] #dash-content th,
-[data-theme="light"] #dash-content li {
+/* ── Force readable text in light mode ──────────────────────────
+   !important beats inline styles (CSS author !important > inline author)
+   Target all elements inside the dashboard main content area.
+──────────────────────────────────────────────────────────────── */
+[data-theme="light"] #dash-content * {
   color: var(--dash-text) !important;
 }
 
-/* Divs that are purely text containers (not colored bg containers) */
-[data-theme="light"] #dash-content div {
-  color: var(--dash-text);
-}
-
-/* Buttons: force dark text unless they have explicit colored bg (gradient buttons keep white text) */
-[data-theme="light"] #dash-content button:not([style*="gradient"]):not([style*="background: rgba"]:not([style*="#9850FF"])) {
-  color: var(--dash-text);
-}
-
-/* Keep gradient/shimmer text effects working */
-[data-theme="light"] #dash-content [style*="-webkit-background-clip"],
-[data-theme="light"] #dash-content [style*="background-clip: text"],
-[data-theme="light"] #dash-content [style*="WebkitBackgroundClip"] {
+/* Exception 1: gradient text (shimmer, logo "Me" etc.) stays transparent */
+[data-theme="light"] #dash-content [style*="-webkit-text-fill-color: transparent"],
+[data-theme="light"] #dash-content [style*="textFillColor"],
+[data-theme="light"] #dash-content .shimmer-gradient {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Preserve pure white text on intentionally dark backgrounds (buttons with gradient bg) */
-[data-theme="light"] #dash-content [style*="linear-gradient"][style*="color: #fff"],
-[data-theme="light"] #dash-content [style*="linear-gradient"][style*="color: rgb(255"] {
+/* Exception 2: white text on gradient/colored CTA buttons */
+[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] > *,
+[data-theme="light"] #dash-content [style*="linear-gradient(90deg, #9850FF"] > * {
   color: #ffffff !important;
 }
 
-/* Input fields in light mode */
+/* Exception 3: inputs get light styling */
 [data-theme="light"] #dash-content input,
 [data-theme="light"] #dash-content textarea,
 [data-theme="light"] #dash-content select {
-  color: var(--dash-text) !important;
   background: var(--dash-input-bg) !important;
   border-color: var(--dash-input-border) !important;
 }
