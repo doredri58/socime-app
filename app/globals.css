@@ -311,6 +311,39 @@ body {
   color: #9B8BC4 !important;
 }
 
+/* 8 — DARK obsidian card surfaces → dirty white.
+   Gated by border-radius so full-screen modal backdrops (no radius)
+   keep their dimming. Covers spaced + compact rgba + dark hexes. */
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(13, "],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(13,"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(10, 6"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(10,6"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(16, 9"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(16,9"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(22, 12"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(22,12"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(23, 16"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(23,16"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="#160C3D"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="#0D0829"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="#0D0A1F"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="#130E28"],
+[data-theme="light"] #dash-content [style*="border-radius"][style*="#0A0A0A"] {
+  background: #F3F0FB !important;
+  border-color: rgba(124, 58, 237, 0.14) !important;
+  box-shadow: 0 2px 14px rgba(80, 40, 160, 0.07) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* 9 — blue tints (bg/hover/border) → purple tints.
+   Keeps the design language purple, never a jarring blue in light mode. */
+[data-theme="light"] #dash-content [style*="rgba(59, 130, 239"],
+[data-theme="light"] #dash-content [style*="rgba(59,130,239"] {
+  background-color: rgba(124, 58, 237, 0.10) !important;
+  border-color: rgba(124, 58, 237, 0.28) !important;
+}
+
 .sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(152,80,255,0.2) transparent; }
 .sidebar-scroll::-webkit-scrollbar { width: 3px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
