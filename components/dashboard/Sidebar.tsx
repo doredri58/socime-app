@@ -6,27 +6,58 @@ import { useState } from 'react'
 
 /* ── Nav structure ─────────────────────────────────────────── */
 
-const WORKSPACE = [
-  { href: '/dashboard',           label: 'דאשבורד',              icon: 'ti-layout-dashboard' },
-  { href: '/dashboard/create',    label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
-  { href: '/dashboard/video',     label: 'עורך וידאו AI',         icon: 'ti-video' },
-  { href: '/dashboard/bulk',      label: 'העלאה מרוכזת',         icon: 'ti-files' },
-  { href: '/dashboard/queue',     label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
-  { href: '/dashboard/timing',    label: 'תזמון חכם',             icon: 'ti-clock-bolt' },
-  { href: '/dashboard/ideas',     label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
-  { href: '/dashboard/bank',      label: 'בנק רעיונות',           icon: 'ti-bulb' },
-  { href: '/dashboard/community', label: 'ניהול קהילה',           icon: 'ti-message-2-heart' },
-  { href: '/dashboard/business',  label: 'תיק עסק',              icon: 'ti-building-store' },
+interface NavLink { href: string; label: string; icon: string }
+interface NavGroup { title: string; items: NavLink[] }
+
+/* Thematic groups — each with its own section title */
+const GROUPS: NavGroup[] = [
+  {
+    title: 'ראשי',
+    items: [
+      { href: '/dashboard', label: 'לוח בקרה', icon: 'ti-layout-dashboard' },
+    ],
+  },
+  {
+    title: 'יצירת תוכן',
+    items: [
+      { href: '/dashboard/create', label: 'סטודיו יצירה',   icon: 'ti-sparkles' },
+      { href: '/dashboard/video',  label: 'עורך וידאו AI',   icon: 'ti-video' },
+      { href: '/dashboard/bank',   label: 'בנק רעיונות',     icon: 'ti-bulb' },
+    ],
+  },
+  {
+    title: 'תזמון ופרסום',
+    items: [
+      { href: '/dashboard/queue',  label: 'יומן ותזמונים',   icon: 'ti-calendar-event' },
+      { href: '/dashboard/timing', label: 'תזמון חכם',       icon: 'ti-clock-bolt' },
+      { href: '/dashboard/bulk',   label: 'העלאה מרוכזת',    icon: 'ti-files' },
+    ],
+  },
+  {
+    title: 'קהל וניתוח',
+    items: [
+      { href: '/dashboard/community', label: 'ניהול קהילה',       icon: 'ti-message-2-heart' },
+      { href: '/dashboard/ideas',     label: 'ניתוחים סטטיסטיים', icon: 'ti-chart-bar' },
+    ],
+  },
+  {
+    title: 'העסק שלי',
+    items: [
+      { href: '/dashboard/business', label: 'תיק עסק',        icon: 'ti-building-store' },
+      { href: '/dashboard/social',   label: 'חיבורי רשתות',   icon: 'ti-plug-connected' },
+    ],
+  },
+  {
+    title: 'חשבון',
+    items: [
+      { href: '/dashboard/profile',       label: 'מנוי וטוקנים', icon: 'ti-coins' },
+      { href: '/dashboard/notifications', label: 'התראות',       icon: 'ti-bell' },
+      { href: '/dashboard/settings',      label: 'הגדרות',       icon: 'ti-settings' },
+    ],
+  },
 ]
 
-const MANAGEMENT = [
-  { href: '/dashboard/profile',       label: 'מצב חשבון',        icon: 'ti-coins' },
-  { href: '/dashboard/notifications', label: 'התראות',            icon: 'ti-bell' },
-  { href: '/dashboard/social',        label: 'חיבורי רשתות',     icon: 'ti-plug-connected' },
-  { href: '/dashboard/settings',      label: 'הגדרות',            icon: 'ti-settings' },
-]
-
-const SUPPORT = [
+const SUPPORT: NavLink[] = [
   { href: '/dashboard/help',     label: 'מרכז עזרה',            icon: 'ti-help-circle' },
   { href: '/dashboard/privacy',  label: 'מרכז הפרטיות',         icon: 'ti-shield-check' },
   { href: '/dashboard/terms',    label: 'תנאים ומדיניות',       icon: 'ti-file-description' },
@@ -155,24 +186,22 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
       <nav style={{ flex: 1, overflowY: 'auto', overflowX: 'hidden', paddingBottom: 8 }}
         className="sidebar-scroll">
 
-        {/* WORKSPACE */}
-        <SectionLabel label="סביבת עבודה" />
-        {WORKSPACE.map(item => (
-          <NavItem key={item.href} {...item} active={isActive(item.href)} onClick={() => setOpen(false)} />
-        ))}
-
-        <Divider />
-
-        {/* MANAGEMENT */}
-        <SectionLabel label="ניהול" />
-        {MANAGEMENT.map(item => (
-          <NavItem key={item.href} {...item} active={isActive(item.href)} onClick={() => setOpen(false)} />
+        {/* Thematic groups */}
+        {GROUPS.map((group, gi) => (
+          <div key={group.title}>
+            {gi > 0 && <Divider />}
+            <SectionLabel label={group.title} />
+            {group.items.map(item => (
+              <NavItem key={item.href} {...item} active={isActive(item.href)} onClick={() => setOpen(false)} />
+            ))}
+          </div>
         ))}
 
         {/* Admin */}
         {isAdmin && (
           <>
             <Divider />
+            <SectionLabel label="מנהל מערכת" />
             <NavItem
               href="/admin" label="ניהול מערכת" icon="ti-shield-check"
               active={isActive('/admin')} onClick={() => setOpen(false)}

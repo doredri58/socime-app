@@ -641,21 +641,23 @@ function HomeInner() {
               cta: 'הפעילו עכשיו', href: '/login?mode=register',
             },
           ] as { icon: string; color: string; title: string; desc: string; cta: string; href: string }[]).map((feat, i) => (
-            <NCard key={i} delay={i * 0.06} style={{ padding: '28px 26px', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ width: 46, height: 46, borderRadius: 14, background: `${feat.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, flexShrink: 0 }}>
-                <i className={`ti ${feat.icon}`} style={{ fontSize: 22, color: feat.color }} />
-              </div>
-              <div className="font-arimo" style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>{feat.title}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, flex: 1 }}>{feat.desc}</div>
-              <a href={feat.href} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                marginTop: 18, padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
-                background: `${feat.color}18`, color: feat.color, border: `1px solid ${feat.color}35`,
-                textDecoration: 'none', transition: 'all .2s', width: 'fit-content',
-              }}>
-                {feat.cta} <i className="ti ti-arrow-left" style={{ fontSize: 12 }} />
-              </a>
-            </NCard>
+            <a key={i} href="/login?mode=register" style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+              <NCard delay={i * 0.06} style={{ padding: '28px 26px', display: 'flex', flexDirection: 'column', height: '100%', cursor: 'pointer' }}>
+                <div style={{ width: 46, height: 46, borderRadius: 14, background: `${feat.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, flexShrink: 0 }}>
+                  <i className={`ti ${feat.icon}`} style={{ fontSize: 22, color: feat.color }} />
+                </div>
+                <div className="font-arimo" style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 8, lineHeight: 1.3 }}>{feat.title}</div>
+                <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', lineHeight: 1.75, flex: 1 }}>{feat.desc}</div>
+                <span style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  marginTop: 18, padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 700,
+                  background: `${feat.color}18`, color: feat.color, border: `1px solid ${feat.color}35`,
+                  transition: 'all .2s', width: 'fit-content',
+                }}>
+                  {feat.cta} <i className="ti ti-arrow-left" style={{ fontSize: 12 }} />
+                </span>
+              </NCard>
+            </a>
           ))}
         </div>
 
