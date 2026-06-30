@@ -1,18 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createHmac } from 'crypto'
 import { createServiceClient } from '@/lib/supabase'
+import { PLANS, isPlanId, planAmountIls, type BillingCycle } from '@/lib/plans'
+
+export const runtime = 'nodejs'
 
 function verifyPayPlusSignature(body: string, signature: string | null): boolean {
   if (!signature || !process.env.PAYPLUS_SECRET) return false
-  const expected = createHmac('sha256', process.env.PAYPLUS_SECRET)
-    .update(body)
-    .digest('hex')
+  const expected = createHmac('sha256', process.env.PAYPLUS_SECRET).update(body).digest('hex')
   return expected === signature
-}
-
-const PLAN_CONFIG = {
-  basic: { tier: 'basic', tokens: 500,  amountIls: 79  },
-  pro:   { tier: 'pro',   tokens: 1500, amountIls: 149 },
 }
 
 export async function POST(req: NextRequest) {
@@ -24,32 +20,29 @@ export async function POST(req: NextRequest) {
     }
     const body = JSON.parse(rawBody)
 
-    // PayPlus שולח את סטטוס התשלום
-    const status      = body.data?.status_code         // '000' = הצלחה
-    const userId      = body.data?.more_info_1
-    const plan        = body.data?.more_info_2 as keyof typeof PLAN_CONFIG
+    const status        = body.data?.status_code        // '000' = success
+    const userId        = body.data?.more_info_1
+    const plan          = body.data?.more_info_2
+    const cycle: BillingCycle = body.data?.more_info_3 === 'annual' ? 'annual' : 'monthly'
     const transactionId = body.data?.transaction_uid
 
-    if (status !== '000' || !userId || !plan) {
+    if (status !== '000' || !userId || !isPlanId(plan)) {
       return NextResponse.json({ ok: false })
     }
 
-    const config = PLAN_CONFIG[plan]
-    if (!config) return NextResponse.json({ ok: false })
-
+    const config = PLANS[plan]
     const db = createServiceClient()
 
-    // עדכון tier ומתן טוקנים אטומי
-    await Promise.all([
-      db.from('users').update({ tier: config.tier }).eq('id', userId),
-      db.rpc('grant_tokens', { uid: userId, amount: config.tokens }),
-    ])
+    // Activate subscription: set tier + grant a fresh monthly token allotment.
+    await db.from('users')
+      .update({ tier: config.tier, token_balance: config.tokens })
+      .eq('id', userId)
 
-    // רישום העסקה
+    // Record the transaction.
     await db.from('transactions').insert({
       user_id:           userId,
       transaction_type:  'subscription',
-      amount_paid_ils:   config.amountIls,
+      amount_paid_ils:   planAmountIls(plan, cycle),
       tokens_granted:    config.tokens,
       stripe_payment_id: transactionId ?? null,
     })

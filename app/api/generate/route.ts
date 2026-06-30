@@ -23,7 +23,8 @@ export async function POST(req: NextRequest) {
     const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
 
     if (userId) {
-      await deductTokens(userId, 'generate_post', tokensUsed, costUsd)
+      // deduct the FIXED economy cost (TOKEN_COSTS.generate_post); log the real $ cost
+      await deductTokens(userId, 'generate_post', undefined, costUsd)
     }
 
     return NextResponse.json({ text, hashtags, tokensUsed })

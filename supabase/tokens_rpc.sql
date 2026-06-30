@@ -36,8 +36,9 @@ language plpgsql security definer as $$
 begin
   update public.users
   set token_balance = case
-    when tier = 'pro'   then 1500
-    when tier = 'basic' then 500
+    when tier = 'agency' then 2000
+    when tier = 'pro'    then 1000
+    when tier = 'basic'  then 500
     else 100  -- free
   end;
 end;

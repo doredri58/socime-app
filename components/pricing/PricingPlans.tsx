@@ -87,7 +87,7 @@ const PLANS: Plan[] = [
     annualTotal: 9588,
     tokens: '2,000',
     highlight: false,
-    cta: 'דברו איתנו',
+    cta: 'בחרו ב-Agency',
     features: [
       { label: 'כל מה שכלול ב-Pro', included: true },
       { label: '2,000 טוקנים בבנק סוכנות מרכזי', included: true },
@@ -249,7 +249,11 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
 /* ════════════════════════════════════════════════════════════════
    Plan card
 ════════════════════════════════════════════════════════════════ */
-function PlanCard({ plan, billing, onLockedClick }: { plan: Plan; billing: Billing; onLockedClick: (l: string) => void }) {
+function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
+  plan: Plan; billing: Billing; busy: boolean
+  onSelect: (id: Plan['id']) => void
+  onLockedClick: (l: string) => void
+}) {
   const price = billing === 'annual' ? plan.annual : plan.monthly
   const highlight = plan.highlight
 
@@ -299,7 +303,9 @@ function PlanCard({ plan, billing, onLockedClick }: { plan: Plan; billing: Billi
 
       {/* CTA */}
       <button
-        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 ${
+        onClick={() => onSelect(plan.id)}
+        disabled={busy}
+        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${
           highlight ? 'text-white shadow-[0_8px_30px_rgba(152,80,255,0.5)]' : 'text-white'
         }`}
         style={
@@ -308,7 +314,7 @@ function PlanCard({ plan, billing, onLockedClick }: { plan: Plan; billing: Billi
             : { background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.14)' }
         }
       >
-        {plan.cta}
+        {busy ? 'מעבירים לתשלום…' : plan.cta}
       </button>
 
       {/* Features */}
@@ -367,8 +373,35 @@ function RefundPolicy() {
 export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 'section' }) {
   const [billing, setBilling] = useState<Billing>('annual')   // ← defaults to Annual
   const [modal, setModal] = useState<{ open: boolean; feature: string }>({ open: false, feature: '' })
+  const [busy, setBusy] = useState<string | null>(null)
 
   const openUpgrade = (feature: string) => setModal({ open: true, feature })
+
+  // Create a PayPlus payment page and redirect. Logged-out users → register first.
+  async function checkout(planId: Plan['id']) {
+    setBusy(planId)
+    try {
+      const res = await fetch('/api/payplus/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan: planId, billing }),
+      })
+      if (res.status === 401) {
+        window.location.href = `/login?mode=register&plan=${planId}&billing=${billing}`
+        return
+      }
+      const data = await res.json().catch(() => ({}))
+      if (res.ok && data.paymentUrl) {
+        window.location.href = data.paymentUrl
+        return
+      }
+      alert(data.error ?? 'שגיאה ביצירת דף תשלום, נסו שוב.')
+    } catch {
+      alert('שגיאת רשת — נסו שוב.')
+    } finally {
+      setBusy(null)
+    }
+  }
 
   return (
     <section
@@ -399,7 +432,14 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
         {/* ── Plan cards ── */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {PLANS.map(plan => (
-            <PlanCard key={plan.id} plan={plan} billing={billing} onLockedClick={openUpgrade} />
+            <PlanCard
+              key={plan.id}
+              plan={plan}
+              billing={billing}
+              busy={busy === plan.id}
+              onSelect={checkout}
+              onLockedClick={openUpgrade}
+            />
           ))}
         </div>
 

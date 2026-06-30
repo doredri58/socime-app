@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/process",
       "schedule": "* * * * *"
+    },
+    {
+      "path": "/api/cron/reset-tokens",
+      "schedule": "0 0 1 * *"
     }
   ]
 }
