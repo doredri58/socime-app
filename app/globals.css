@@ -230,13 +230,20 @@ body {
    Rules are ordered; later rules win on equal specificity.
 ═══════════════════════════════════════ */
 
-/* 1 — white / translucent-white body text → deep purple */
+/* 1 — white / translucent-white body text → deep purple.
+   Next.js serializes inline styles COMPACT (no spaces), so cover both forms. */
 [data-theme="light"] #dash-content [style*="color: rgba(255, 255, 255"],
 [data-theme="light"] #dash-content [style*="color:rgba(255,255,255"],
 [data-theme="light"] #dash-content [style*="color: rgb(255, 255, 255)"],
+[data-theme="light"] #dash-content [style*="color:rgb(255,255,255)"],
 [data-theme="light"] #dash-content [style*="color: #fff"],
+[data-theme="light"] #dash-content [style*="color:#fff"],
 [data-theme="light"] #dash-content [style*="color: #FFF"],
-[data-theme="light"] #dash-content [style*="color: white"] {
+[data-theme="light"] #dash-content [style*="color:#FFF"],
+[data-theme="light"] #dash-content [style*="color: #ffffff"],
+[data-theme="light"] #dash-content [style*="color:#ffffff"],
+[data-theme="light"] #dash-content [style*="color: white"],
+[data-theme="light"] #dash-content [style*="color:white"] {
   color: #2A1758 !important;
 }
 
@@ -312,29 +319,10 @@ body {
 }
 
 /* 8 — DARK obsidian card surfaces → dirty white.
-   Gated by border-radius so full-screen modal backdrops (no radius)
-   keep their dimming. Covers spaced + compact rgba + dark hexes. */
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(13, "],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(13,"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(10, 6"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(10,6"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(16, 9"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(16,9"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(22, 12"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(22,12"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(23, 16"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="rgba(23,16"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="#160C3D"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="#0D0829"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="#0D0A1F"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="#130E28"],
-[data-theme="light"] #dash-content [style*="border-radius"][style*="#0A0A0A"] {
-  background: #F3F0FB !important;
-  border-color: rgba(124, 58, 237, 0.14) !important;
-  box-shadow: 0 2px 14px rgba(80, 40, 160, 0.07) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
-}
+   NOTE: these [style*="rgba(13,…)"] overrides do NOT take effect from this
+   compiled stylesheet (Next.js' Lightning CSS quirk). They are injected at
+   runtime as a raw <style> by ThemeProvider instead — see contexts/ThemeContext.tsx
+   (LIGHT_CARD_FIX). Kept here only as documentation of the intent. */
 
 /* 9 — blue tints (bg/hover/border) → purple tints.
    Keeps the design language purple, never a jarring blue in light mode. */
