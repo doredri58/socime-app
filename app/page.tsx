@@ -6,6 +6,7 @@ import Drawer from '@/components/Drawer'
 import ChatBot from '@/components/ChatBot'
 import PaywallForm from '@/components/PaywallForm'
 import Onboarding from '@/components/Onboarding'
+import PricingPlans from '@/components/pricing/PricingPlans'
 
 interface Draft { text: string; hashtags: string }
 
@@ -209,144 +210,6 @@ function BaitSection() {
   )
 }
 
-/* ─── Pricing ─── */
-const PLANS = {
-  monthly: [
-    { name: 'Starter', nameHe: 'מתחיל', price: 79, tokens: '5,000', users: 'משתמש אחד', popular: false,
-      features: ['5,000 טוקנים לחודש','פייסבוק + אינסטגרם','תזמון אוטומטי','תמיכה בעברית'],
-      href: '/login?mode=register&plan=starter' },
-    { name: 'Pro', nameHe: 'פרו', price: 199, tokens: '15,000', users: 'משתמש אחד', popular: true,
-      features: ['15,000 טוקנים לחודש','כל הפלטפורמות','תזמון מתקדם + AI','ניתוח ביצועים','תמיכה עדיפות'],
-      href: '/login?mode=register&plan=pro' },
-    { name: 'Agency', nameHe: 'סוכנות', price: 490, tokens: '60,000', users: 'עד 5 משתמשים', popular: false,
-      features: ['60,000 טוקנים לחודש','ניהול מספר חשבונות','API מותאם','דאשבורד צוות','SLA + תמיכה VIP'],
-      href: '/login?mode=register&plan=agency' },
-  ],
-  yearly: [
-    { name: 'Starter', nameHe: 'מתחיל', price: 63, tokens: '5,000', users: 'משתמש אחד', popular: false,
-      features: ['5,000 טוקנים לחודש','פייסבוק + אינסטגרם','תזמון אוטומטי','תמיכה בעברית'],
-      href: '/login?mode=register&plan=starter-y' },
-    { name: 'Pro', nameHe: 'פרו', price: 159, tokens: '15,000', users: 'משתמש אחד', popular: true,
-      features: ['15,000 טוקנים לחודש','כל הפלטפורמות','תזמון מתקדם + AI','ניתוח ביצועים','תמיכה עדיפות'],
-      href: '/login?mode=register&plan=pro-y' },
-    { name: 'Agency', nameHe: 'סוכנות', price: 392, tokens: '60,000', users: 'עד 5 משתמשים', popular: false,
-      features: ['60,000 טוקנים לחודש','ניהול מספר חשבונות','API מותאם','דאשבורד צוות','SLA + תמיכה VIP'],
-      href: '/login?mode=register&plan=agency-y' },
-  ],
-}
-
-function PricingSection() {
-  const [billing, setBilling] = useState<'monthly'|'yearly'>('monthly')
-  const plans = PLANS[billing]
-
-  return (
-    <section id="pricing" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <div style={{
-          display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
-          background: 'rgba(152,80,255,0.15)', color: PURPLE2,
-          fontSize: 11, fontWeight: 700, border: '1px solid rgba(190,86,255,0.3)', marginBottom: 16,
-        }}>מחירים</div>
-        <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-          תבחרו את המסלול שמתאים לקצב הצמיחה שלכם.
-        </h2>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', margin: '0 0 28px' }}>
-          בלי הפתעות, בלי חוזים כובלים. שדרגו או בטלו מתי שרק תרצו.
-        </p>
-
-        {/* Toggle */}
-        <div style={{
-          display: 'inline-flex', alignItems: 'center',
-          background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)',
-          borderRadius: 999, padding: 4,
-        }}>
-          {(['monthly','yearly'] as const).map(b => (
-            <button key={b} onClick={() => setBilling(b)} style={{
-              padding: '8px 20px', borderRadius: 999, border: 'none', cursor: 'pointer',
-              fontSize: 13, fontWeight: 700,
-              background: billing === b ? BLUE : 'transparent',
-              color: billing === b ? '#fff' : 'rgba(255,255,255,0.45)',
-              transition: 'all .2s', fontFamily: 'var(--font-space),sans-serif',
-              display: 'flex', alignItems: 'center', gap: 8,
-            }}>
-              {b === 'monthly' ? 'חודשי' : 'שנתי'}
-              {b === 'yearly' && (
-                <span style={{
-                  padding: '2px 8px', borderRadius: 999, fontSize: 10, fontWeight: 800,
-                  background: billing === 'yearly' ? 'rgba(255,255,255,0.2)' : 'rgba(16,212,168,0.2)',
-                  color: billing === 'yearly' ? '#fff' : '#10D4A8',
-                }}>חסכו 20% (חודשיים עלינו!)</span>
-              )}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16, alignItems: 'start' }}>
-        {plans.map((plan, i) => (
-          <NCard key={plan.name} delay={i * 0.1} style={{
-            padding: '36px 30px', display: 'flex', flexDirection: 'column', position: 'relative',
-            border: plan.popular ? `1.5px solid rgba(190,86,255,0.5)` : undefined,
-          }}>
-            {plan.popular && (
-              <div style={{
-                position: 'absolute', top: -14, left: '50%', transform: 'translateX(-50%)',
-                padding: '4px 20px', borderRadius: 999,
-                background: `linear-gradient(135deg,${PURPLE},${PURPLE2})`,
-                color: '#fff', fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap',
-                boxShadow: `0 4px 16px rgba(152,80,255,0.4)`,
-              }}>⭐ הכי פופולרי</div>
-            )}
-            <span style={{
-              padding: '3px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700, alignSelf: 'flex-start',
-              background: plan.popular ? 'rgba(190,86,255,0.2)' : 'rgba(255,255,255,0.08)',
-              color: plan.popular ? PURPLE2 : 'rgba(255,255,255,0.5)',
-              border: `1px solid ${plan.popular ? 'rgba(190,86,255,0.3)' : 'rgba(255,255,255,0.1)'}`,
-            }}>{plan.nameHe}</span>
-
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4, margin: '14px 0 2px' }}>
-              <span className="font-arimo" style={{ fontSize: 48, fontWeight: 700, letterSpacing: '-2px', lineHeight: 1, color: plan.popular ? PURPLE2 : '#fff' }}>
-                ₪{plan.price}
-              </span>
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)' }}>/חודש</span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 22, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
-              <i className="ti ti-coins" style={{ fontSize: 13, color: PURPLE2 }} />
-              {plan.tokens} טוקנים · {plan.users}
-            </div>
-
-            <div style={{ width: '100%', height: 1, background: 'rgba(255,255,255,0.08)', marginBottom: 20 }} />
-
-            <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 28px', display: 'flex', flexDirection: 'column', gap: 11, flex: 1 }}>
-              {plan.features.map(f => (
-                <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: 'rgba(255,255,255,0.72)' }}>
-                  <span style={{
-                    width: 18, height: 18, borderRadius: '50%', flexShrink: 0,
-                    background: plan.popular ? `linear-gradient(135deg,${PURPLE},${PURPLE2})` : 'rgba(255,255,255,0.1)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontSize: 9, fontWeight: 900, color: '#fff',
-                  }}>✓</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
-
-            <a href={plan.href} style={plan.popular
-              ? btn({ display: 'block', textAlign: 'center', padding: '13px 0' })
-              : ghost({ display: 'block', textAlign: 'center', padding: '13px 0' })}>
-              בחרו במסלול
-            </a>
-          </NCard>
-        ))}
-      </div>
-
-      <p style={{ textAlign: 'center', fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 22 }}>
-        מחירים לא כוללים מע&quot;מ · ביטול בכל עת · טוקן = יחידת AI אחת (~200–400 טוקנים לפוסט)
-      </p>
-    </section>
-  )
-}
 
 /* ─── Main ─── */
 function HomeInner() {
@@ -740,7 +603,7 @@ function HomeInner() {
       </section>
 
       {/* ══ PRICING ══ */}
-      <PricingSection />
+      <PricingPlans variant="section" />
 
       {/* ══ CTA BANNER ══ */}
       <section style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>

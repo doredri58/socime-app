@@ -51,6 +51,7 @@ const GROUPS: NavGroup[] = [
     title: 'חשבון',
     items: [
       { href: '/dashboard/profile',       label: 'מנוי וטוקנים', icon: 'ti-coins' },
+      { href: '/dashboard/upgrade',       label: 'שדרוג מסלול',  icon: 'ti-crown' },
       { href: '/dashboard/notifications', label: 'התראות',       icon: 'ti-bell' },
       { href: '/dashboard/settings',      label: 'הגדרות',       icon: 'ti-settings' },
     ],

@@ -362,14 +362,19 @@ function RefundPolicy() {
 /* ════════════════════════════════════════════════════════════════
    MAIN — Pricing page
 ════════════════════════════════════════════════════════════════ */
-export default function PricingPlans() {
+/* variant 'page' → standalone dark page (dashboard). 'section' → embed on the
+   landing (transparent, sits on the landing's own dark gradient). */
+export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 'section' }) {
   const [billing, setBilling] = useState<Billing>('annual')   // ← defaults to Annual
   const [modal, setModal] = useState<{ open: boolean; feature: string }>({ open: false, feature: '' })
 
   const openUpgrade = (feature: string) => setModal({ open: true, feature })
 
   return (
-    <section dir="rtl" className="min-h-screen bg-[#0B0913] px-5 py-16 text-white">
+    <section
+      dir="rtl"
+      className={`text-white ${variant === 'page' ? 'min-h-screen bg-[#0B0913] px-5 py-16' : 'px-5 py-16'}`}
+    >
       <div className="mx-auto max-w-6xl">
 
         {/* ── Heading ── */}
