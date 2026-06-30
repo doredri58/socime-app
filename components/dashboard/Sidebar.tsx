@@ -22,6 +22,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { href: '/dashboard/create', label: 'סטודיו יצירה',   icon: 'ti-sparkles' },
       { href: '/dashboard/video',  label: 'עורך וידאו AI',   icon: 'ti-video' },
+      { href: '/dashboard/agents', label: 'סוכני Pro',       icon: 'ti-robot' },
       { href: '/dashboard/bank',   label: 'בנק רעיונות',     icon: 'ti-bulb' },
     ],
   },

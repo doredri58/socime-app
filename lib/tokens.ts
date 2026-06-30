@@ -8,6 +8,10 @@ export const TOKEN_COSTS = {
   onboarding:        5,
   video_transcribe:  5,
   video_render:     10,
+  // Pro-tier AI agents (fixed cost per run)
+  agent_competitor: 15,
+  agent_ad_copy:    12,
+  agent_adapt:      10,
 } as const
 
 export type TokenAction = keyof typeof TOKEN_COSTS
