@@ -39,32 +39,33 @@
 }
 
 [data-theme="light"] {
-  /* ── Text ── */
-  --dash-text:     #12082E;
-  --dash-text-mid: #3D2B6B;
-  --dash-text-low: #8B7AB0;
-  --dash-card-bg:      #ffffff;
-  --dash-card-border:  rgba(109,40,217,0.12);
-  --dash-input-bg:     #F4F2FF;
-  --dash-input-border: rgba(109,40,217,0.18);
+  /* ── Text — deep purple for high contrast ── */
+  --dash-text:     #2A1758;
+  --dash-text-mid: #4A3585;
+  --dash-text-low: #7C6BA8;
+  --dash-card-bg:      #F3F0FB;   /* dirty white — stands out on the gradient */
+  --dash-card-border:  rgba(124,58,237,0.14);
+  --dash-input-bg:     #FFFFFF;
+  --dash-input-border: rgba(124,58,237,0.20);
 
-  --dash-page-bg: linear-gradient(160deg, #F0F2FF 0%, #EBF0FF 55%, #EEF3FF 100%);
-  --dash-body-bg: #F0F2FF;
-  --dash-topbar-bg: rgba(255,255,255,0.92);
-  --dash-topbar-border: rgba(109,40,217,0.12);
-  --dash-topbar-text: #6B7280;
-  --dash-sidebar-bg: linear-gradient(180deg, #FFFFFF 0%, #F8F6FF 100%);
-  --dash-sidebar-border: rgba(109,40,217,0.1);
-  --dash-sidebar-text: #5B4E8A;
-  --dash-sidebar-text-active: #4C1D95;
-  --dash-sidebar-active-bg: rgba(109,40,217,0.08);
-  --dash-sidebar-active-border: rgba(109,40,217,0.35);
-  --dash-sidebar-label: rgba(109,40,217,0.4);
-  --dash-token-bg: rgba(109,40,217,0.06);
-  --dash-token-border: rgba(109,40,217,0.18);
-  --dash-token-text: #3D2B6B;
+  /* ── Background — light blue → purple blend (never plain white) ── */
+  --dash-page-bg: linear-gradient(150deg, #C9DBFF 0%, #D4CCFF 52%, #E2CFFF 100%);
+  --dash-body-bg: #D4CCFF;
+  --dash-topbar-bg: rgba(247,244,255,0.85);
+  --dash-topbar-border: rgba(124,58,237,0.14);
+  --dash-topbar-text: #4A3585;
+  --dash-sidebar-bg: linear-gradient(180deg, #F1ECFE 0%, #E8E2FB 100%);
+  --dash-sidebar-border: rgba(124,58,237,0.14);
+  --dash-sidebar-text: #4A3585;
+  --dash-sidebar-text-active: #2A1758;
+  --dash-sidebar-active-bg: rgba(124,58,237,0.12);
+  --dash-sidebar-active-border: rgba(124,58,237,0.45);
+  --dash-sidebar-label: rgba(74,53,133,0.55);
+  --dash-token-bg: rgba(124,58,237,0.08);
+  --dash-token-border: rgba(124,58,237,0.22);
+  --dash-token-text: #2A1758;
   --dash-avatar-bg: linear-gradient(135deg, #7C3AED, #4C1D95);
-  --dash-avatar-shadow: rgba(109,40,217,0.3);
+  --dash-avatar-shadow: rgba(124,58,237,0.32);
 }
 
 /* ═══════════════════════════════════════
@@ -224,39 +225,90 @@ body {
 }
 
 /* ═══════════════════════════════════════
-   LIGHT MODE TEXT OVERRIDE
-   !important beats inline styles —
-   makes all dashboard text readable in light mode
+   LIGHT MODE — Dashboard content (#dash-content)
+   bg: blue→purple gradient · cards: dirty white · text: deep purple
+   Rules are ordered; later rules win on equal specificity.
 ═══════════════════════════════════════ */
 
-/* ── Force readable text in light mode ──────────────────────────
-   !important beats inline styles (CSS author !important > inline author)
-   Target all elements inside the dashboard main content area.
-──────────────────────────────────────────────────────────────── */
-[data-theme="light"] #dash-content * {
-  color: var(--dash-text) !important;
+/* 1 — white / translucent-white body text → deep purple */
+[data-theme="light"] #dash-content [style*="color: rgba(255, 255, 255"],
+[data-theme="light"] #dash-content [style*="color:rgba(255,255,255"],
+[data-theme="light"] #dash-content [style*="color: rgb(255, 255, 255)"],
+[data-theme="light"] #dash-content [style*="color: #fff"],
+[data-theme="light"] #dash-content [style*="color: #FFF"],
+[data-theme="light"] #dash-content [style*="color: white"] {
+  color: #2A1758 !important;
 }
 
-/* Exception 1: gradient text (shimmer, logo "Me" etc.) stays transparent */
-[data-theme="light"] #dash-content [style*="-webkit-text-fill-color: transparent"],
-[data-theme="light"] #dash-content [style*="textFillColor"],
+/* 2 — glass-card white backgrounds → dirty white + definition.
+   0.0x covers 0.03–0.09, 0.1 covers 0.10–0.12. Both spaced + compact rgba. */
+[data-theme="light"] #dash-content [style*="background: rgba(255, 255, 255, 0.0"],
+[data-theme="light"] #dash-content [style*="background: rgba(255, 255, 255, 0.1"],
+[data-theme="light"] #dash-content [style*="background:rgba(255,255,255,0.0"],
+[data-theme="light"] #dash-content [style*="background:rgba(255,255,255,0.1"],
+[data-theme="light"] #dash-content [style*="background-color: rgba(255, 255, 255, 0.0"],
+[data-theme="light"] #dash-content [style*="background-color: rgba(255, 255, 255, 0.1"],
+[data-theme="light"] #dash-content [style*="background-color:rgba(255,255,255,0.0"],
+[data-theme="light"] #dash-content [style*="background-color:rgba(255,255,255,0.1"] {
+  background: #F3F0FB !important;
+  border-color: rgba(124, 58, 237, 0.14) !important;
+  box-shadow: 0 2px 14px rgba(80, 40, 160, 0.07) !important;
+}
+
+/* 3 — white borders → soft purple hairline (spaced + compact) */
+[data-theme="light"] #dash-content [style*="solid rgba(255, 255, 255"],
+[data-theme="light"] #dash-content [style*="solid rgba(255,255,255"],
+[data-theme="light"] #dash-content [style*="dashed rgba(255, 255, 255"],
+[data-theme="light"] #dash-content [style*="dashed rgba(255,255,255"] {
+  border-color: rgba(124, 58, 237, 0.18) !important;
+}
+
+/* 4 — thin dividers (1–2px) → purple line, not a card (overrides rule 2) */
+[data-theme="light"] #dash-content [style*="height: 1px"],
+[data-theme="light"] #dash-content [style*="height: 2px"] {
+  background: rgba(124, 58, 237, 0.16) !important;
+  box-shadow: none !important;
+}
+
+/* 5 — keep white text on COLORED buttons (gradient + known solid CTAs).
+   Must come after rule 1 to win. */
+[data-theme="light"] #dash-content [style*="linear-gradient(135deg"],
+[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] *,
+[data-theme="light"] #dash-content [style*="rgb(59, 130, 239)"],
+[data-theme="light"] #dash-content [style*="rgb(59, 130, 239)"] *,
+[data-theme="light"] #dash-content [style*="rgb(59,130,239)"],
+[data-theme="light"] #dash-content [style*="rgb(59,130,239)"] *,
+[data-theme="light"] #dash-content [style*="#3B82EF"],
+[data-theme="light"] #dash-content [style*="#3B82EF"] *,
+[data-theme="light"] #dash-content [style*="rgb(152, 80, 255)"],
+[data-theme="light"] #dash-content [style*="rgb(152, 80, 255)"] *,
+[data-theme="light"] #dash-content [style*="rgb(152,80,255)"],
+[data-theme="light"] #dash-content [style*="rgb(152,80,255)"] * {
+  color: #ffffff !important;
+}
+/* colored buttons keep their own background (undo rule 2 if it ever matched) */
+[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] {
+  box-shadow: none !important;
+}
+
+/* 6 — gradient / clipped text stays transparent (shimmer, logo) */
+[data-theme="light"] #dash-content [style*="text-fill-color: transparent"],
 [data-theme="light"] #dash-content .shimmer-gradient {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
 }
 
-/* Exception 2: white text on gradient/colored CTA buttons */
-[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] > *,
-[data-theme="light"] #dash-content [style*="linear-gradient(90deg, #9850FF"] > * {
-  color: #ffffff !important;
-}
-
-/* Exception 3: inputs get light styling */
+/* 7 — inputs */
 [data-theme="light"] #dash-content input,
 [data-theme="light"] #dash-content textarea,
 [data-theme="light"] #dash-content select {
-  background: var(--dash-input-bg) !important;
-  border-color: var(--dash-input-border) !important;
+  background: #ffffff !important;
+  border-color: rgba(124, 58, 237, 0.2) !important;
+  color: #2A1758 !important;
+}
+[data-theme="light"] #dash-content input::placeholder,
+[data-theme="light"] #dash-content textarea::placeholder {
+  color: #9B8BC4 !important;
 }
 
 .sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(152,80,255,0.2) transparent; }

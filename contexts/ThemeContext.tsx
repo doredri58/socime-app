@@ -11,24 +11,27 @@ interface ThemeCtx {
 
 const Ctx = createContext<ThemeCtx>({ theme: 'dark', toggle: () => {}, isDark: true })
 
+const STORAGE_KEY = 'socime-theme'
+
+function apply(t: AppTheme) {
+  document.documentElement.setAttribute('data-theme', t)
+  document.body.style.background = t === 'dark' ? '#0D0829' : '#D4CCFF'
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<AppTheme>('dark')
 
   useEffect(() => {
-    // Light mode temporarily disabled — always dark
-    apply('dark')
-    setTheme('dark')
+    const saved = (localStorage.getItem(STORAGE_KEY) as AppTheme | null)
+    const initial: AppTheme = saved === 'light' || saved === 'dark' ? saved : 'dark'
+    setTheme(initial)
+    apply(initial)
   }, [])
-
-  function apply(t: AppTheme) {
-    document.documentElement.setAttribute('data-theme', t)
-    document.body.style.background = t === 'dark' ? '#0D0829' : '#F0F2FF'
-  }
 
   function toggle() {
     setTheme(prev => {
       const next: AppTheme = prev === 'dark' ? 'light' : 'dark'
-      localStorage.setItem('socime-theme', next)
+      localStorage.setItem(STORAGE_KEY, next)
       apply(next)
       return next
     })
