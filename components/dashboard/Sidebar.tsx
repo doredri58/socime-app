@@ -7,17 +7,23 @@ import { useState } from 'react'
 /* ── Nav structure ─────────────────────────────────────────── */
 
 const WORKSPACE = [
-  { href: '/dashboard',          label: 'דאשבורד',              icon: 'ti-layout-dashboard' },
-  { href: '/dashboard/create',   label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
-  { href: '/dashboard/video',    label: 'עורך וידאו AI',         icon: 'ti-video' },
-  { href: '/dashboard/queue',    label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
-  { href: '/dashboard/ideas',    label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
-  { href: '/dashboard/business', label: 'תיק עסק',              icon: 'ti-building-store' },
+  { href: '/dashboard',           label: 'דאשבורד',              icon: 'ti-layout-dashboard' },
+  { href: '/dashboard/create',    label: 'סטודיו יצירה',         icon: 'ti-sparkles' },
+  { href: '/dashboard/video',     label: 'עורך וידאו AI',         icon: 'ti-video' },
+  { href: '/dashboard/bulk',      label: 'העלאה מרוכזת',         icon: 'ti-files' },
+  { href: '/dashboard/queue',     label: 'תזמונים ולוח שנה',     icon: 'ti-calendar-event' },
+  { href: '/dashboard/timing',    label: 'תזמון חכם',             icon: 'ti-clock-bolt' },
+  { href: '/dashboard/ideas',     label: 'ניתוחים סטטיסטיים',    icon: 'ti-chart-bar' },
+  { href: '/dashboard/bank',      label: 'בנק רעיונות',           icon: 'ti-bulb' },
+  { href: '/dashboard/community', label: 'ניהול קהילה',           icon: 'ti-message-2-heart' },
+  { href: '/dashboard/business',  label: 'תיק עסק',              icon: 'ti-building-store' },
 ]
 
 const MANAGEMENT = [
-  { href: '/dashboard/profile',  label: 'מצב חשבון',            icon: 'ti-coins' },
-  { href: '/dashboard/settings', label: 'הגדרות',               icon: 'ti-settings' },
+  { href: '/dashboard/profile',       label: 'מצב חשבון',        icon: 'ti-coins' },
+  { href: '/dashboard/notifications', label: 'התראות',            icon: 'ti-bell' },
+  { href: '/dashboard/social',        label: 'חיבורי רשתות',     icon: 'ti-plug-connected' },
+  { href: '/dashboard/settings',      label: 'הגדרות',            icon: 'ti-settings' },
 ]
 
 const SUPPORT = [
