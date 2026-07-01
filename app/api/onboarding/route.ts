@@ -60,7 +60,12 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
 החזר את ה-prompt בלבד, ללא כותרות או הסברים.`
         }],
       }],
-      generationConfig: { temperature: 0.7, maxOutputTokens: 300 },
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 300,
+        // @ts-expect-error thinkingConfig accepted by the API, not yet typed in this SDK
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     })
 
     const parsedSystemPrompt = result.response.text().trim()

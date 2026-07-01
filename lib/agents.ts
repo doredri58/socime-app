@@ -80,6 +80,10 @@ async function generateJson<T>(opts: {
           temperature,
           maxOutputTokens,
           responseMimeType: 'application/json', // ← strict JSON output
+          // gemini-2.5-flash is a thinking model; disable thinking so the budget
+          // goes to output (else structured JSON gets truncated → parse errors).
+          // @ts-expect-error thinkingConfig accepted by the API, not yet typed in this SDK
+          thinkingConfig: { thinkingBudget: 0 },
         },
       })
 

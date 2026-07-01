@@ -21,7 +21,14 @@ export async function generatePost(businessDesc: string, systemPromptOverride?: 
 
   const result = await model.generateContent({
     contents: [{ role: 'user', parts: [{ text: `${systemContext}\n\nכתוב פוסט לעסק הבא: ${businessDesc}` }] }],
-    generationConfig: { temperature: 0.8, maxOutputTokens: 500 },
+    generationConfig: {
+      temperature: 0.8,
+      maxOutputTokens: 500,
+      // gemini-2.5-flash is a thinking model; disable thinking so the token
+      // budget goes to output, not internal reasoning (else it truncates).
+      // @ts-expect-error thinkingConfig is accepted by the API but not yet typed in this SDK
+      thinkingConfig: { thinkingBudget: 0 },
+    },
   })
 
   const rawText = result.response.text().trim()
@@ -90,7 +97,12 @@ export async function generateIdeas(
       role: 'user',
       parts: [{ text: `${systemPrompt}\n\nצור 10 רעיונות לפוסטים בקטגוריה: ${categoryMap[category]}.\nהחזר JSON בלבד: { "ideas": ["...", "...", ...] }` }],
     }],
-    generationConfig: { temperature: 0.9, maxOutputTokens: 800 },
+    generationConfig: {
+      temperature: 0.9,
+      maxOutputTokens: 800,
+      // @ts-expect-error thinkingConfig accepted by the API, not yet typed in this SDK
+      thinkingConfig: { thinkingBudget: 0 },
+    },
   })
 
   const rawText = result.response.text().trim()

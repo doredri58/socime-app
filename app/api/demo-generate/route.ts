@@ -55,14 +55,22 @@ export async function POST(req: NextRequest) {
         role: 'user',
         parts: [{ text: `${DEMO_PROMPT}\n\nכאב הלקוח: ${pain_point.trim()}` }],
       }],
-      generationConfig: { temperature: 0.85, maxOutputTokens: 350 },
+      generationConfig: {
+        temperature: 0.85,
+        maxOutputTokens: 800,
+        responseMimeType: 'application/json', // ← strict JSON output
+        // gemini-2.5-flash is a thinking model; disable thinking so the token
+        // budget goes to the actual JSON output (not internal reasoning).
+        // @ts-expect-error thinkingConfig is accepted by the API but not yet typed in this SDK
+        thinkingConfig: { thinkingBudget: 0 },
+      },
     })
 
+    // Resilient parse: strip any fences and grab the first {...} block.
     const raw = result.response.text().trim()
-      .replace(/^```json\n?/, '')
-      .replace(/\n?```$/, '')
-
-    const parsed = JSON.parse(raw) as { post: string }
+      .replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/\s*```$/, '').trim()
+    const match = raw.match(/\{[\s\S]*\}/)
+    const parsed = JSON.parse(match ? match[0] : raw) as { post: string }
 
     return NextResponse.json({ post: parsed.post })
   } catch (err: unknown) {
