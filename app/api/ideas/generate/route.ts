@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { generateIdeas } from '@/lib/gemini'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
+import { getActiveBusiness } from '@/lib/business'
 
 const CATEGORIES = ['value', 'marketing', 'vibe'] as const
 
@@ -11,16 +12,10 @@ export async function POST(_req: NextRequest) {
   if (!user) return NextResponse.json({ error: 'לא מחובר' }, { status: 401 })
 
   const db = createServiceClient()
-  const { data: profile } = await db
-    .from('business_profiles')
-    .select('parsed_system_prompt, business_name')
-    .eq('user_id', user.id)
-    .order('updated_at', { ascending: false })
-    .limit(1)
-    .single()
+  const business = await getActiveBusiness(user.id)
 
-  const systemPrompt = profile?.parsed_system_prompt
-    ?? `אתה עוזר שיווק לעסק בשם ${profile?.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
+  const systemPrompt = business?.parsed_system_prompt
+    ?? `אתה עוזר שיווק לעסק בשם ${business?.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
 
   // בדיקת יתרת טוקנים לפני קריאת AI
   const tokenCheck = await checkTokenBalance(user.id, 'generate_ideas')

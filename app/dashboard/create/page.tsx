@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
+import { getActiveBusiness } from '@/lib/business'
 import CreateStudio from '@/components/dashboard/CreateStudio'
 
 export default async function CreatePage({ searchParams }: { searchParams: Promise<{ idea?: string; prompt?: string }> }) {
@@ -8,11 +9,7 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
   if (!user) redirect('/?login=required')
   const db = createServiceClient()
 
-  const { data: business } = await db
-    .from('business_profiles')
-    .select('business_name, raw_description')
-    .eq('user_id', user!.id)
-    .single()
+  const business = await getActiveBusiness(user!.id)
 
   const { data: profile } = await db
     .from('users')

@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import NotificationBell from './NotificationBell'
+import BusinessSwitcher from './BusinessSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
 
 interface TopBarProps {
@@ -31,11 +32,9 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
       gap: 16,
     }}>
 
-      {/* Right: Page context */}
+      {/* Right: active-business switcher (context switching) */}
       <div style={{ flex: 1 }}>
-        <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--dash-topbar-text)' }}>
-          לוח בקרה
-        </span>
+        <BusinessSwitcher />
       </div>
 
       {/* Center: Token tracker pill */}

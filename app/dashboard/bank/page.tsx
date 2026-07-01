@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
+import { getActiveBusiness } from '@/lib/business'
 import IdeasBank from '@/components/dashboard/IdeasBank'
 
 export default async function BankPage() {
@@ -14,11 +15,7 @@ export default async function BankPage() {
     .eq('id', user.id)
     .single()
 
-  const { data: business } = await db
-    .from('business_profiles')
-    .select('business_name, business_type, raw_description')
-    .eq('user_id', user.id)
-    .single()
+  const business = await getActiveBusiness(user.id)
 
   return (
     <IdeasBank
@@ -26,7 +23,7 @@ export default async function BankPage() {
       plan={profile?.plan ?? 'free'}
       tokenBalance={profile?.token_balance ?? 0}
       businessName={business?.business_name ?? ''}
-      businessType={business?.business_type ?? ''}
+      businessType={business?.raw_description ?? ''}
     />
   )
 }

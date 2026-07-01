@@ -67,12 +67,16 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
 
     const db = createServiceClient()
 
-    // Check if profile exists
-    const { data: existing } = await db
-      .from('business_profiles')
-      .select('id')
-      .eq('user_id', userId)
-      .single()
+    // Target the ACTIVE business (multi-business aware): users.active_business_id
+    // → else the user's first business → else create a new one.
+    const { data: u } = await db.from('users').select('active_business_id').eq('id', userId).single()
+    let targetId = (u?.active_business_id as string | null) ?? null
+    if (!targetId) {
+      const { data: first } = await db
+        .from('business_profiles').select('id')
+        .eq('user_id', userId).order('created_at', { ascending: true }).limit(1).maybeSingle()
+      targetId = first?.id ?? null
+    }
 
     // Append target audience to description so it's stored without needing a new column
     const fullDescription = targetAudience
@@ -84,16 +88,21 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
       business_name:        businessName,
       raw_description:      fullDescription,
       parsed_system_prompt: parsedSystemPrompt,
-      tone_of_voice:        toneOfVoice ?? 'friendly',
+      tone_of_voice:        toneOfVoice ?? 'professional',
       phone:                phone ?? null,
       address:              address ?? null,
       operating_hours:      operatingHours ?? null,
       updated_at:           new Date().toISOString(),
     }
 
-    const { error } = existing
-      ? await db.from('business_profiles').update(payload).eq('user_id', userId)
-      : await db.from('business_profiles').insert(payload)
+    let error
+    if (targetId) {
+      ({ error } = await db.from('business_profiles').update(payload).eq('id', targetId).eq('user_id', userId))
+    } else {
+      const ins = await db.from('business_profiles').insert(payload).select('id').single()
+      error = ins.error
+      if (ins.data?.id) await db.from('users').update({ active_business_id: ins.data.id }).eq('id', userId)
+    }
 
     if (error) throw error
 

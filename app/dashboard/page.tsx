@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
+import { getActiveBusiness } from '@/lib/business'
 import QuickCreate from '@/components/dashboard/QuickCreate'
 
 /* ── helpers ───────────────────────────────────────────────── */
@@ -45,15 +46,14 @@ export default async function DashboardHome() {
   const weekEndDate = new Date(weekDays[6])
   weekEndDate.setHours(23, 59, 59, 999)
 
+  const business = await getActiveBusiness(user.id)
   const [
     { data: profile },
-    { data: business },
     { data: weekPosts },
     { count: queueCount },
     { data: socialConnections },
   ] = await Promise.all([
     db.from('users').select('name, tier, token_balance, image_count_this_month').eq('id', user.id).single(),
-    db.from('business_profiles').select('business_name').eq('user_id', user.id).single(),
     db.from('scheduler')
       .select('id, content, platform, scheduled_at, status')
       .eq('user_id', user.id)
