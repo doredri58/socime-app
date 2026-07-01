@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
+import Teleprompter from '@/components/dashboard/Teleprompter'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
 const PURPLE  = '#9850FF'
@@ -230,9 +231,9 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
 }
 
 /* ── video / storyboard card ──────────────────────────────────────────── */
-function VideoCard({ idea, saved, onSave, onSend, personalized }: {
+function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
   idea: VideoIdea; saved: boolean; onSave: () => void
-  onSend: () => void; personalized?: boolean
+  onSend: () => void; onPrompt: () => void; personalized?: boolean
 }) {
   return (
     <div className="neon-card" style={{
@@ -337,6 +338,13 @@ function VideoCard({ idea, saved, onSave, onSend, personalized }: {
         >
           <i className="ti ti-send" style={{ fontSize: 13 }} /> שלח לסטודיו ליצירה
         </button>
+        <button onClick={onPrompt} title="פתח פרומפטר" style={{
+          width: 36, height: 36, borderRadius: 10, flexShrink: 0, cursor: 'pointer',
+          background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s',
+        }}>
+          <i className="ti ti-microphone-2" style={{ fontSize: 15, color: GREEN }} />
+        </button>
         <BookmarkBtn saved={saved} onToggle={onSave} />
       </div>
     </div>
@@ -389,6 +397,7 @@ export default function IdeasBank({ userName, plan, businessName }: Props) {
   const [category,    setCategory]    = useState<CategoryId>('all')
   const [savedIds,    setSavedIds]    = useState<Set<string>>(new Set())
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [promptIdea,  setPromptIdea]  = useState<VideoIdea | null>(null)
 
   function toggleSave(id: string) {
     setSavedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
@@ -530,7 +539,7 @@ export default function IdeasBank({ userName, plan, businessName }: Props) {
                 {personalizedVideos.map(idea => (
                   <VideoCard key={idea.id} idea={idea} personalized
                     saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onSend={() => sendToStudio(idea)} />
+                    onSend={() => sendToStudio(idea)} onPrompt={() => setPromptIdea(idea)} />
                 ))}
               </div>
             </section>
@@ -547,7 +556,7 @@ export default function IdeasBank({ userName, plan, businessName }: Props) {
                 {standardVideos.map(idea => (
                   <VideoCard key={idea.id} idea={idea}
                     saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onSend={() => sendToStudio(idea)} />
+                    onSend={() => sendToStudio(idea)} onPrompt={() => setPromptIdea(idea)} />
                 ))}
               </div>
             </section>
@@ -572,6 +581,13 @@ export default function IdeasBank({ userName, plan, businessName }: Props) {
       )}
 
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} trigger="generic" />}
+      {promptIdea && (
+        <Teleprompter
+          title={promptIdea.title}
+          text={`${promptIdea.hook}\n\n${promptIdea.script}`}
+          onClose={() => setPromptIdea(null)}
+        />
+      )}
     </div>
   )
 }

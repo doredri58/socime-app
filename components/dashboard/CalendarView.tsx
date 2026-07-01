@@ -125,9 +125,23 @@ function PostCard({ post, compact = false }: { post: Post; compact?: boolean }) 
   )
 }
 
-function PostDetail({ post, onClose }: { post: Post; onClose: () => void }) {
+function PostDetail({ post, onClose, onStatusChange }: {
+  post: Post; onClose: () => void
+  onStatusChange: (id: string, status: string) => Promise<void>
+}) {
   const s   = STATUS_META[post.status] ?? STATUS_META.draft
   const plats = post.platform ?? []
+  const [busy, setBusy] = useState(false)
+
+  // pausable = still waiting to go out; paused = currently held back from the cron queue
+  const isPausable = ['queued', 'pending_approval', 'scheduled'].includes(post.status)
+  const isPaused    = post.status === 'paused'
+
+  async function togglePause() {
+    setBusy(true)
+    await onStatusChange(post.id, isPaused ? 'queued' : 'paused')
+    setBusy(false)
+  }
 
   return (
     <div style={{
@@ -187,6 +201,22 @@ function PostDetail({ post, onClose }: { post: Post; onClose: () => void }) {
           <div style={{ fontSize: 12, color: PURPLE2, marginBottom: 16, lineHeight: 1.6, direction: 'ltr' }}>
             {post.hashtags}
           </div>
+        )}
+
+        {/* pause / resume — only for posts still waiting to go out */}
+        {(isPausable || isPaused) && (
+          <button onClick={togglePause} disabled={busy} style={{
+            width: '100%', padding: '10px', borderRadius: 12, marginBottom: 8,
+            cursor: busy ? 'wait' : 'pointer',
+            background: isPaused ? 'rgba(52,211,153,0.14)' : 'rgba(251,191,36,0.14)',
+            border: `1px solid ${isPaused ? 'rgba(52,211,153,0.35)' : 'rgba(251,191,36,0.35)'}`,
+            color: isPaused ? '#34D399' : '#FBBF24', fontSize: 12, fontWeight: 700,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            opacity: busy ? 0.6 : 1, transition: 'opacity 0.15s',
+          }}>
+            <i className={`ti ${isPaused ? 'ti-player-play' : 'ti-player-pause'}`} style={{ fontSize: 14 }} />
+            {busy ? 'מעדכן...' : isPaused ? 'המשך תזמון' : 'השהה תזמון'}
+          </button>
         )}
 
         {/* actions */}
@@ -577,6 +607,19 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
     setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val])
   }
 
+  // Pause holds a post back from the cron queue (cron only picks up status='queued');
+  // resume puts it back in queue so it fires on its next due check.
+  async function handleStatusChange(id: string, status: string) {
+    const res = await fetch(`/api/scheduler/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    })
+    if (!res.ok) return
+    setAllPosts(prev => prev.map(p => p.id === id ? { ...p, status } : p))
+    setSelectedPost(prev => (prev && prev.id === id) ? { ...prev, status } : prev)
+  }
+
   const weekEndDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6)
   const scheduledCount = allPosts.filter(p => p.status === 'scheduled' || p.status === 'queued').length
   const draftCount     = allPosts.filter(p => p.status === 'draft').length
@@ -629,7 +672,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
         {/* status filter */}
         <div>
           <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.07em', marginBottom: 10 }}>סטטוס</div>
-          {(['scheduled', 'draft', 'published', 'pending_approval'] as const).map(st => {
+          {(['scheduled', 'draft', 'published', 'pending_approval', 'paused'] as const).map(st => {
             const s = STATUS_META[st]
             return (
               <button key={st} onClick={() => toggleFilter(filterStatus, setFilterStatus, st)} style={{
@@ -727,7 +770,9 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
       </div>
 
       {/* ── Modals ── */}
-      {selectedPost && <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />}
+      {selectedPost && (
+        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} onStatusChange={handleStatusChange} />
+      )}
       {scheduleDate && (
         <ScheduleModal
           date={scheduleDate}
