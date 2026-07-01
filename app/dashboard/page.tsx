@@ -55,13 +55,13 @@ export default async function DashboardHome() {
   ] = await Promise.all([
     db.from('users').select('name, tier, token_balance, image_count_this_month').eq('id', user.id).single(),
     db.from('scheduler')
-      .select('id, content, platform, scheduled_at, status')
+      .select('id, content_text, platform, scheduled_at, status')
       .eq('user_id', user.id)
       .gte('scheduled_at', weekStart)
       .lte('scheduled_at', weekEndDate.toISOString())
       .order('scheduled_at', { ascending: true }),
     db.from('scheduler').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-    db.from('social_connections').select('platform').eq('user_id', user.id).limit(5),
+    db.from('social_tokens').select('platform').eq('user_id', user.id).limit(5),
   ])
 
   const userName  = profile?.name ?? 'משתמש'
@@ -69,7 +69,7 @@ export default async function DashboardHome() {
   const today     = new Date()
   const todayIdx  = today.getDay()
 
-  type Post = { id: string; content: string; platform: string; scheduled_at: string; status: string }
+  type Post = { id: string; content_text: string; platform: string; scheduled_at: string; status: string }
   const posts = (weekPosts ?? []) as Post[]
 
   // Group posts by day-of-week index
