@@ -198,6 +198,14 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
           phone:          phone          || undefined,
           address:        address        || undefined,
           operatingHours: operatingHours || undefined,
+          companyId:      companyId      || undefined,
+          website:        website        || undefined,
+          instagram:      instagram      || undefined,
+          facebook:       facebook       || undefined,
+          linkedin:       linkedin       || undefined,
+          tiktok:         tiktok         || undefined,
+          targetAudience: targetAudience || undefined,
+          uniqueValue:    uniqueValue    || undefined,
         }),
       })
       const data = await res.json()

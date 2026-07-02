@@ -125,22 +125,44 @@ function PostCard({ post, compact = false }: { post: Post; compact?: boolean }) 
   )
 }
 
-function PostDetail({ post, onClose, onStatusChange }: {
+function PostDetail({ post, onClose, onStatusChange, onSaveContent, onPublishNow }: {
   post: Post; onClose: () => void
   onStatusChange: (id: string, status: string) => Promise<void>
+  onSaveContent: (id: string, contentText: string) => Promise<boolean>
+  onPublishNow: (post: Post) => Promise<string | null>
 }) {
   const s   = STATUS_META[post.status] ?? STATUS_META.draft
   const plats = post.platform ?? []
-  const [busy, setBusy] = useState(false)
+  const [busy, setBusy]           = useState(false)
+  const [editing, setEditing]     = useState(false)
+  const [editText, setEditText]   = useState(post.content_text ?? '')
+  const [publishing, setPublishing] = useState(false)
+  const [publishErr, setPublishErr] = useState<string | null>(null)
 
   // pausable = still waiting to go out; paused = currently held back from the cron queue
   const isPausable = ['queued', 'pending_approval', 'scheduled'].includes(post.status)
   const isPaused    = post.status === 'paused'
+  const isPublishable = post.status !== 'published' && post.status !== 'processing'
 
   async function togglePause() {
     setBusy(true)
     await onStatusChange(post.id, isPaused ? 'queued' : 'paused')
     setBusy(false)
+  }
+
+  async function saveEdit() {
+    setBusy(true)
+    const ok = await onSaveContent(post.id, editText)
+    setBusy(false)
+    if (ok) setEditing(false)
+  }
+
+  async function publishNow() {
+    setPublishing(true)
+    setPublishErr(null)
+    const err = await onPublishNow(post)
+    setPublishing(false)
+    if (err) setPublishErr(err)
   }
 
   return (
@@ -185,16 +207,31 @@ function PostDetail({ post, onClose, onStatusChange }: {
           })}
         </div>
 
-        {/* content */}
-        <div style={{
-          padding: '14px', borderRadius: 14,
-          background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
-          fontSize: 13, color: '#fff', lineHeight: 1.75, direction: 'rtl',
-          marginBottom: 14, maxHeight: 200, overflowY: 'auto',
-          whiteSpace: 'pre-wrap',
-        }}>
-          {post.content_text || '(אין תוכן)'}
-        </div>
+        {/* content — editable when in edit mode */}
+        {editing ? (
+          <textarea
+            value={editText}
+            onChange={e => setEditText(e.target.value)}
+            rows={7}
+            autoFocus
+            style={{
+              width: '100%', boxSizing: 'border-box', padding: '14px', borderRadius: 14,
+              background: 'rgba(255,255,255,0.06)', border: `1px solid ${PURPLE}66`,
+              fontSize: 13, color: '#fff', lineHeight: 1.75, direction: 'rtl',
+              marginBottom: 14, outline: 'none', resize: 'vertical', fontFamily: 'inherit',
+            }}
+          />
+        ) : (
+          <div style={{
+            padding: '14px', borderRadius: 14,
+            background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)',
+            fontSize: 13, color: '#fff', lineHeight: 1.75, direction: 'rtl',
+            marginBottom: 14, maxHeight: 200, overflowY: 'auto',
+            whiteSpace: 'pre-wrap',
+          }}>
+            {post.content_text || '(אין תוכן)'}
+          </div>
+        )}
 
         {/* hashtags */}
         {post.hashtags && (
@@ -219,27 +256,66 @@ function PostDetail({ post, onClose, onStatusChange }: {
           </button>
         )}
 
+        {/* publish error */}
+        {publishErr && (
+          <div style={{
+            padding: '10px 14px', borderRadius: 12, marginBottom: 8,
+            background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)',
+            fontSize: 12, color: '#F87171', lineHeight: 1.6,
+          }}>
+            {publishErr}
+          </div>
+        )}
+
         {/* actions */}
         <div style={{ display: 'flex', gap: 8 }}>
-          <button style={{
-            flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer',
-            background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
-            color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-          }}>
-            <i className="ti ti-pencil" style={{ fontSize: 14 }} />
-            ערוך
-          </button>
-          <button style={{
-            flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer',
-            background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
-            border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-            boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
-          }}>
-            <i className="ti ti-send" style={{ fontSize: 14 }} />
-            פרסם עכשיו
-          </button>
+          {editing ? (
+            <>
+              <button onClick={() => { setEditing(false); setEditText(post.content_text ?? '') }} disabled={busy} style={{
+                flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                ביטול
+              </button>
+              <button onClick={saveEdit} disabled={busy || !editText.trim()} style={{
+                flex: 1, padding: '10px', borderRadius: 12, cursor: busy ? 'wait' : 'pointer',
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+                border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                opacity: busy || !editText.trim() ? 0.6 : 1,
+              }}>
+                <i className="ti ti-check" style={{ fontSize: 14 }} />
+                {busy ? 'שומר...' : 'שמור'}
+              </button>
+            </>
+          ) : (
+            <>
+              <button onClick={() => setEditing(true)} style={{
+                flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)',
+                color: 'rgba(255,255,255,0.6)', fontSize: 12, fontWeight: 600,
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                <i className="ti ti-pencil" style={{ fontSize: 14 }} />
+                ערוך
+              </button>
+              {isPublishable && (
+                <button onClick={publishNow} disabled={publishing} style={{
+                  flex: 1, padding: '10px', borderRadius: 12, cursor: publishing ? 'wait' : 'pointer',
+                  background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+                  border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
+                  opacity: publishing ? 0.7 : 1,
+                }}>
+                  <i className={`ti ${publishing ? 'ti-loader-2' : 'ti-send'}`} style={{ fontSize: 14 }} />
+                  {publishing ? 'מפרסם...' : 'פרסם עכשיו'}
+                </button>
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>
@@ -620,6 +696,51 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
     setSelectedPost(prev => (prev && prev.id === id) ? { ...prev, status } : prev)
   }
 
+  async function handleSaveContent(id: string, contentText: string): Promise<boolean> {
+    const res = await fetch(`/api/scheduler/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content_text: contentText }),
+    })
+    if (!res.ok) return false
+    setAllPosts(prev => prev.map(p => p.id === id ? { ...p, content_text: contentText } : p))
+    setSelectedPost(prev => (prev && prev.id === id) ? { ...prev, content_text: contentText } : prev)
+    return true
+  }
+
+  // Immediate publish via /api/publish (uses the user's own connected tokens).
+  // Returns null on full success, or an error string to show in the modal.
+  async function handlePublishNow(post: Post): Promise<string | null> {
+    const res = await fetch('/api/publish', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        postId:    post.id,
+        text:      post.content_text ?? '',
+        platforms: post.platform ?? [],
+        imageUrl:  post.payload_url ?? undefined,
+      }),
+    })
+    const data = await res.json().catch(() => ({})) as {
+      results?: Record<string, { success: boolean; error?: string }>
+      error?: string
+    }
+    const results = data.results ?? {}
+    const anySuccess = Object.values(results).some(r => r.success)
+    const failures = Object.entries(results)
+      .filter(([, r]) => !r.success)
+      .map(([p, r]) => `${PLATFORM_META[p]?.label ?? p}: ${r.error ?? 'שגיאה'}`)
+
+    if (anySuccess || res.ok) {
+      const newStatus = failures.length === 0 ? 'published' : anySuccess ? 'published' : 'failed'
+      setAllPosts(prev => prev.map(p => p.id === post.id ? { ...p, status: newStatus } : p))
+      setSelectedPost(prev => (prev && prev.id === post.id) ? { ...prev, status: newStatus } : prev)
+    }
+    if (failures.length > 0) return failures.join(' | ')
+    if (!res.ok) return data.error ?? 'שגיאה בפרסום'
+    return null
+  }
+
   const weekEndDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + 6)
   const scheduledCount = allPosts.filter(p => p.status === 'scheduled' || p.status === 'queued').length
   const draftCount     = allPosts.filter(p => p.status === 'draft').length
@@ -771,7 +892,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
 
       {/* ── Modals ── */}
       {selectedPost && (
-        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} onStatusChange={handleStatusChange} />
+        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} onStatusChange={handleStatusChange} onSaveContent={handleSaveContent} onPublishNow={handlePublishNow} />
       )}
       {scheduleDate && (
         <ScheduleModal

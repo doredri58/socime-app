@@ -1,31 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createServerSupabaseClient } from '@/lib/supabase'
 import { generatePost } from '@/lib/llm'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 export async function POST(req: NextRequest) {
   try {
-    const { businessDesc, userId } = await req.json()
+    // Session auth — never trust a userId from the body
+    const supabase = await createServerSupabaseClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return NextResponse.json({ error: 'נדרשת התחברות' }, { status: 401 })
+
+    const { businessDesc } = await req.json()
 
     if (!businessDesc || typeof businessDesc !== 'string' || businessDesc.trim().length < 3) {
       return NextResponse.json({ error: 'תיאור עסק קצר מדי' }, { status: 400 })
     }
 
-    if (userId) {
-      const check = await checkTokenBalance(userId, 'generate_post')
-      if (!check.ok) {
-        return NextResponse.json(
-          { error: `אין מספיק טוקנים (נדרש ${check.required}, נותר ${check.balance})`, insufficientTokens: true },
-          { status: 402 }
-        )
-      }
+    const check = await checkTokenBalance(user.id, 'generate_post')
+    if (!check.ok) {
+      return NextResponse.json(
+        { error: `אין מספיק טוקנים (נדרש ${check.required}, נותר ${check.balance})`, insufficientTokens: true },
+        { status: 402 }
+      )
     }
 
     const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
 
-    if (userId) {
-      // deduct the FIXED economy cost (TOKEN_COSTS.generate_post); log the real $ cost
-      await deductTokens(userId, 'generate_post', undefined, costUsd)
-    }
+    // deduct the FIXED economy cost (TOKEN_COSTS.generate_post); log the real $ cost
+    await deductTokens(user.id, 'generate_post', undefined, costUsd)
 
     return NextResponse.json({ text, hashtags, tokensUsed })
   } catch (err: unknown) {

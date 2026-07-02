@@ -26,22 +26,16 @@ export async function POST(req: NextRequest) {
 
     const userId = authData.user.id
 
-    // Insert into public.users
+    // Insert into public.users — free tier, same welcome grant as OAuth signups.
+    // (Previously granted plan:'pro' + 200 tokens + a fake ₪49 "subscription"
+    // transaction that inflated admin revenue stats.)
     await db.from('users').insert({
       id: userId,
       email,
       name,
       role: 'user',
-      plan: 'pro',
-      token_balance: 200,
-    })
-
-    // Log the subscription transaction
-    await db.from('transactions').insert({
-      user_id: userId,
-      transaction_type: 'subscription',
-      amount_paid_ils: 49,
-      tokens_granted: 200,
+      plan: 'free',
+      token_balance: 30,
     })
 
     // Save draft post if provided

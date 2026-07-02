@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateImage } from '@/lib/gemini'
-import { createServiceClient } from '@/lib/supabase'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
 import { getQuotaForTier } from '@/lib/image-quota'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
@@ -8,11 +8,15 @@ const BUCKET = 'generated-images'
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId, prompt } = await req.json()
-
-    if (!userId) {
+    // Session auth — never trust a userId from the body
+    const supabase = await createServerSupabaseClient()
+    const { data: { user: sessionUser } } = await supabase.auth.getUser()
+    if (!sessionUser) {
       return NextResponse.json({ error: 'נדרשת התחברות' }, { status: 401 })
     }
+    const userId = sessionUser.id
+
+    const { prompt } = await req.json()
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length < 3) {
       return NextResponse.json({ error: 'תיאור התמונה קצר מדי' }, { status: 400 })
     }

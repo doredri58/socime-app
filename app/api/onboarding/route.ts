@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
@@ -18,13 +18,22 @@ const TONE_MAP: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
+    // Session auth — never trust a userId from the body
+    const supabase = await createServerSupabaseClient()
+    const { data: { user: sessionUser } } = await supabase.auth.getUser()
+    if (!sessionUser) {
+      return NextResponse.json({ error: 'נדרשת התחברות' }, { status: 401 })
+    }
+    const userId = sessionUser.id
+
     const {
-      userId, businessName, rawDescription,
+      businessName, rawDescription,
       toneOfVoice, targetAudience,
       phone, address, operatingHours,
+      companyId, website, instagram, facebook, linkedin, tiktok, uniqueValue,
     } = await req.json()
 
-    if (!userId || !businessName || !rawDescription) {
+    if (!businessName || !rawDescription) {
       return NextResponse.json({ error: 'שדות חסרים' }, { status: 400 })
     }
 
@@ -83,20 +92,23 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
       targetId = first?.id ?? null
     }
 
-    // Append target audience to description so it's stored without needing a new column
-    const fullDescription = targetAudience
-      ? `${rawDescription}\n\nקהל יעד: ${targetAudience}`
-      : rawDescription
-
     const payload = {
       user_id:              userId,
       business_name:        businessName,
-      raw_description:      fullDescription,
+      raw_description:      rawDescription,
       parsed_system_prompt: parsedSystemPrompt,
       tone_of_voice:        toneOfVoice ?? 'professional',
       phone:                phone ?? null,
       address:              address ?? null,
       operating_hours:      operatingHours ?? null,
+      target_audience:      targetAudience ?? null,
+      company_id:           companyId ?? null,
+      website:              website ?? null,
+      instagram:            instagram ?? null,
+      facebook:             facebook ?? null,
+      linkedin:             linkedin ?? null,
+      tiktok:               tiktok ?? null,
+      unique_value:         uniqueValue ?? null,
       updated_at:           new Date().toISOString(),
     }
 
