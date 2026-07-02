@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 const PURPLE  = '#9850FF'
@@ -12,22 +13,51 @@ interface ConnectedPlatform {
   created_at: string
 }
 
+interface Props {
+  tier?: string
+}
+
 const PLATFORMS = [
-  { id: 'facebook',  label: 'Facebook',  icon: 'ti-brand-facebook',  color: '#1877F2', bg: 'rgba(24,119,242,0.1)',  border: 'rgba(24,119,242,0.25)',  desc: 'פרסם ישירות לדף העסקי שלך', pro: false },
-  { id: 'instagram', label: 'Instagram', icon: 'ti-brand-instagram', color: '#E1306C', bg: 'rgba(225,48,108,0.1)',  border: 'rgba(225,48,108,0.25)',  desc: 'פוסטים, סטוריז ורילס',        pro: false },
-  { id: 'tiktok',   label: 'TikTok',    icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)',  border: 'rgba(255,0,80,0.2)',     desc: 'וידאו קצר ותוכן ויראלי',     pro: true  },
+  { id: 'facebook',  label: 'Facebook',  icon: 'ti-brand-facebook',  color: '#1877F2', bg: 'rgba(24,119,242,0.1)',  border: 'rgba(24,119,242,0.25)',  desc: 'פרסם ישירות לדף העסקי שלך', pro: false, oauth: '/api/social/oauth/facebook' },
+  { id: 'instagram', label: 'Instagram', icon: 'ti-brand-instagram', color: '#E1306C', bg: 'rgba(225,48,108,0.1)',  border: 'rgba(225,48,108,0.25)',  desc: 'פוסטים, סטוריז ורילס',        pro: false, oauth: '/api/social/oauth/facebook' },
+  { id: 'tiktok',    label: 'TikTok',    icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)',   border: 'rgba(255,0,80,0.2)',     desc: 'וידאו קצר ותוכן ויראלי',     pro: true,  oauth: '/api/social/oauth/tiktok' },
 ]
 
-export default function SocialConnect() {
+const RESULT_MESSAGES: Record<string, { msg: string; ok: boolean }> = {
+  'connected=facebook': { msg: 'Facebook חובר בהצלחה! אם יש חשבון Instagram עסקי מקושר — גם הוא חובר.', ok: true },
+  'connected=tiktok':   { msg: 'TikTok חובר בהצלחה!', ok: true },
+  'error=facebook_denied': { msg: 'החיבור ל-Facebook בוטל או נדחה.', ok: false },
+  'error=facebook_failed': { msg: 'החיבור ל-Facebook נכשל — נסה שוב.', ok: false },
+  'error=tiktok_denied':   { msg: 'החיבור ל-TikTok בוטל או נדחה.', ok: false },
+  'error=tiktok_failed':   { msg: 'החיבור ל-TikTok נכשל — נסה שוב.', ok: false },
+  'error=invalid_state':   { msg: 'שגיאת אימות — נסה שוב.', ok: false },
+}
+
+export default function SocialConnect({ tier = 'free' }: Props) {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const isPro = tier === 'pro' || tier === 'agency'
+
   const [connected, setConnected]     = useState<ConnectedPlatform[]>([])
   const [loading, setLoading]         = useState(true)
   const [working, setWorking]         = useState<string | null>(null)
-  const [tokenInput, setTokenInput]   = useState('')
-  const [addFor, setAddFor]           = useState<string | null>(null)
-  const [error, setError]             = useState('')
   const [showUpgrade, setShowUpgrade] = useState(false)
+  const [banner, setBanner]           = useState<{ msg: string; ok: boolean } | null>(null)
 
   useEffect(() => { fetchStatus() }, [])
+
+  // Show OAuth result banner from ?connected= / ?error= query params
+  useEffect(() => {
+    const connectedParam = searchParams.get('connected')
+    const errorParam     = searchParams.get('error')
+    const key = connectedParam ? `connected=${connectedParam}` : errorParam ? `error=${errorParam}` : null
+    if (key && RESULT_MESSAGES[key]) {
+      setBanner(RESULT_MESSAGES[key])
+      // Clear params so a refresh doesn't re-show the banner
+      router.replace('/dashboard/social', { scroll: false })
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   async function fetchStatus() {
     setLoading(true)
@@ -43,22 +73,10 @@ export default function SocialConnect() {
     return c ? new Date(c.created_at).toLocaleDateString('he-IL') : null
   }
 
-  async function connect() {
-    if (!addFor || !tokenInput.trim()) return
-    setWorking(addFor); setError('')
-    const res = await fetch('/api/social/connect', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ platform: addFor, oauthToken: tokenInput.trim() }),
-    })
-    if (!res.ok) {
-      const d = await res.json()
-      setError(d.error ?? 'שגיאה בחיבור')
-    } else {
-      setTokenInput(''); setAddFor(null)
-      await fetchStatus()
-    }
-    setWorking(null)
+  function startOAuth(platform: typeof PLATFORMS[number]) {
+    if (platform.pro && !isPro) { setShowUpgrade(true); return }
+    setWorking(platform.id)
+    window.location.href = platform.oauth
   }
 
   async function disconnect(platform: string) {
@@ -74,6 +92,25 @@ export default function SocialConnect() {
 
   return (
     <>
+      {/* OAuth result banner */}
+      {banner && (
+        <div style={{
+          padding: '12px 18px', borderRadius: 16, marginBottom: 14,
+          background: banner.ok ? 'rgba(52,211,153,0.1)' : 'rgba(248,113,113,0.1)',
+          border: `1px solid ${banner.ok ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)'}`,
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <i className={`ti ${banner.ok ? 'ti-circle-check' : 'ti-alert-triangle'}`}
+            style={{ fontSize: 18, color: banner.ok ? '#34D399' : '#F87171', flexShrink: 0 }} />
+          <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', flex: 1 }}>{banner.msg}</span>
+          <button onClick={() => setBanner(null)} style={{
+            background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', padding: 4,
+          }}>
+            <i className="ti ti-x" style={{ fontSize: 14 }} />
+          </button>
+        </div>
+      )}
+
       {/* status banner */}
       <div style={{
         padding: '12px 18px', borderRadius: 16, marginBottom: 24,
@@ -98,10 +135,10 @@ export default function SocialConnect() {
       {/* platform grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
         {PLATFORMS.map(p => {
-          const active  = isConnected(p.id)
-          const since   = connectedSince(p.id)
-          const busy    = working === p.id
-          const editing = addFor === p.id
+          const active = isConnected(p.id)
+          const since  = connectedSince(p.id)
+          const busy   = working === p.id
+          const locked = p.pro && !isPro
 
           return (
             <div key={p.id} className="neon-card" style={{
@@ -111,8 +148,8 @@ export default function SocialConnect() {
               borderRadius: 20, padding: '22px 20px',
               transition: 'all 0.2s', position: 'relative', overflow: 'hidden',
             }}>
-              {/* Pro badge */}
-              {p.pro && (
+              {/* Pro badge — only when actually locked for this user */}
+              {locked && (
                 <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 999, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.3)' }}>
                   <i className="ti ti-lock" style={{ fontSize: 10, color: PURPLE2 }} />
                   <span style={{ fontSize: 9, fontWeight: 800, color: PURPLE2 }}>Pro</span>
@@ -156,25 +193,8 @@ export default function SocialConnect() {
                 )}
               </div>
 
-              {/* token input */}
-              {editing && !p.pro && (
-                <div style={{ marginBottom: 12 }}>
-                  <input
-                    value={tokenInput}
-                    onChange={e => setTokenInput(e.target.value)}
-                    placeholder={`Access Token של ${p.label}`}
-                    style={{
-                      width: '100%', padding: '9px 12px', borderRadius: 10, fontSize: 11, color: '#fff',
-                      background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)',
-                      outline: 'none', direction: 'ltr', boxSizing: 'border-box', fontFamily: 'monospace',
-                    }}
-                  />
-                  {error && <div style={{ fontSize: 10, color: '#F87171', marginTop: 4 }}>{error}</div>}
-                </div>
-              )}
-
               {/* action button */}
-              {p.pro && !active ? (
+              {locked && !active ? (
                 <button onClick={() => setShowUpgrade(true)} style={{
                   width: '100%', padding: '9px', borderRadius: 12, cursor: 'pointer',
                   background: 'rgba(152,80,255,0.12)', border: '1px solid rgba(152,80,255,0.25)',
@@ -195,30 +215,17 @@ export default function SocialConnect() {
                     : <i className="ti ti-unlink" style={{ fontSize: 13 }} />}
                   נתק
                 </button>
-              ) : editing ? (
-                <div style={{ display: 'flex', gap: 6 }}>
-                  <button onClick={() => { setAddFor(null); setTokenInput(''); setError('') }} style={{ flex: 1, padding: '9px', borderRadius: 12, cursor: 'pointer', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.5)', fontSize: 12, fontWeight: 600 }}>
-                    ביטול
-                  </button>
-                  <button onClick={connect} disabled={busy || !tokenInput.trim()} style={{
-                    flex: 2, padding: '9px', borderRadius: 12, cursor: 'pointer',
-                    background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
-                    border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: !tokenInput.trim() ? 0.5 : 1,
-                  }}>
-                    {busy
-                      ? <div style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                      : <><i className="ti ti-plug-connected" style={{ fontSize: 13 }} /> חבר</>}
-                  </button>
-                </div>
               ) : (
-                <button onClick={() => { setAddFor(p.id); setError('') }} style={{
-                  width: '100%', padding: '9px', borderRadius: 12, cursor: 'pointer',
+                <button onClick={() => startOAuth(p)} disabled={busy} style={{
+                  width: '100%', padding: '9px', borderRadius: 12, cursor: busy ? 'wait' : 'pointer',
                   background: p.bg, border: `1px solid ${p.border}`,
                   color: p.color, fontSize: 12, fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: busy ? 0.6 : 1,
                 }}>
-                  <i className="ti ti-plug-connected" style={{ fontSize: 13 }} /> חבר חשבון
+                  {busy
+                    ? <div style={{ width: 12, height: 12, border: `2px solid ${p.color}40`, borderTop: `2px solid ${p.color}`, borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    : <i className="ti ti-plug-connected" style={{ fontSize: 13 }} />}
+                  חבר חשבון
                 </button>
               )}
             </div>
@@ -229,7 +236,8 @@ export default function SocialConnect() {
       {/* info note */}
       <div style={{ marginTop: 20, padding: '14px 18px', borderRadius: 14, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', fontSize: 12, color: 'rgba(255,255,255,0.3)', lineHeight: 1.7 }}>
         <i className="ti ti-info-circle" style={{ marginLeft: 6, color: PURPLE2 }} />
-        לחיבור Facebook / Instagram דרוש Access Token מ-<strong style={{ color: 'rgba(255,255,255,0.5)' }}>Meta for Developers</strong>. את הטוקן ניתן ליצור דרך Graph API Explorer.
+        החיבור נעשה בהתחברות מאובטחת לחשבון שלך (OAuth) — SociMe לא רואה את הסיסמה שלך אף פעם.
+        חיבור <strong style={{ color: 'rgba(255,255,255,0.5)' }}>Instagram</strong> נעשה דרך Facebook: חבר את Facebook, וחשבון ה-Instagram העסקי המקושר לדף יחובר אוטומטית.
       </div>
 
       {showUpgrade && <UpgradeModal onClose={() => setShowUpgrade(false)} trigger="generic" />}

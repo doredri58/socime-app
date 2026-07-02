@@ -16,14 +16,14 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get('error')
 
   if (error || !code || !state) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=facebook_denied`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_denied`)
   }
 
   let userId: string
   try {
     userId = JSON.parse(Buffer.from(state, 'base64url').toString()).userId
   } catch {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=invalid_state`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=invalid_state`)
   }
 
   try {
@@ -99,9 +99,9 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&connected=facebook`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?connected=facebook`)
   } catch (err) {
     console.error('[facebook/callback]', err)
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=facebook_failed`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_failed`)
   }
 }

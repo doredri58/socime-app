@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const error = searchParams.get('error')
 
   if (error || !code || !state) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=tiktok_denied`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_denied`)
   }
 
   let userId: string
@@ -24,7 +24,7 @@ export async function GET(req: NextRequest) {
     userId = parsed.userId
     codeVerifier = parsed.codeVerifier
   } catch {
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=invalid_state`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=invalid_state`)
   }
 
   try {
@@ -66,9 +66,9 @@ export async function GET(req: NextRequest) {
       extra_data:            { open_id: openId, name },
     }, { onConflict: 'user_id,platform' })
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&connected=tiktok`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?connected=tiktok`)
   } catch (err) {
     console.error('[tiktok/callback]', err)
-    return NextResponse.redirect(`${siteUrl}/dashboard/settings?tab=social&error=tiktok_failed`)
+    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_failed`)
   }
 }
