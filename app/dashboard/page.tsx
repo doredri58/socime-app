@@ -23,13 +23,13 @@ function getWeekDays() {
 const PLATFORM_ICON: Record<string, string> = {
   facebook:  'ti-brand-facebook',
   instagram: 'ti-brand-instagram',
-  linkedin:  'ti-brand-linkedin',
+  tiktok:    'ti-brand-tiktok',
   both:      'ti-brand-instagram',
 }
 const PLATFORM_COLOR: Record<string, string> = {
   facebook:  '#60A5FA',
   instagram: '#F9A8D4',
-  linkedin:  '#38BDF8',
+  tiktok:    '#ff0050',
   both:      '#F9A8D4',
 }
 
@@ -243,7 +243,7 @@ export default async function DashboardHome() {
             {[
               { id: 'facebook',  label: 'Facebook',  icon: 'ti-brand-facebook',  color: '#60A5FA', bg: 'rgba(96,165,250,0.1)'  },
               { id: 'instagram', label: 'Instagram', icon: 'ti-brand-instagram', color: '#F9A8D4', bg: 'rgba(249,168,212,0.1)' },
-              { id: 'linkedin',  label: 'LinkedIn',  icon: 'ti-brand-linkedin',  color: '#38BDF8', bg: 'rgba(56,189,248,0.1)'  },
+              { id: 'tiktok',    label: 'TikTok',     icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)'   },
             ].map(net => {
               const connected = connectedPlatforms.includes(net.id)
               return (

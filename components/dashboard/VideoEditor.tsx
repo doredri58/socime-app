@@ -38,7 +38,7 @@ const SUBTITLE_PRESETS = [
   {
     id: 'clean',
     label: 'נקי ומינימליסטי',
-    sub: 'YouTube / LinkedIn',
+    sub: 'YouTube מקצועי',
     preview: { bg: 'rgba(0,0,0,0.6)', mainColor: '#fff', accentColor: '#fff', weight: 600, shadow: false },
     icon: 'ti-letter-case',
     popular: false,

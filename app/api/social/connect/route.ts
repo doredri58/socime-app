@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
 
   const { platform, oauthToken, scopes, expiresAt } = await req.json()
   if (!platform || !oauthToken) return NextResponse.json({ error: "נתונים חסרים" }, { status: 400 })
-  if (!["instagram", "facebook", "linkedin"].includes(platform))
+  if (!["instagram", "facebook", "tiktok"].includes(platform))
     return NextResponse.json({ error: "פלטפורמה לא נתמכת" }, { status: 400 })
 
   const encryptedToken = encrypt(oauthToken)

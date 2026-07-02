@@ -74,62 +74,48 @@ export async function publishToMeta(
   }
 }
 
-// ── LinkedIn ───────────────────────────────────────────────────────────────
+// ── TikTok ─────────────────────────────────────────────────────────────────
 
-export async function publishToLinkedIn(
+export async function publishToTikTok(
   row: SchedulerRow,
-  token: string,
-  personUrn: string  // stored alongside the oauth token, e.g. "urn:li:person:ABC123"
+  token: string
 ): Promise<{ success: boolean; meta_post_id?: string; error?: string }> {
   const text = row.content_text ?? row.caption ?? ''
 
+  if (!row.payload_url || row.content_type !== 'video') {
+    return { success: false, error: 'TikTok דורש קובץ וידאו' }
+  }
+
   try {
-    // Build UGC Post payload
-    const body: Record<string, unknown> = {
-      author: personUrn,
-      lifecycleState: 'PUBLISHED',
-      specificContent: {
-        'com.linkedin.ugc.ShareContent': {
-          shareCommentary: { text },
-          shareMediaCategory: 'NONE',
-        },
-      },
-      visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' },
-    }
-
-    // If there's an image, attach it as a media share
-    if (row.payload_url && row.content_type === 'image') {
-      body.specificContent = {
-        'com.linkedin.ugc.ShareContent': {
-          shareCommentary: { text },
-          shareMediaCategory: 'IMAGE',
-          media: [{
-            status: 'READY',
-            description: { text: '' },
-            media: row.payload_url,
-            title: { text: '' },
-          }],
-        },
-      }
-    }
-
-    const res = await fetch('https://api.linkedin.com/v2/ugcPosts', {
+    const res = await fetch('https://open.tiktokapis.com/v2/post/publish/video/init/', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
-        'X-Restli-Protocol-Version': '2.0.0',
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        post_info: {
+          title: text,
+          privacy_level: 'PUBLIC_TO_EVERYONE',
+          disable_duet: false,
+          disable_comment: false,
+          disable_stitch: false,
+          video_cover_timestamp_ms: 1000,
+        },
+        source_info: {
+          source: 'PULL_FROM_URL',
+          video_url: row.payload_url,
+        },
+      }),
     })
 
     const data = await res.json()
-    if (!res.ok) {
-      const msg = data.message ?? data.serviceErrorCode ?? 'שגיאת LinkedIn'
+    if (!res.ok || data.error?.code !== 'ok') {
+      const msg = data.error?.message ?? 'שגיאת TikTok'
       return { success: false, error: String(msg) }
     }
 
-    return { success: true, meta_post_id: data.id }
+    return { success: true, meta_post_id: data.data?.publish_id }
   } catch (e: unknown) {
     return { success: false, error: e instanceof Error ? e.message : 'שגיאה לא ידועה' }
   }
@@ -166,13 +152,8 @@ export async function processDuePost(
 
   let result: { success: boolean; meta_post_id?: string; error?: string }
 
-  if (row.platform === 'linkedin') {
-    const personUrn = (tokenRow.extra_data as Record<string, string> | null)?.person_urn ?? ''
-    if (!personUrn) {
-      await markFailed(db, row.id, 'LinkedIn person URN חסר', attemptNum)
-      return { success: false, error: 'LinkedIn person URN חסר' }
-    }
-    result = await publishToLinkedIn(row, oauthToken, personUrn)
+  if (row.platform === 'tiktok') {
+    result = await publishToTikTok(row, oauthToken)
   } else {
     result = await publishToMeta(row, oauthToken)
   }

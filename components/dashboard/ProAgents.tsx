@@ -186,16 +186,15 @@ function AdapterCard() {
     setS(r.ok ? { loading: false, error: null, data: r.data } : { loading: false, error: r.msg, data: null })
   }
 
-  const d = s.data as { tiktok_caption: string; linkedin_post: string; instagram_post: string; facebook_post: string } | null
+  const d = s.data as { tiktok_caption: string; instagram_post: string; facebook_post: string } | null
   const platforms: [string, string, string][] = d ? [
     ['ti-brand-tiktok', 'TikTok', d.tiktok_caption],
-    ['ti-brand-linkedin', 'LinkedIn', d.linkedin_post],
     ['ti-brand-instagram', 'Instagram', d.instagram_post],
     ['ti-brand-facebook', 'Facebook', d.facebook_post],
   ] : []
   return (
     <div style={card}>
-      <CardHeader icon="ti-arrows-shuffle" title="סוכן אומני-צ'אנל" desc="התאמת תוכן אחד ל-4 פלטפורמות" />
+      <CardHeader icon="ti-arrows-shuffle" title="סוכן אומני-צ'אנל" desc="התאמת תוכן אחד ל-3 פלטפורמות" />
       <label style={labelS}>תוכן הבסיס</label>
       <textarea value={content} onChange={e => setContent(e.target.value)} rows={4} placeholder="כתבו פוסט / תמלול בסיס…" style={{ ...inputS, resize: 'vertical' }} />
       <RunButton loading={s.loading} onClick={run} cost={10} />

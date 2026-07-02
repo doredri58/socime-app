@@ -22,7 +22,7 @@ const HE_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','�
 const PLATFORM_META: Record<string, { icon: string; color: string; label: string }> = {
   facebook:  { icon: 'ti-brand-facebook',  color: '#1877F2', label: 'פייסבוק' },
   instagram: { icon: 'ti-brand-instagram', color: '#E1306C', label: 'אינסטגרם' },
-  linkedin:  { icon: 'ti-brand-linkedin',  color: '#0A66C2', label: 'לינקדאין' },
+  tiktok:    { icon: 'ti-brand-tiktok',    color: '#ff0050', label: 'טיקטוק' },
 }
 
 const STATUS_META: Record<string, { label: string; color: string; bg: string; dot: string }> = {

@@ -22,7 +22,7 @@ const GLASS: React.CSSProperties = {
 /* ══════════════════════════════════════════════════════════════════════
    TYPES
 ══════════════════════════════════════════════════════════════════════ */
-type Platform  = 'instagram' | 'facebook' | 'linkedin' | 'tiktok'
+type Platform  = 'instagram' | 'facebook' | 'tiktok'
 type Sentiment = 'complaint' | 'lead' | 'question' | 'ai_handled' | 'positive' | 'spam'
 type MsgType   = 'user' | 'ai' | 'human'
 type Folder    = 'human_required' | 'ai_handled' | 'all'
@@ -135,7 +135,6 @@ function apiItemToThread(item: ApiCommentItem): Thread {
 const PLATFORM_META: Record<Platform, { icon: string; color: string; label: string }> = {
   instagram: { icon: 'ti-brand-instagram', color: '#E1306C', label: 'Instagram' },
   facebook:  { icon: 'ti-brand-facebook',  color: '#1877F2', label: 'Facebook'  },
-  linkedin:  { icon: 'ti-brand-linkedin',  color: '#0A66C2', label: 'LinkedIn'  },
   tiktok:    { icon: 'ti-brand-tiktok',    color: '#010101', label: 'TikTok'    },
 }
 
@@ -354,7 +353,7 @@ export default function CommunityInbox() {
   const [threads, setThreads]           = useState<Thread[]>([])
   const [activeThread, setActiveThread] = useState<Thread | null>(null)
   const [folder, setFolder]             = useState<Folder>('all')
-  const [platforms, setPlatforms]       = useState<Set<Platform>>(new Set(['instagram', 'facebook', 'linkedin', 'tiktok']))
+  const [platforms, setPlatforms]       = useState<Set<Platform>>(new Set(['instagram', 'facebook', 'tiktok']))
   const [replyText, setReplyText]       = useState('')
   const [sending, setSending]           = useState(false)
   const [searchQuery, setSearchQuery]   = useState('')
@@ -475,7 +474,7 @@ export default function CommunityInbox() {
   }
 
   /* use AI draft */
-  function useDraft(draft: string) { setReplyText(draft) }
+  function applyDraft(draft: string) { setReplyText(draft) }
 
   /* mark as handled */
   function markHandled(threadId: string) {
@@ -805,7 +804,7 @@ export default function CommunityInbox() {
                       </div>
                       <div style={{ display: 'flex', gap: 7, flexWrap: 'wrap' }}>
                         {activeThread.aiDrafts.map((draft, i) => (
-                          <button key={i} onClick={() => useDraft(draft)} style={{
+                          <button key={i} onClick={() => applyDraft(draft)} style={{
                             padding: '6px 12px', borderRadius: 999, cursor: 'pointer', fontSize: 11, fontWeight: 600,
                             background: 'linear-gradient(135deg, rgba(152,80,255,0.12), rgba(190,86,255,0.08))',
                             border: '1px solid rgba(152,80,255,0.25)', color: PURPLE2,

@@ -63,8 +63,8 @@ async function checkFacebook(): Promise<HealthResult> {
   return checkHttpHead('https://graph.facebook.com/')
 }
 
-async function checkLinkedIn(): Promise<HealthResult> {
-  return checkHttpHead('https://api.linkedin.com/v2/')
+async function checkTikTok(): Promise<HealthResult> {
+  return checkHttpHead('https://open.tiktokapis.com/')
 }
 
 async function checkInstagram(): Promise<HealthResult> {
@@ -89,8 +89,7 @@ const SERVICE_CHECKS: Record<string, () => Promise<HealthResult>> = {
   cloudinary:     checkMedia,
   fb:             checkFacebook,
   facebook:       checkFacebook,
-  li:             checkLinkedIn,
-  linkedin:       checkLinkedIn,
+  tiktok:         checkTikTok,
   ig:             checkInstagram,
   instagram:      checkInstagram,
   openai:         () => Promise.resolve(checkEnvKey('OPENAI_API_KEY')),

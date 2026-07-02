@@ -1,14 +1,10 @@
 'use client'
-import { useState, useEffect, useRef, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import Drawer from '@/components/Drawer'
-import ChatBot from '@/components/ChatBot'
-import PaywallForm from '@/components/PaywallForm'
 import Onboarding from '@/components/Onboarding'
 import PricingPlans from '@/components/pricing/PricingPlans'
-
-interface Draft { text: string; hashtags: string }
 
 /* ─── Tokens ─── */
 const PURPLE  = '#9850FF'
@@ -215,10 +211,7 @@ function BaitSection() {
 function HomeInner() {
   const searchParams = useSearchParams()
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [showPaywall, setShowPaywall] = useState(false)
-  const [draft, setDraft] = useState<Draft | null>(null)
   const [scrolled, setScrolled] = useState(false)
-  const flipRef = useRef<HTMLDivElement>(null)
 
   const oauthUid = searchParams.get('uid')
   const needsOnboarding = searchParams.get('onboarding') === 'true' && !!oauthUid
@@ -247,11 +240,6 @@ function HomeInner() {
         <Onboarding userId={oauthUid} onComplete={() => { window.location.href = '/dashboard' }} />
       </div>
     )
-  }
-
-  function handlePaywall(d: Draft) {
-    setDraft(d); setShowPaywall(true)
-    setTimeout(() => flipRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 400)
   }
 
   return (
@@ -347,7 +335,7 @@ function HomeInner() {
             </div>
 
             <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
-              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת','פייסבוק · אינסטגרם · לינקדאין'].map(t => (
+              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת','פייסבוק · אינסטגרם · טיקטוק'].map(t => (
                 <span key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ fontWeight: 900, color: '#A3E635' }}>✓</span>{t}
                 </span>
@@ -444,7 +432,7 @@ function HomeInner() {
           <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
             כל מה שצוות שיווק עושה — SociMe עושה לבד.
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', margin: 0 }}>פייסבוק · אינסטגרם · לינקדאין — כל הכלים במקום אחד</p>
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', margin: 0 }}>פייסבוק · אינסטגרם · טיקטוק — כל הכלים במקום אחד</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
@@ -482,7 +470,7 @@ function HomeInner() {
             {
               icon: 'ti-message-2-heart', color: '#EC4899',
               title: 'ניהול קהילה',
-              desc: 'כל התגובות וההודעות מפייסבוק, אינסטגרם ולינקדאין — Inbox מאוחד אחד. ענו מבלי לעבור בין אפליקציות.',
+              desc: 'כל התגובות וההודעות מפייסבוק, אינסטגרם וטיקטוק — Inbox מאוחד אחד. ענו מבלי לעבור בין אפליקציות.',
               cta: 'ראו איך זה עובד', href: '/login?mode=register',
             },
             {
@@ -530,7 +518,7 @@ function HomeInner() {
           {[
             { icon: 'ti-brand-facebook', label: 'Facebook', color: '#1877F2' },
             { icon: 'ti-brand-instagram', label: 'Instagram', color: '#E1306C' },
-            { icon: 'ti-brand-linkedin', label: 'LinkedIn', color: '#0A66C2' },
+            { icon: 'ti-brand-tiktok', label: 'TikTok', color: '#ff0050' },
           ].map(p => (
             <div key={p.label} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, fontWeight: 600, color: 'rgba(255,255,255,0.4)' }}>
               <i className={`ti ${p.icon}`} style={{ fontSize: 20, color: p.color }} />

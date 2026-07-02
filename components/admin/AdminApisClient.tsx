@@ -18,7 +18,7 @@ const API_SOURCES = [
   { id: 'cloudinary',   name: 'Cloudinary (Images)',  category: 'media',  icon: 'ti-cloud-upload',    key: 'CLOUDINARY_API_KEY',        endpoint: '/api/health?service=media'        },
   { id: 'instagram',    name: 'Instagram Graph API',  category: 'social', icon: 'ti-brand-instagram', key: 'INSTAGRAM_APP_SECRET',      endpoint: '/api/health?service=ig'           },
   { id: 'facebook',     name: 'Facebook Graph API',   category: 'social', icon: 'ti-brand-facebook',  key: 'FACEBOOK_APP_SECRET',       endpoint: '/api/health?service=fb'           },
-  { id: 'linkedin',     name: 'LinkedIn API',         category: 'social', icon: 'ti-brand-linkedin',  key: 'LINKEDIN_CLIENT_SECRET',    endpoint: '/api/health?service=li'           },
+  { id: 'tiktok',       name: 'TikTok API',           category: 'social', icon: 'ti-brand-tiktok',    key: 'TIKTOK_CLIENT_SECRET',      endpoint: '/api/health?service=tiktok'       },
 ]
 
 type Status = 'ok' | 'warn' | 'error' | 'loading' | 'idle' | 'configured' | 'missing'

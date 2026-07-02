@@ -19,7 +19,7 @@ const GLASS: React.CSSProperties = {
 const PLATFORMS = [
   { id: 'facebook',  label: 'פייסבוק',    icon: 'ti-brand-facebook',  color: '#1877F2' },
   { id: 'instagram', label: 'אינסטגרם',   icon: 'ti-brand-instagram', color: '#E1306C' },
-  { id: 'linkedin',  label: 'לינקדאין',   icon: 'ti-brand-linkedin',  color: '#0A66C2' },
+  { id: 'tiktok',    label: 'טיקטוק',     icon: 'ti-brand-tiktok',    color: '#ff0050' },
 ] as const
 type Platform = typeof PLATFORMS[number]['id']
 
@@ -88,7 +88,7 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
       }} />
 
       {/* screen */}
-      <div style={{ background: platform === 'linkedin' ? '#1B1F23' : '#0A0A0A', minHeight: 520, paddingTop: 36 }}>
+      <div style={{ background: '#0A0A0A', minHeight: 520, paddingTop: 36 }}>
 
         {/* platform top bar */}
         <div style={{
@@ -204,7 +204,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
   const [imgAttempts, setImgAttempts] = useState(2)
   const [showUpgrade, setShowUpgrade] = useState(false)
 
-  const maxChars = platform === 'instagram' ? 2200 : platform === 'linkedin' ? 3000 : 63206
+  const maxChars = platform === 'instagram' ? 2200 : platform === 'tiktok' ? 2200 : 63206
 
   function showToast(msg: string, ok: boolean) {
     setToast({ msg, ok })
@@ -586,7 +586,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           }}>
             {platform === 'instagram' && '📸 אינסטגרם: מומלץ עד 125 תווים לנראות. האלגוריתם מעדיף 5-10 האשטגים.'}
             {platform === 'facebook' && '👍 פייסבוק: מומלץ עד 40-80 תווים לפוסטים עם מעורבות גבוהה.'}
-            {platform === 'linkedin' && '💼 לינקדאין: 1,300 תווים ראשונים נראים לפני "ראה עוד". תוכן מקצועי מקבל בוסט.'}
+            {platform === 'tiktok' && '🎵 טיקטוק: כיתוב קצר עד 150 תווים מקבל הכי הרבה מעורבות. השתמשו בהאשטגים טרנדיים.'}
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ const GLASS: React.CSSProperties = {
 const PLATFORM_META: Record<string, { icon: string; color: string; label: string }> = {
   facebook:  { icon: 'ti-brand-facebook',  color: '#1877F2', label: 'Facebook'  },
   instagram: { icon: 'ti-brand-instagram', color: '#E1306C', label: 'Instagram' },
-  linkedin:  { icon: 'ti-brand-linkedin',  color: '#0A66C2', label: 'LinkedIn'  },
+  tiktok:    { icon: 'ti-brand-tiktok',    color: '#ff0050', label: 'TikTok'    },
 }
 
 // ─── types ────────────────────────────────────────────────────────────────────
@@ -165,7 +165,6 @@ function LeaderRow({ post, rank, onDuplicate }: { post: Post; rank: number; onDu
   const plats  = post.platform ?? ['facebook']
   const pm     = PLATFORM_META[plats[0]] ?? PLATFORM_META.facebook
   const snippet = (post.content_text ?? '').slice(0, 90)
-  const eng    = Math.floor(Math.random() * 800 + 100) // demo engagement count
 
   const rankColors = ['#FBBF24', '#94A3B8', '#CD7C3D']
   const rankColor  = rankColors[rank - 1] ?? 'rgba(255,255,255,0.2)'
@@ -197,17 +196,6 @@ function LeaderRow({ post, rank, onDuplicate }: { post: Post; rank: number; onDu
           {snippet || '(אין תוכן)'}
           {(post.content_text ?? '').length > 90 ? '...' : ''}
         </div>
-        <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)', marginTop: 3, display: 'flex', gap: 12 }}>
-          <span><i className="ti ti-heart" style={{ marginLeft: 4, color: '#F87171' }} />{Math.floor(eng * 0.6)}</span>
-          <span><i className="ti ti-message-circle" style={{ marginLeft: 4, color: '#60A5FA' }} />{Math.floor(eng * 0.25)}</span>
-          <span><i className="ti ti-share" style={{ marginLeft: 4, color: GREEN }} />{Math.floor(eng * 0.15)}</span>
-        </div>
-      </div>
-
-      {/* total engagement */}
-      <div style={{ textAlign: 'center', flexShrink: 0 }}>
-        <div style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>{eng.toLocaleString()}</div>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)' }}>מעורבות</div>
       </div>
 
       {/* CTA */}
@@ -230,7 +218,7 @@ function LeaderRow({ post, rank, onDuplicate }: { post: Post; rank: number; onDu
 // ─── main ─────────────────────────────────────────────────────────────────────
 export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance }: Props) {
   const router = useRouter()
-  const [chartFilter, setChartFilter] = useState<'all' | 'facebook' | 'instagram' | 'linkedin'>('all')
+  const [chartFilter, setChartFilter] = useState<'all' | 'facebook' | 'instagram' | 'tiktok'>('all')
   const [insightIndex, setInsightIndex] = useState(0)
   const [showUpgrade, setShowUpgrade]   = useState(false)
   const isPro = plan === 'pro' || plan === 'basic'
@@ -401,7 +389,7 @@ export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance
 
             {/* platform filter tabs */}
             <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.09)', borderRadius: 12, padding: 3, gap: 2 }}>
-              {(['all', 'facebook', 'instagram', 'linkedin'] as const).map(f => {
+              {(['all', 'facebook', 'instagram', 'tiktok'] as const).map(f => {
                 const active = chartFilter === f
                 const pm     = f === 'all' ? null : PLATFORM_META[f]
                 return (
@@ -445,7 +433,7 @@ export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div className="neon-card" style={{ ...GLASS, padding: '20px', flex: 1 }}>
             <h3 style={{ fontSize: 13, fontWeight: 800, color: '#fff', margin: '0 0 16px' }}>חלוקה לפי פלטפורמה</h3>
-            {(['facebook', 'instagram', 'linkedin'] as const).map((plat, idx) => {
+            {(['facebook', 'instagram', 'tiktok'] as const).map((plat, idx) => {
               const pm  = PLATFORM_META[plat]
               const cnt = posts.filter(p => (p.platform ?? []).includes(plat)).length
               const pct = totalPosts > 0 ? Math.round((cnt / Math.max(totalPosts, 1)) * 100) : [40, 45, 15][idx]

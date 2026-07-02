@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { decrypt } from '@/lib/crypto'
-import { publishToMeta, publishToLinkedIn } from '@/lib/publisher'
+import { publishToMeta, publishToTikTok } from '@/lib/publisher'
 
 // POST /api/publish
 // Immediate (non-scheduled) publish to one or more platforms.
@@ -66,13 +66,8 @@ export async function POST(req: NextRequest) {
 
     let result: { success: boolean; meta_post_id?: string; error?: string }
 
-    if (platform === 'linkedin') {
-      const personUrn = (tokenRow.extra_data as Record<string, string> | null)?.person_urn ?? ''
-      if (!personUrn) {
-        results[platform] = { success: false, error: 'LinkedIn person URN חסר — חבר מחדש' }
-        continue
-      }
-      result = await publishToLinkedIn(row, oauthToken, personUrn)
+    if (platform === 'tiktok') {
+      result = await publishToTikTok(row, oauthToken)
     } else {
       result = await publishToMeta(row, oauthToken)
     }

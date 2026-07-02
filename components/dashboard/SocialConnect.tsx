@@ -15,7 +15,6 @@ interface ConnectedPlatform {
 const PLATFORMS = [
   { id: 'facebook',  label: 'Facebook',  icon: 'ti-brand-facebook',  color: '#1877F2', bg: 'rgba(24,119,242,0.1)',  border: 'rgba(24,119,242,0.25)',  desc: 'פרסם ישירות לדף העסקי שלך', pro: false },
   { id: 'instagram', label: 'Instagram', icon: 'ti-brand-instagram', color: '#E1306C', bg: 'rgba(225,48,108,0.1)',  border: 'rgba(225,48,108,0.25)',  desc: 'פוסטים, סטוריז ורילס',        pro: false },
-  { id: 'linkedin',  label: 'LinkedIn',  icon: 'ti-brand-linkedin',  color: '#0A66C2', bg: 'rgba(10,102,194,0.1)', border: 'rgba(10,102,194,0.25)',  desc: 'פרסום לפרופיל ועמוד חברה',   pro: true  },
   { id: 'tiktok',   label: 'TikTok',    icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)',  border: 'rgba(255,0,80,0.2)',     desc: 'וידאו קצר ותוכן ויראלי',     pro: true  },
 ]
 
