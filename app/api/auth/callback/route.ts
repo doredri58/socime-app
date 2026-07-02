@@ -40,22 +40,16 @@ export async function GET(req: NextRequest) {
   const user = data.user
   const db = createServiceClient()
 
-  // First OAuth login — create the users row (email signups get it in /api/auth/register)
-  const { data: existing } = await db
-    .from('users')
+  // The users row is created by the handle_new_user DB trigger on signup.
+  // Route to onboarding if the user hasn't set up a business profile yet.
+  const { data: business } = await db
+    .from('business_profiles')
     .select('id')
-    .eq('id', user.id)
-    .single()
+    .eq('user_id', user.id)
+    .limit(1)
+    .maybeSingle()
 
-  if (!existing) {
-    await db.from('users').insert({
-      id:    user.id,
-      email: user.email,
-      name:  user.user_metadata?.full_name ?? user.email?.split('@')[0] ?? 'משתמש',
-      plan:  'free',
-      token_balance: 30,
-    })
-
+  if (!business) {
     return NextResponse.redirect(`${origin}/onboarding?uid=${user.id}`)
   }
 

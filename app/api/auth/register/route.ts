@@ -11,11 +11,14 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient()
 
-    // Create auth user
+    // Create auth user. The public.users row is created by the DB trigger
+    // handle_new_user (single source of truth for the welcome token grant);
+    // full_name in the metadata is what the trigger uses for the name.
     const { data: authData, error: authError } = await db.auth.admin.createUser({
       email,
       password,
       email_confirm: true,
+      user_metadata: { full_name: name },
     })
     if (authError) {
       const msg = authError.message.includes('already registered')
@@ -25,18 +28,6 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = authData.user.id
-
-    // Insert into public.users — free tier, same welcome grant as OAuth signups.
-    // (Previously granted plan:'pro' + 200 tokens + a fake ₪49 "subscription"
-    // transaction that inflated admin revenue stats.)
-    await db.from('users').insert({
-      id: userId,
-      email,
-      name,
-      role: 'user',
-      plan: 'free',
-      token_balance: 30,
-    })
 
     // Save draft post if provided
     if (draftPost?.text) {

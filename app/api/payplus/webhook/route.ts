@@ -33,6 +33,16 @@ export async function POST(req: NextRequest) {
     const config = PLANS[plan]
     const db = createServiceClient()
 
+    // Idempotency: a replayed/duplicated webhook must not grant tokens twice.
+    if (transactionId) {
+      const { data: existing } = await db
+        .from('transactions')
+        .select('id')
+        .eq('stripe_payment_id', transactionId)
+        .maybeSingle()
+      if (existing) return NextResponse.json({ ok: true, duplicate: true })
+    }
+
     // Activate subscription: set tier + grant a fresh monthly token allotment.
     await db.from('users')
       .update({ tier: config.tier, token_balance: config.tokens })
