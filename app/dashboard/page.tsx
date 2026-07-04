@@ -8,6 +8,18 @@ import QuickCreate from '@/components/dashboard/QuickCreate'
 
 const DAYS_HE = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']
 
+// Time-of-day greeting, computed in Israel time regardless of server timezone
+function getGreeting() {
+  const hour = Number(
+    new Intl.DateTimeFormat('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Jerusalem' })
+      .format(new Date())
+  )
+  if (hour >= 5 && hour < 12)  return 'בוקר טוב'
+  if (hour >= 12 && hour < 17) return 'צהריים טובים'
+  if (hour >= 17 && hour < 22) return 'ערב טוב'
+  return 'לילה טוב'
+}
+
 function getWeekDays() {
   const now = new Date()
   const sunday = new Date(now)
@@ -90,7 +102,7 @@ export default async function DashboardHome() {
       {/* ── Greeting ── */}
       <div style={{ marginBottom: 24 }}>
         <h1 style={{ fontSize: 21, fontWeight: 800, color: '#fff', margin: '0 0 4px', letterSpacing: '-0.4px' }}>
-          שלום, {userName} 👋
+          {getGreeting()}, {userName}
         </h1>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
           {business?.business_name

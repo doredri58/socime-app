@@ -27,9 +27,24 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ processed: 0 })
   }
 
+  // Skip posts of users who hit the global pause switch (posting_paused) —
+  // their posts stay queued untouched until they resume.
+  const userIds = [...new Set(duePosts.map(p => p.user_id))]
+  const { data: pausedUsers } = await db
+    .from("users")
+    .select("id")
+    .in("id", userIds)
+    .eq("posting_paused", true)
+  const pausedSet = new Set((pausedUsers ?? []).map(u => u.id))
+  const activePosts = duePosts.filter(p => !pausedSet.has(p.user_id))
+
+  if (activePosts.length === 0) {
+    return NextResponse.json({ processed: 0, skipped_paused: duePosts.length })
+  }
+
   const results = []
 
-  for (const post of duePosts as SchedulerRow[]) {
+  for (const post of activePosts as SchedulerRow[]) {
     // סמן כ-processing כדי למנוע כפילויות
     await db.from("scheduler").update({ status: "processing" }).eq("id", post.id)
 

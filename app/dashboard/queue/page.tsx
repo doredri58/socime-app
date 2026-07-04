@@ -8,11 +8,13 @@ export default async function QueuePage({ searchParams }: { searchParams: Promis
   if (!user) redirect('/?login=required')
   const db = createServiceClient()
 
-  const { data: posts } = await db
-    .from('scheduler')
-    .select('id, content_text, hashtags, platform, status, scheduled_at, created_at, payload_url, content_type')
-    .eq('user_id', user!.id)
-    .order('scheduled_at', { ascending: true, nullsFirst: false })
+  const [{ data: posts }, { data: profile }] = await Promise.all([
+    db.from('scheduler')
+      .select('id, content_text, hashtags, platform, status, scheduled_at, created_at, payload_url, content_type')
+      .eq('user_id', user!.id)
+      .order('scheduled_at', { ascending: true, nullsFirst: false }),
+    db.from('users').select('posting_paused').eq('id', user!.id).single(),
+  ])
 
   const params = await searchParams
 
@@ -22,6 +24,7 @@ export default async function QueuePage({ searchParams }: { searchParams: Promis
       userId={user!.id}
       draftText={params.draft}
       draftPlatform={params.platform}
+      initialPostingPaused={profile?.posting_paused ?? false}
     />
   )
 }

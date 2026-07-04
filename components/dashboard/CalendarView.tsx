@@ -53,6 +53,7 @@ interface Props {
   userId: string
   draftText?: string
   draftPlatform?: string
+  initialPostingPaused?: boolean
 }
 
 type ViewMode = 'month' | 'week'
@@ -632,11 +633,13 @@ function WeekGrid({ weekStart, postsByDay, onDayClick, onPostClick, today }: {
 }
 
 // ─── main ─────────────────────────────────────────────────────────────────────
-export default function CalendarView({ posts, userId, draftText, draftPlatform }: Props) {
+export default function CalendarView({ posts, userId, draftText, draftPlatform, initialPostingPaused = false }: Props) {
   const router = useRouter()
   const today  = new Date()
 
   const [view, setView]             = useState<ViewMode>('month')
+  const [postingPaused, setPostingPaused] = useState(initialPostingPaused)
+  const [pauseBusy, setPauseBusy]   = useState(false)
   const [curYear, setCurYear]       = useState(today.getFullYear())
   const [curMonth, setCurMonth]     = useState(today.getMonth())
   const [weekStart, setWeekStart]   = useState(() => getWeekStart(today))
@@ -681,6 +684,23 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
 
   function toggleFilter(arr: string[], setArr: (v: string[]) => void, val: string) {
     setArr(arr.includes(val) ? arr.filter(x => x !== val) : [...arr, val])
+  }
+
+  // Global pause: flips users.posting_paused — while on, the cron skips ALL of
+  // this user's scheduled posts until the user resumes.
+  async function toggleGlobalPause() {
+    setPauseBusy(true)
+    try {
+      const next = !postingPaused
+      const res = await fetch('/api/scheduler/pause-all', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paused: next }),
+      })
+      if (res.ok) setPostingPaused(next)
+    } finally {
+      setPauseBusy(false)
+    }
   }
 
   // Pause holds a post back from the cron queue (cron only picks up status='queued');
@@ -853,6 +873,21 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
             </button>
           </div>
 
+          {/* Global pause — halts ALL scheduled publishing until resumed */}
+          <button onClick={toggleGlobalPause} disabled={pauseBusy} title={postingPaused ? 'כל הפרסומים מושהים — לחץ להמשך' : 'השהה את כל הפרסומים המתוזמנים'} style={{
+            padding: '8px 16px', borderRadius: 12, cursor: pauseBusy ? 'wait' : 'pointer',
+            background: postingPaused ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.05)',
+            border: `1px solid ${postingPaused ? 'rgba(251,191,36,0.45)' : 'rgba(255,255,255,0.1)'}`,
+            color: postingPaused ? '#FBBF24' : 'rgba(255,255,255,0.55)',
+            fontSize: 12, fontWeight: 700,
+            display: 'flex', alignItems: 'center', gap: 6,
+            opacity: pauseBusy ? 0.6 : 1, transition: 'all 0.2s',
+            boxShadow: postingPaused ? '0 0 14px rgba(251,191,36,0.25)' : 'none',
+          }}>
+            <i className={`ti ${postingPaused ? 'ti-player-play' : 'ti-player-pause'}`} style={{ fontSize: 14 }} />
+            {pauseBusy ? 'מעדכן...' : postingPaused ? 'המשך פרסומים' : 'השהה הכל'}
+          </button>
+
           {/* View toggle */}
           <div style={{ display: 'flex', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: 3 }}>
             {(['month', 'week'] as const).map(v => (
@@ -880,6 +915,20 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform }
             יצירת פוסט חדש
           </button>
         </div>
+
+        {/* ── Paused banner ── */}
+        {postingPaused && (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12,
+            padding: '10px 16px', borderRadius: 14,
+            background: 'rgba(251,191,36,0.1)', border: '1px solid rgba(251,191,36,0.3)',
+          }}>
+            <i className="ti ti-alert-triangle" style={{ fontSize: 16, color: '#FBBF24', flexShrink: 0 }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#FBBF24' }}>
+              כל הפרסומים המתוזמנים מושהים — שום פוסט לא יעלה עד שתלחץ &quot;המשך פרסומים&quot;
+            </span>
+          </div>
+        )}
 
         {/* ── Grid ── */}
         <div className="neon-card" style={{ ...GLASS, flex: 1, padding: 16, overflowY: 'auto' }}>

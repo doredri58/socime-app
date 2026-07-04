@@ -283,9 +283,10 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
   )
 
   const sidebarStyle: React.CSSProperties = {
-    background: 'rgba(10,6,26,0.6)',
-    backdropFilter: 'blur(24px)',
-    borderLeft: '1px solid rgba(152,80,255,0.13)',
+    background: 'rgba(255,255,255,0.07)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    borderLeft: '1px solid rgba(255,255,255,0.13)',
     padding: '20px 12px 16px',
     width: 220,
     flexShrink: 0,
