@@ -24,7 +24,10 @@ export async function POST(req: NextRequest) {
 
     const body = {
       payment_page_uid: process.env.NEXT_PUBLIC_PAYPLUS_PAGE_UID,
-      charge_method:    1, // one-time charge for the billing period
+      charge_method:    1, // charge now for the first billing period
+      // Ask PayPlus to tokenize the card so the renewals cron can charge it
+      // later (VERIFY field name against PayPlus docs — commonly create_token).
+      create_token:     true,
       currency_code:    'ILS',
       send_email:       true,
       customer: {

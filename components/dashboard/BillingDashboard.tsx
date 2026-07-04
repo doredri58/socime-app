@@ -30,6 +30,9 @@ const PLAN_META: Record<string, {
 interface Profile {
   id: string; email: string; name: string; role: string
   plan: string; tier: string; token_balance: number; created_at: string
+  subscription_expires_at?: string | null
+  card_brand?: string | null
+  card_last4?: string | null
 }
 interface Transaction { amount_paid_ils: number; tokens_granted: number; created_at: string }
 interface Business { business_name?: string; company_id?: string; address?: string; phone?: string }
@@ -92,9 +95,6 @@ function InfoRow({ label, value, icon }: { label: string; value: string; icon?: 
     </div>
   )
 }
-
-/* ── mock card data (shown until payment method API is built) ─────────── */
-const MOCK_CARD = { brand: 'Visa', last4: '4242', exp: '09/27' }
 
 /* ── main ─────────────────────────────────────────────────────────────── */
 export default function BillingDashboard({ profile, transactions, business }: Props) {
@@ -261,51 +261,57 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
           title="אמצעי תשלום"
           subtitle="כרטיס ברירת המחדל לחידוש המנוי"
         >
-          {/* credit card visual */}
-          <div style={{
-            borderRadius: 16, padding: '20px 22px', marginBottom: 16,
-            background: 'linear-gradient(135deg, rgba(59,130,239,0.18) 0%, rgba(152,80,255,0.15) 100%)',
-            border: '1px solid rgba(59,130,239,0.22)', position: 'relative', overflow: 'hidden',
-          }}>
-            {/* card chip glow */}
-            <div style={{ position: 'absolute', top: -20, left: -20, width: 80, height: 80,
-              borderRadius: '50%', background: 'rgba(59,130,239,0.15)', filter: 'blur(25px)', pointerEvents: 'none' }} />
+          {/* credit card — real saved card from PayPlus, or honest empty state */}
+          {profile.card_last4 ? (
+            <div style={{
+              borderRadius: 16, padding: '20px 22px', marginBottom: 16,
+              background: 'linear-gradient(135deg, rgba(59,130,239,0.18) 0%, rgba(152,80,255,0.15) 100%)',
+              border: '1px solid rgba(59,130,239,0.22)', position: 'relative', overflow: 'hidden',
+            }}>
+              {/* card chip glow */}
+              <div style={{ position: 'absolute', top: -20, left: -20, width: 80, height: 80,
+                borderRadius: '50%', background: 'rgba(59,130,239,0.15)', filter: 'blur(25px)', pointerEvents: 'none' }} />
 
-            {/* top row — brand */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
-              <div style={{ display: 'flex', gap: 3 }}>
-                {/* chip */}
-                <div style={{ width: 28, height: 20, borderRadius: 4, background: 'linear-gradient(135deg, #FBBF24, #F59E0B)',
-                  border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ width: 16, height: 12, borderRadius: 2, border: '1px solid rgba(255,255,255,0.5)',
-                    display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, padding: 2 }}>
-                    {[0,1,2,3].map(i => <div key={i} style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 1 }} />)}
+              {/* top row — brand */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
+                <div style={{ display: 'flex', gap: 3 }}>
+                  {/* chip */}
+                  <div style={{ width: 28, height: 20, borderRadius: 4, background: 'linear-gradient(135deg, #FBBF24, #F59E0B)',
+                    border: '1px solid rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ width: 16, height: 12, borderRadius: 2, border: '1px solid rgba(255,255,255,0.5)',
+                      display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, padding: 2 }}>
+                      {[0,1,2,3].map(i => <div key={i} style={{ background: 'rgba(255,255,255,0.4)', borderRadius: 1 }} />)}
+                    </div>
                   </div>
                 </div>
+                <span style={{ fontSize: 14, fontWeight: 900, color: '#fff', letterSpacing: '0.05em' }}>
+                  {profile.card_brand ?? 'כרטיס'}
+                </span>
               </div>
-              <span style={{ fontSize: 14, fontWeight: 900, color: '#fff', letterSpacing: '0.05em' }}>
-                {MOCK_CARD.brand}
-              </span>
-            </div>
 
-            {/* card number */}
-            <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', letterSpacing: '0.15em', marginBottom: 12,
-              fontFamily: 'monospace', direction: 'ltr' }}>
-              **** **** **** {MOCK_CARD.last4}
-            </div>
-
-            {/* expiry */}
-            <div style={{ display: 'flex', gap: 24 }}>
-              <div>
-                <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, letterSpacing: '0.08em', marginBottom: 2 }}>תוקף</div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#fff', direction: 'ltr' }}>{MOCK_CARD.exp}</div>
+              {/* card number */}
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#fff', letterSpacing: '0.15em', marginBottom: 12,
+                fontFamily: 'monospace', direction: 'ltr' }}>
+                **** **** **** {profile.card_last4}
               </div>
+
               <div>
                 <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, letterSpacing: '0.08em', marginBottom: 2 }}>בעל הכרטיס</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>{profile.name}</div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div style={{
+              borderRadius: 16, padding: '26px 22px', marginBottom: 16, textAlign: 'center',
+              background: 'rgba(255,255,255,0.03)', border: '1px dashed rgba(255,255,255,0.15)',
+            }}>
+              <i className="ti ti-credit-card-off" style={{ fontSize: 26, color: 'rgba(255,255,255,0.25)', display: 'block', marginBottom: 8 }} />
+              <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.6)', marginBottom: 4 }}>אין אמצעי תשלום שמור</div>
+              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6 }}>
+                הכרטיס יישמר מאובטח ב-PayPlus ברכישת המנוי הראשונה, וישמש לחידוש אוטומטי
+              </div>
+            </div>
+          )}
 
           {/* security badges */}
           <div style={{ display: 'flex', gap: 6, marginBottom: 16, flexWrap: 'wrap' }}>

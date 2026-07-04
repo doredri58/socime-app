@@ -11,7 +11,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await db
     .from('users')
-    .select('id, email, name, role, plan, tier, token_balance, created_at')
+    .select('id, email, name, role, plan, tier, token_balance, created_at, subscription_expires_at, card_brand, card_last4')
     .eq('id', user.id)
     .single()
 

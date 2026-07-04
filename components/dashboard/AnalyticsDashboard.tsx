@@ -226,39 +226,50 @@ export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance
   // ── derive real stats from posts ──
   const publishedPosts = posts.filter(p => p.status === 'published')
   const scheduledPosts = posts.filter(p => p.status === 'scheduled' || p.status === 'queued')
+  const draftPosts     = posts.filter(p => p.status === 'draft')
   const totalPosts     = posts.length
-  const tokensUsed     = Math.max(1, totalPosts * 10)
 
-  // group by week for chart (last 8 weeks)
-  const weeklyData = useMemo(() => {
+  // group by week for chart (last 8 weeks), optionally filtered by platform
+  const weeklyFor = (platform: string | null) => {
     const weeks: number[] = Array(8).fill(0)
     posts.forEach(p => {
+      if (platform && !(p.platform ?? []).includes(platform)) return
       const d    = new Date(p.created_at)
       const diff = Math.floor((Date.now() - d.getTime()) / (7 * 24 * 60 * 60 * 1000))
       if (diff >= 0 && diff < 8) weeks[7 - diff]++
     })
-    return weeks.length > 1 ? weeks : [1, 2, 3, 4, 3, 5, 4, 6]
-  }, [posts])
+    return weeks
+  }
+  const weeklyData = useMemo(() => weeklyFor(null), [posts])         // eslint-disable-line react-hooks/exhaustive-deps
+  const chartData  = useMemo(
+    () => chartFilter === 'all' ? weeklyData : weeklyFor(chartFilter),
+    [chartFilter, weeklyData]                                        // eslint-disable-line react-hooks/exhaustive-deps
+  )
+  const chartColor = chartFilter === 'all' ? PURPLE : PLATFORM_META[chartFilter]?.color ?? PURPLE
 
-  const fbData = useMemo(() => weeklyData.map((v, i) => Math.max(0, v - (i % 3))), [weeklyData])
-  const igData = useMemo(() => weeklyData.map((v, i) => Math.max(0, v - (i % 2))), [weeklyData])
-
-  const chartData = chartFilter === 'facebook' ? fbData : chartFilter === 'instagram' ? igData : weeklyData
-  const chartColor = chartFilter === 'facebook' ? '#1877F2' : chartFilter === 'instagram' ? '#E1306C' : PURPLE
+  // real week-over-week delta (posts created this week vs last week)
+  const thisWeek = weeklyData[7] ?? 0
+  const lastWeek = weeklyData[6] ?? 0
+  const weekDelta = lastWeek > 0 ? Math.round(((thisWeek - lastWeek) / lastWeek) * 100) : null
 
   // top posts for leaderboard
   const topPosts = useMemo(() => [...posts].slice(0, 5), [posts])
 
-  // AI insights (rotates)
+  // Insights — real numbers from the user's own data only
   const insights = useMemo(() => {
-    const base = [
-      `היי ${userName ? userName.split(' ')[0] : ''}, שמנו לב שהפוסטים שלך בימי שלישי בערב מביאים 40% יותר מעורבות. מומלץ לתזמן את הפוסטים הבאים לשעה 19:00-21:00.`,
-      `ניתחנו את ${totalPosts} הפוסטים שלך — תוכן עם שאלות מקבל פי 2.3 יותר תגובות מפוסטים רגילים. שקול להוסיף שאלה בסיום כל פוסט.`,
-      `יש לך ${scheduledPosts.length} פוסטים מתוזמנים השבוע. על בסיס הנתונים, עדיף לפרסם לפחות 4 פוסטים בשבוע לצמיחה אופטימלית.`,
-      `הפוסטים עם האשטגים מביאים 28% יותר חשיפה אורגנית. ה-AI ממליץ על 5-8 האשטגים ממוקדים במקום 20+ כלליים.`,
+    const hi = userName ? `היי ${userName.split(' ')[0]}, ` : ''
+    if (totalPosts === 0) {
+      return [`${hi}עדיין אין נתונים לניתוח — צור את הפוסט הראשון שלך והתובנות יופיעו כאן.`]
+    }
+    const list = [
+      `${hi}נוצרו עד כה ${totalPosts} פוסטים: ${publishedPosts.length} פורסמו, ${scheduledPosts.length} מתוזמנים ו-${draftPosts.length} טיוטות.`,
+      `השבוע נוצרו ${thisWeek} פוסטים${lastWeek > 0 ? ` (לעומת ${lastWeek} בשבוע שעבר)` : ''}. טיפ: עקביות של 3-4 פוסטים בשבוע היא המפתח לצמיחה.`,
     ]
-    return base
-  }, [userName, totalPosts, scheduledPosts.length])
+    if (draftPosts.length > 0) {
+      list.push(`יש לך ${draftPosts.length} טיוטות שמחכות — קפוץ ללוח התזמון כדי לשגר אותן.`)
+    }
+    return list
+  }, [userName, totalPosts, publishedPosts.length, scheduledPosts.length, draftPosts.length, thisWeek, lastWeek])
 
   function handleDuplicate(post: Post) {
     const prompt = encodeURIComponent(`כתוב וריאציה מוצלחת של הפוסט הזה:\n${post.content_text?.slice(0, 200) ?? ''}`)
@@ -327,52 +338,44 @@ export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance
               </div>
             </div>
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', margin: 0, lineHeight: 1.75 }}>
-              {insights[insightIndex]}
+              {insights[Math.min(insightIndex, insights.length - 1)]}
             </p>
           </div>
         </div>
       </div>
 
-      {/* ── KPI Cards ── */}
+      {/* ── KPI Cards — real data only ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
         <KPICard
-          icon="ti-users"
-          label="צמיחת עוקבים"
-          value={`+${Math.max(12, totalPosts * 3).toLocaleString()}`}
-          delta="+18.4%"
-          deltaPositive
-          sub="החודש"
-          sparkData={[20, 35, 28, 45, 52, 48, 60, 72]}
+          icon="ti-file-text"
+          label="סה&quot;כ פוסטים"
+          value={totalPosts.toLocaleString()}
+          delta={weekDelta !== null ? `${weekDelta >= 0 ? '+' : ''}${weekDelta}%` : undefined}
+          deltaPositive={weekDelta !== null ? weekDelta >= 0 : undefined}
+          sub="מאז ההצטרפות"
+          sparkData={totalPosts > 0 ? weeklyData : undefined}
+          accentColor={PURPLE2}
+        />
+        <KPICard
+          icon="ti-check"
+          label="פורסמו"
+          value={publishedPosts.length.toLocaleString()}
+          sub="פוסטים באוויר"
           accentColor={GREEN}
         />
         <KPICard
-          icon="ti-heart"
-          label="מעורבות כוללת"
-          value={(Math.max(240, totalPosts * 47)).toLocaleString()}
-          delta="+31%"
-          deltaPositive
-          sub="לייקים + תגובות + שיתופים"
-          sparkData={[30, 45, 38, 60, 55, 70, 65, 82]}
-          accentColor="#F87171"
-        />
-        <KPICard
           icon="ti-clock"
-          label="הזמן החם ביותר"
-          value="19:00"
-          sub="ימי שלישי ורביעי"
-          sparkData={[10, 30, 20, 80, 95, 85, 60, 40]}
+          label="מתוזמנים"
+          value={scheduledPosts.length.toLocaleString()}
+          sub="ממתינים לפרסום"
           accentColor="#FBBF24"
         />
         <KPICard
           icon="ti-coins"
-          label="יעילות טוקנים"
-          value={`${Math.round((Math.max(240, totalPosts * 47)) / tokensUsed * 10) / 10}`}
-          suffix="מעורבות/טוקן"
-          delta="+12%"
-          deltaPositive
-          sub={`${tokensUsed} טוקנים בשימוש`}
-          sparkData={[2, 2.5, 2.2, 3.1, 2.8, 3.5, 3.2, 3.8]}
-          accentColor={PURPLE2}
+          label="טוקנים נותרו"
+          value={tokenBalance.toLocaleString()}
+          sub="ביתרה הנוכחית"
+          accentColor="#60A5FA"
         />
       </div>
 
@@ -433,10 +436,10 @@ export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div className="neon-card" style={{ ...GLASS, padding: '20px', flex: 1 }}>
             <h3 style={{ fontSize: 13, fontWeight: 800, color: '#fff', margin: '0 0 16px' }}>חלוקה לפי פלטפורמה</h3>
-            {(['facebook', 'instagram', 'tiktok'] as const).map((plat, idx) => {
+            {(['facebook', 'instagram', 'tiktok'] as const).map(plat => {
               const pm  = PLATFORM_META[plat]
               const cnt = posts.filter(p => (p.platform ?? []).includes(plat)).length
-              const pct = totalPosts > 0 ? Math.round((cnt / Math.max(totalPosts, 1)) * 100) : [40, 45, 15][idx]
+              const pct = totalPosts > 0 ? Math.round((cnt / totalPosts) * 100) : 0
               return (
                 <div key={plat} style={{ marginBottom: 14 }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
