@@ -172,39 +172,38 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
 }
 
 /* ════════════════════════════════════════════════════════════════
-   Billing toggle (defaults to Annual) + floating "Save 20%" badge
+   Billing toggle (defaults to Annual) — the 20% saving is written on
+   the annual option itself, glass-styled per the design system.
 ════════════════════════════════════════════════════════════════ */
 function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: Billing) => void }) {
   return (
-    <div className="relative inline-flex flex-col items-center">
-      {/* Floating neon "Save 20%" badge */}
-      <span
-        className="absolute -top-4 z-10 rounded-full px-3 py-1 text-xs font-extrabold text-white shadow-[0_4px_20px_rgba(152,80,255,0.6)]"
-        style={{ background: PURPLE }}
+    <div
+      className="inline-flex items-center gap-1 rounded-full p-1"
+      style={{
+        background: 'rgba(255,255,255,0.07)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.13)',
+      }}
+    >
+      <button
+        onClick={() => onChange('annual')}
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
+          billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
+        }`}
+        style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
       >
-        חסכו 20%
-      </span>
-
-      <div className="mt-3 inline-flex items-center gap-1 rounded-full border border-white/10 bg-white/[0.04] p-1">
-        <button
-          onClick={() => onChange('annual')}
-          className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
-            billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
-          }`}
-          style={billing === 'annual' ? { background: PURPLE } : undefined}
-        >
-          שנתי
-        </button>
-        <button
-          onClick={() => onChange('monthly')}
-          className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
-            billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
-          }`}
-          style={billing === 'monthly' ? { background: PURPLE } : undefined}
-        >
-          חודשי
-        </button>
-      </div>
+        שנתי · חסכו 20%
+      </button>
+      <button
+        onClick={() => onChange('monthly')}
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
+          billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
+        }`}
+        style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
+      >
+        חודשי
+      </button>
     </div>
   )
 }
@@ -259,11 +258,15 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 
   return (
     <div
-      className={`relative flex flex-col rounded-3xl border p-7 transition ${
-        highlight
-          ? 'border-[#9850FF]/60 bg-[#16111F] shadow-[0_0_50px_rgba(152,80,255,0.25)] md:-mt-4 md:mb-4'
-          : 'border-white/10 bg-[#121016]'
+      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${
+        highlight ? 'shadow-[0_0_50px_rgba(152,80,255,0.25)] md:-mt-4 md:mb-4' : ''
       }`}
+      style={{
+        background: 'rgba(255,255,255,0.07)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: highlight ? '1px solid rgba(152,80,255,0.6)' : '1px solid rgba(255,255,255,0.13)',
+      }}
     >
       {/* "Best value" ribbon */}
       {highlight && (
@@ -333,7 +336,15 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 function RefundPolicy() {
   const [open, setOpen] = useState(false)
   return (
-    <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03]">
+    <div
+      className="mx-auto mt-12 max-w-2xl rounded-2xl"
+      style={{
+        background: 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(20px)',
+        WebkitBackdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.12)',
+      }}
+    >
       <button
         onClick={() => setOpen(o => !o)}
         className="flex w-full items-center justify-between gap-3 px-5 py-4 text-right"

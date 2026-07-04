@@ -257,9 +257,10 @@ function HomeInner() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '0 40px', height: 64,
-        background: scrolled ? 'rgba(13,8,41,0.9)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(16px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : '1px solid transparent',
+        background: scrolled ? 'rgba(255,255,255,0.07)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.13)' : '1px solid transparent',
         transition: 'all .3s ease',
       }}>
         {/* Logo — right (RTL start) */}
@@ -285,8 +286,10 @@ function HomeInner() {
 
         {/* Auth — left (RTL end) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <a href="/login" style={ghost({ padding: '8px 18px', fontSize: 13 })}>כניסה</a>
-          <a href="/login?mode=register" style={btn({ padding: '9px 22px', fontSize: 13 })}>הרשמה חינמית</a>
+          <a href="/login?mode=register" style={btn({ padding: '9px 24px', fontSize: 13 })}>
+            התחילו בחינם
+            <i className="ti ti-arrow-left" style={{ fontSize: 14 }} />
+          </a>
           <button onClick={() => setDrawerOpen(true)} aria-label="תפריט"
             style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
             <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
@@ -559,22 +562,24 @@ function HomeInner() {
                   width: 64, height: 64, borderRadius: 20, flexShrink: 0,
                   background: `linear-gradient(135deg,${PURPLE},${PURPLE2})`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', fontWeight: 700, fontSize: 24,
-                  boxShadow: `0 8px 28px rgba(152,80,255,0.4)`,
-                }} className="font-arimo">ד</div>
+                  color: '#fff', boxShadow: `0 8px 28px rgba(152,80,255,0.4)`,
+                }}>
+                  <i className="ti ti-code" style={{ fontSize: 28 }} />
+                </div>
                 <div>
-                  <div className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 2 }}>דור דוד אדרי</div>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: PURPLE2 }}>מייסד ומפתח ראשי · EDRI GROUP</div>
+                  <div className="font-arimo" style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 2 }}>EDRI GROUP</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: PURPLE2 }}>סטודיו לפיתוח ונוכחות דיגיטלית</div>
                 </div>
               </div>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.56)', lineHeight: 1.8, margin: '0 0 26px' }}>
-                יזם טכנולוגי, Full-Stack Developer ומומחה אינטגרציות Meta API. בונה SociMe מתוך אמונה שכל עסק ישראלי ראוי לנוכחות דיגיטלית חזקה — בלי להשקיע בגורו שיווק יקר.
+                EDRI GROUP מתמחה בבניית אתרים, דפי נחיתה וחוויות דיגיטליות שמניעות עסקים קדימה. SociMe היא מוצר הדגל שלנו — אותה מומחיות שאנחנו נותנים ללקוחות, ארוזה בכלי שעובד בשבילכם 24/7.
               </p>
             </div>
             <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
               {[
-                { icon: 'ti-brand-linkedin', label: 'LinkedIn' },
-                { icon: 'ti-mail', label: 'dor@socime.co.il' },
+                { icon: 'ti-world', label: 'אתרי תדמית' },
+                { icon: 'ti-rocket', label: 'דפי נחיתה' },
+                { icon: 'ti-sparkles', label: 'אוטומציות AI' },
               ].map(s => (
                 <div key={s.label} style={{
                   display: 'flex', alignItems: 'center', gap: 7,
