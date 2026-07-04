@@ -2,7 +2,6 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
-import Drawer from '@/components/Drawer'
 import Onboarding from '@/components/Onboarding'
 import PricingPlans from '@/components/pricing/PricingPlans'
 
@@ -210,7 +209,6 @@ function BaitSection() {
 /* ─── Main ─── */
 function HomeInner() {
   const searchParams = useSearchParams()
-  const [drawerOpen, setDrawerOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   const oauthUid = searchParams.get('uid')
@@ -250,8 +248,6 @@ function HomeInner() {
                    linear-gradient(160deg,#0D0829 0%,#160C3D 45%,#0F1654 100%)`,
       fontFamily: 'var(--font-space),sans-serif',
     }}>
-      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-
       {/* ══ NAV ══ */}
       <nav style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50,
@@ -290,11 +286,6 @@ function HomeInner() {
             התחילו בחינם
             <i className="ti ti-arrow-left" style={{ fontSize: 14 }} />
           </a>
-          <button onClick={() => setDrawerOpen(true)} aria-label="תפריט"
-            style={{ width: 38, height: 38, borderRadius: 10, background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)', cursor: 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 5 }}>
-            <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
-            <span style={{ width: 16, height: 1.5, background: '#fff', borderRadius: 2, display: 'block' }} />
-          </button>
         </div>
       </nav>
 
