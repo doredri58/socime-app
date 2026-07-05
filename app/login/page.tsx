@@ -159,23 +159,25 @@ function LoginInner() {
               </div>
             </div>
 
-            {/* Stars */}
+            {/* Trust badge — honest, no fabricated ratings */}
             <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 10,
+              display: 'inline-flex', alignItems: 'center', gap: 12,
               padding: '12px 18px', borderRadius: 16,
               background: 'rgba(255,255,255,0.06)',
               backdropFilter: 'blur(12px)',
               border: '1px solid rgba(255,255,255,0.1)',
               maxWidth: 320,
             }}>
-              <div style={{ display: 'flex', gap: 2 }}>
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} style={{ color: '#F59E0B', fontSize: 16 }}>★</span>
-                ))}
+              <div style={{
+                width: 34, height: 34, borderRadius: 10, flexShrink: 0,
+                background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.3)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <i className="ti ti-shield-check" style={{ fontSize: 18, color: '#34D399' }} />
               </div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>4.9 / 5</div>
-                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>מ-1,200+ עסקים</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>ללא כרטיס אשראי</div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>התחלה חינם · ביטול בכל עת</div>
               </div>
             </div>
           </div>
