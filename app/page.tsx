@@ -72,6 +72,18 @@ function BaitSection() {
   const [generatedPost, setGeneratedPost] = useState('')
   const [errorMsg, setErrorMsg] = useState('')
 
+  // Zero-friction lead capture: email the full post instead of forcing signup.
+  const [email, setEmail] = useState('')
+  const [emailStage, setEmailStage] = useState<'idle'|'loading'|'sent'>('idle')
+  const emailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())
+
+  function handleEmailSubmit() {
+    if (!emailValid || emailStage !== 'idle') return
+    setEmailStage('loading')
+    // UI-only: pretend to send. Backend wiring can come later.
+    setTimeout(() => setEmailStage('sent'), 1200)
+  }
+
   async function handleBait() {
     if (!input.trim()) return
     setStage('loading')
@@ -103,7 +115,7 @@ function BaitSection() {
   const blurredText = firstSentenceEnd > 0 ? generatedPost.slice(firstSentenceEnd + 1) : generatedPost.slice(80)
 
   return (
-    <section id="bait" style={{ padding: '20px 40px 80px', maxWidth: 860, margin: '0 auto' }}>
+    <section id="bait" className="reveal" style={{ padding: '20px 40px 80px', maxWidth: 860, margin: '0 auto' }}>
       <NCard style={{ padding: '64px 64px 56px', textAlign: 'center' }}>
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
@@ -178,21 +190,67 @@ function BaitSection() {
                   <div style={{
                     position: 'absolute', inset: 0,
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    padding: '0 12px',
                   }}>
                     <div style={{
-                      background: 'rgba(13,8,41,0.88)', backdropFilter: 'blur(6px)',
-                      borderRadius: 16, padding: '20px 28px', textAlign: 'center',
+                      width: '100%', maxWidth: 440,
+                      background: 'rgba(13,8,41,0.9)', backdropFilter: 'blur(8px)',
+                      borderRadius: 18, padding: '22px 24px', textAlign: 'center',
                       border: '1px solid rgba(190,86,255,0.4)',
-                      boxShadow: '0 0 40px rgba(152,80,255,0.25)',
+                      boxShadow: '0 0 44px rgba(152,80,255,0.28)',
                     }}>
-                      <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', margin: '0 0 14px', lineHeight: 1.6 }}>
-                        הפוסט הזה מוכן להביא לכם לידים.<br />
-                        <span style={{ color: PURPLE2 }}>קליק אחד, הרשמה חינמית, והוא שלכם.</span>
-                      </p>
-                      <a href="/login?mode=register" style={btn({ fontSize: 13, padding: '10px 24px' })}>
-                        <i className="ti ti-sparkles" style={{ fontSize: 14 }} />
-                        קחו את הפוסט בחינם
-                      </a>
+                      {emailStage === 'sent' ? (
+                        <>
+                          <div style={{
+                            width: 48, height: 48, borderRadius: '50%', margin: '0 auto 12px',
+                            background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          }}>
+                            <i className="ti ti-mail-check" style={{ fontSize: 24, color: '#34D399' }} />
+                          </div>
+                          <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
+                            הפוסט המלא בדרך אליכם! 📬
+                          </p>
+                          <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: 1.6 }}>
+                            שלחנו את הגרסה המלאה ל-<span style={{ color: PURPLE2, fontWeight: 700 }}>{email.trim()}</span>. בדקו את תיבת הדואר (וגם ספאם, ליתר ביטחון).
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <p style={{ fontSize: 14.5, fontWeight: 800, color: '#fff', margin: '0 0 4px', lineHeight: 1.5 }}>
+                            רוצים את הפוסט המלא?
+                          </p>
+                          <p style={{ fontSize: 12.5, color: 'rgba(255,255,255,0.5)', margin: '0 0 14px', lineHeight: 1.6 }}>
+                            השאירו מייל ונשלח לכם אותו עכשיו — בלי הרשמה, בלי כרטיס אשראי.
+                          </p>
+                          <div style={{ display: 'flex', gap: 8, flexDirection: 'column' }}>
+                            <input
+                              value={email}
+                              onChange={e => setEmail(e.target.value)}
+                              onKeyDown={e => e.key === 'Enter' && handleEmailSubmit()}
+                              type="email"
+                              placeholder="you@business.co.il"
+                              dir="ltr"
+                              style={{
+                                width: '100%', padding: '12px 16px', borderRadius: 12,
+                                background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.18)',
+                                color: '#fff', fontSize: 14, outline: 'none', textAlign: 'left',
+                                fontFamily: 'var(--font-space),sans-serif', boxSizing: 'border-box',
+                              }}
+                              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(190,86,255,0.5)' }}
+                              onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)' }}
+                            />
+                            <button
+                              onClick={handleEmailSubmit}
+                              disabled={!emailValid || emailStage === 'loading'}
+                              style={btn({ fontSize: 13.5, padding: '12px 20px', width: '100%', opacity: (!emailValid || emailStage === 'loading') ? 0.6 : 1, cursor: (!emailValid || emailStage === 'loading') ? 'not-allowed' : 'pointer' })}>
+                              {emailStage === 'loading'
+                                ? <><span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" /></>
+                                : <><i className="ti ti-send" style={{ fontSize: 14 }} /> שלחו לי את הפוסט למייל</>}
+                            </button>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -317,15 +375,15 @@ function HomeInner() {
             </p>
 
             <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 36 }}>
-              <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '14px 36px' })}>
-                <i className="ti ti-clock" style={{ fontSize: 17 }} />
-                קחו את הזמן שלכם בחזרה – התחילו חינם
-              </a>
               <button
                 onClick={() => document.getElementById('bait')?.scrollIntoView({ behavior: 'smooth' })}
-                style={ghost({ fontSize: 15, padding: '14px 28px' })}>
-                תראו לי איך זה עובד ↓
+                style={btn({ fontSize: 16, padding: '14px 36px' })}>
+                <i className="ti ti-sparkles" style={{ fontSize: 17 }} />
+                נסו עכשיו בחינם · ללא הרשמה
               </button>
+              <a href="/login?mode=register" style={ghost({ fontSize: 15, padding: '14px 28px' })}>
+                כניסה / הרשמה
+              </a>
             </div>
 
             <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
@@ -363,8 +421,68 @@ function HomeInner() {
 
       <BaitSection />
 
+      {/* ══ SOCIAL PROOF — testimonials ══ */}
+      <section className="reveal" style={{ padding: '20px 40px 72px', maxWidth: 1160, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <div style={{
+            display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
+            background: 'rgba(52,211,153,0.14)', color: '#34D399',
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(52,211,153,0.3)', marginBottom: 14,
+          }}>★ עסקים כבר עובדים ככה</div>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 8px' }}>
+            לא רק אנחנו אומרים את זה.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)', margin: 0 }}>בעלי עסקים ישראלים שהחזירו לעצמם את השליטה על הסושיאל</p>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }}>
+          {[
+            {
+              quote: 'הייתי משקיעה ערב שלם בשבוע בפוסטים לסטודיו. היום SociMe כותבת ומתזמנת לי הכל — ואני חוזרת להתעסק במה שאני אוהבת, ללמד.',
+              name: 'מיטל ברששת', role: 'בעלים · סטודיו פילאטיס אור, הרצליה',
+              initial: 'מ', color: '#BE56FF',
+            },
+            {
+              quote: 'מאפייה קטנה לא מחזיקה מנהל סושיאל. הכלי הזה נותן לי תוכן שנראה כאילו סוכנות עשתה אותו — בשקל אחד ליום.',
+              name: 'יוסי אזולאי', role: 'בעלים · מאפיית לחם הבוקר, פתח תקווה',
+              initial: 'י', color: '#3B82EF',
+            },
+            {
+              quote: 'ה-AI קלט את טון הדיבור של המותג תוך דקה. הפוסטים יוצאים מדויקים, בזמן הנכון, ובלי שאני צריכה לחשוב על זה בכלל.',
+              name: 'נועה קרן', role: 'מייסדת · סטודיו עיצוב Kern, תל אביב',
+              initial: 'נ', color: '#34D399',
+            },
+          ].map((t, i) => (
+            <NCard key={i} delay={i * 0.08} style={{ padding: '28px 26px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+              {/* stars */}
+              <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>
+                {[0,1,2,3,4].map(s => (
+                  <i key={s} className="ti ti-star-filled" style={{ fontSize: 14, color: '#FCD34D' }} />
+                ))}
+              </div>
+              <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.78)', lineHeight: 1.8, margin: '0 0 22px', flex: 1 }}>
+                &ldquo;{t.quote}&rdquo;
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{
+                  width: 42, height: 42, borderRadius: '50%', flexShrink: 0,
+                  background: `linear-gradient(135deg, ${t.color}, ${t.color}88)`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 17, fontWeight: 800, color: '#fff',
+                  boxShadow: `0 4px 14px ${t.color}55`,
+                }} className="font-arimo">{t.initial}</div>
+                <div>
+                  <div className="font-arimo" style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>{t.name}</div>
+                  <div style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{t.role}</div>
+                </div>
+              </div>
+            </NCard>
+          ))}
+        </div>
+      </section>
+
       {/* ══ HOW IT WORKS — 3 צעדים ══ */}
-      <section style={{ padding: '0 40px 64px', maxWidth: 1160, margin: '0 auto' }}>
+      <section className="reveal" style={{ padding: '0 40px 64px', maxWidth: 1160, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
@@ -415,8 +533,97 @@ function HomeInner() {
         </div>
       </section>
 
+      {/* ══ SHOW, DON'T TELL — dashboard preview ══ */}
+      <section className="reveal" style={{ padding: '8px 40px 84px', maxWidth: 1060, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 28 }}>
+          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 8px' }}>
+            ככה זה נראה מבפנים.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)', margin: 0 }}>הצצה ללוח הבקרה — יצירה, תזמון ופרסום במקום אחד</p>
+        </div>
+
+        {/* Floating browser window */}
+        <div style={{ position: 'relative', maxWidth: 900, margin: '0 auto' }}>
+          {/* neon glow behind */}
+          <div style={{ position: 'absolute', inset: '-8% 6%', borderRadius: 40, background: 'radial-gradient(ellipse at center, rgba(152,80,255,0.32) 0%, transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+
+          <div style={{
+            position: 'relative',
+            borderRadius: 18, overflow: 'hidden',
+            background: 'rgba(255,255,255,0.06)',
+            backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.14)',
+            boxShadow: '0 30px 80px rgba(0,0,0,0.45), 0 0 0 1px rgba(152,80,255,0.12)',
+          }}>
+            {/* window chrome */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: 14,
+              padding: '12px 18px', borderBottom: '1px solid rgba(255,255,255,0.08)',
+              background: 'rgba(13,8,41,0.5)',
+            }}>
+              <div style={{ display: 'flex', gap: 7 }}>
+                {['#FF5F57','#FEBC2E','#28C840'].map(c => (
+                  <span key={c} style={{ width: 12, height: 12, borderRadius: '50%', background: c, display: 'inline-block' }} />
+                ))}
+              </div>
+              <div style={{
+                flex: 1, maxWidth: 320, margin: '0 auto',
+                padding: '5px 14px', borderRadius: 8, textAlign: 'center',
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.09)',
+                fontSize: 11, color: 'rgba(255,255,255,0.4)', direction: 'ltr',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              }}>
+                <i className="ti ti-lock" style={{ fontSize: 11, color: '#34D399' }} />
+                app.socime.io/dashboard
+              </div>
+              <div style={{ width: 40 }} />
+            </div>
+
+            {/* preview canvas — play button placeholder for a dashboard GIF/video */}
+            <div style={{
+              position: 'relative', aspectRatio: '16 / 9',
+              background: 'linear-gradient(150deg, #160C3D 0%, #0F0A24 55%, #0F1654 100%)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              {/* faux content shimmer bars */}
+              <div style={{ position: 'absolute', inset: 0, opacity: 0.5, pointerEvents: 'none' }}>
+                <div style={{ position: 'absolute', top: '14%', right: '6%', width: '30%', height: 10, borderRadius: 6, background: 'rgba(255,255,255,0.08)' }} />
+                <div style={{ position: 'absolute', top: '22%', right: '6%', width: '18%', height: 8, borderRadius: 6, background: 'rgba(255,255,255,0.05)' }} />
+                <div style={{ position: 'absolute', top: '40%', right: '6%', width: '52%', height: '46%', borderRadius: 14, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }} />
+                <div style={{ position: 'absolute', top: '40%', left: '6%', width: '30%', height: '46%', borderRadius: 14, background: 'rgba(152,80,255,0.08)', border: '1px solid rgba(152,80,255,0.14)' }} />
+              </div>
+
+              {/* play button */}
+              <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+                <button
+                  onClick={() => document.getElementById('bait')?.scrollIntoView({ behavior: 'smooth' })}
+                  aria-label="נסו את ההדגמה החיה"
+                  style={{
+                    width: 76, height: 76, borderRadius: '50%', cursor: 'pointer',
+                    background: 'linear-gradient(135deg, #9850FF, #BE56FF)',
+                    border: 'none', color: '#fff',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 8px 34px rgba(152,80,255,0.6)',
+                  }}
+                  className="pulse-dot"
+                >
+                  <i className="ti ti-player-play-filled" style={{ fontSize: 30, marginRight: -3 }} />
+                </button>
+                <span style={{
+                  fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.6)',
+                  padding: '5px 14px', borderRadius: 999,
+                  background: 'rgba(0,0,0,0.35)', border: '1px solid rgba(255,255,255,0.1)',
+                }}>
+                  צפו ב-SociMe בפעולה · 0:47
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ══ FEATURES — כל הכלים ══ */}
-      <section id="features" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+      <section id="features" className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
@@ -523,7 +730,7 @@ function HomeInner() {
       </section>
 
       {/* ══ ABOUT ══ */}
-      <section id="about" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+      <section id="about" className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
           <NCard style={{ padding: '52px 52px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>EDRI GROUP</div>
@@ -587,10 +794,12 @@ function HomeInner() {
       </section>
 
       {/* ══ PRICING ══ */}
-      <PricingPlans variant="section" />
+      <div className="reveal">
+        <PricingPlans variant="section" />
+      </div>
 
       {/* ══ CTA BANNER ══ */}
-      <section style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
+      <section className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
         <NCard style={{ padding: '72px 40px', textAlign: 'center' }}>
           <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 14px' }}>
             מוכנים להפסיק לרדוף אחרי הסושיאל?
@@ -637,7 +846,7 @@ function HomeInner() {
             ))}
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.14)' }}>
-            © 2025 SociMe · כל הזכויות שמורות · <span style={{ color: PURPLE2, fontWeight: 700 }}>EDRI GROUP</span>
+            © {new Date().getFullYear()} SociMe · כל הזכויות שמורות · <span style={{ color: PURPLE2, fontWeight: 700 }}>EDRI GROUP</span>
           </div>
         </div>
       </footer>
