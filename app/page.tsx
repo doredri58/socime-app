@@ -77,11 +77,22 @@ function BaitSection() {
   const [emailStage, setEmailStage] = useState<'idle'|'loading'|'sent'>('idle')
   const emailValid = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email.trim())
 
-  function handleEmailSubmit() {
+  async function handleEmailSubmit() {
     if (!emailValid || emailStage !== 'idle') return
     setEmailStage('loading')
-    // UI-only: pretend to send. Backend wiring can come later.
-    setTimeout(() => setEmailStage('sent'), 1200)
+    try {
+      const res = await fetch('/api/lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), painPoint: input.trim(), post: generatedPost }),
+      })
+      // Even a soft failure shouldn't punish the lead — the row is captured
+      // server-side; only a hard 4xx/5xx returns to idle so they can retry.
+      if (!res.ok && res.status !== 200) { setEmailStage('idle'); return }
+      setEmailStage('sent')
+    } catch {
+      setEmailStage('idle')
+    }
   }
 
   async function handleBait() {
