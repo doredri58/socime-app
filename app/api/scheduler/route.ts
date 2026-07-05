@@ -13,7 +13,10 @@ export async function POST(req: NextRequest) {
     content_text: contentText ?? "",
     hashtags:     hashtags ?? "",
     platform:     platform ?? ["instagram"],
-    status:       scheduledAt ? "pending_approval" : "draft",
+    // Scheduling a post means intent to publish → queue it so the cron picks
+    // it up at its time. (Was "pending_approval", but nothing ever approved
+    // those, so every scheduled post silently got stuck and never published.)
+    status:       scheduledAt ? "queued" : "draft",
     scheduled_at: scheduledAt ?? null,
     source:       "generated",
     content_type: "text",

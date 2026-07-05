@@ -25,6 +25,7 @@
   --dash-topbar-border: rgba(152,80,255,0.18);
   --dash-topbar-text: rgba(255,255,255,0.45);
   --dash-sidebar-bg: linear-gradient(180deg, #0F0A1E 0%, #130C24 40%, #170F2E 100%);
+  --dash-sidebar-glass: rgba(255,255,255,0.07);
   --dash-sidebar-border: rgba(139,92,246,0.15);
   --dash-sidebar-text: rgba(255,255,255,0.62);
   --dash-sidebar-text-active: #ffffff;
@@ -55,7 +56,8 @@
   --dash-topbar-border: rgba(124,58,237,0.14);
   --dash-topbar-text: #4A3585;
   --dash-sidebar-bg: linear-gradient(180deg, #F1ECFE 0%, #E8E2FB 100%);
-  --dash-sidebar-border: rgba(124,58,237,0.14);
+  --dash-sidebar-glass: rgba(255,255,255,0.6);
+  --dash-sidebar-border: rgba(124,58,237,0.18);
   --dash-sidebar-text: #4A3585;
   --dash-sidebar-text-active: #2A1758;
   --dash-sidebar-active-bg: rgba(124,58,237,0.12);

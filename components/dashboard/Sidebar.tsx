@@ -74,7 +74,7 @@ interface SidebarProps {
 }
 
 const TIER_BADGE: Record<string, { label: string; color: string; bg: string }> = {
-  free:  { label: 'חינמי', color: 'rgba(255,255,255,0.45)', bg: 'rgba(255,255,255,0.07)' },
+  free:  { label: 'חינמי', color: 'var(--dash-sidebar-text)', bg: 'var(--dash-sidebar-active-bg)' },
   basic: { label: 'Basic', color: '#A78BFA',                bg: 'rgba(167,139,250,0.12)' },
   pro:   { label: 'Pro ✦', color: '#BE56FF',                bg: 'rgba(190,86,255,0.15)'  },
 }
@@ -85,7 +85,7 @@ function SectionLabel({ label }: { label: string }) {
   return (
     <div style={{
       fontSize: 9, fontWeight: 700, letterSpacing: '1.5px',
-      textTransform: 'uppercase', color: 'rgba(255,255,255,0.28)',
+      textTransform: 'uppercase', color: 'var(--dash-sidebar-label)',
       padding: '14px 12px 6px',
       userSelect: 'none',
     }}>
@@ -107,15 +107,15 @@ function NavItem({
       borderRadius: 10,
       fontSize: small ? 12 : 13,
       fontWeight: active ? 600 : 400,
-      color: active ? '#fff' : 'rgba(255,255,255,0.52)',
-      background: active ? 'rgba(152,80,255,0.18)' : 'transparent',
-      borderRight: active ? '2px solid #9850FF' : '2px solid transparent',
+      color: active ? 'var(--dash-sidebar-text-active)' : 'var(--dash-sidebar-text)',
+      background: active ? 'var(--dash-sidebar-active-bg)' : 'transparent',
+      borderRight: active ? '2px solid var(--dash-sidebar-active-border)' : '2px solid transparent',
       textDecoration: 'none',
       transition: 'background 0.15s, color 0.15s',
     }}>
       <i className={`ti ${icon}`} style={{
         fontSize: small ? 14 : 15, flexShrink: 0,
-        color: active ? '#BE56FF' : 'rgba(255,255,255,0.35)',
+        color: active ? '#BE56FF' : 'var(--dash-sidebar-label)',
       }} aria-hidden="true" />
       <span style={{ flex: 1 }}>{label}</span>
       {active && (
@@ -130,7 +130,7 @@ function NavItem({
 }
 
 function Divider() {
-  return <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '6px 0' }} />
+  return <div style={{ height: 1, background: 'var(--dash-sidebar-border)', margin: '6px 0' }} />
 }
 
 /* ── Main component ────────────────────────────────────────── */
@@ -173,10 +173,10 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
             style={{ objectFit: 'cover' }} onError={() => {}} />
         </div>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', letterSpacing: '-0.3px', lineHeight: 1 }}>
+          <div style={{ fontSize: 16, fontWeight: 800, color: 'var(--dash-sidebar-text-active)', letterSpacing: '-0.3px', lineHeight: 1 }}>
             SociMe
           </div>
-          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.35)', letterSpacing: '1.8px', textTransform: 'uppercase', marginTop: 2 }}>
+          <div style={{ fontSize: 9, color: 'var(--dash-sidebar-label)', letterSpacing: '1.8px', textTransform: 'uppercase', marginTop: 2 }}>
             AI Social
           </div>
         </div>
@@ -222,13 +222,13 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
       </nav>
 
       {/* ── User footer ── */}
-      <div style={{ flexShrink: 0, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{ flexShrink: 0, paddingTop: 10, borderTop: '1px solid var(--dash-sidebar-border)' }}>
         {/* User row */}
         <div style={{
           display: 'flex', alignItems: 'center', gap: 9,
           padding: '10px 10px', borderRadius: 12,
-          background: 'rgba(255,255,255,0.04)',
-          border: '1px solid rgba(255,255,255,0.07)',
+          background: 'var(--dash-sidebar-active-bg)',
+          border: '1px solid var(--dash-sidebar-border)',
           marginBottom: 8,
         }}>
           <div style={{
@@ -242,7 +242,7 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{
-              fontSize: 12, fontWeight: 600, color: '#fff',
+              fontSize: 12, fontWeight: 600, color: 'var(--dash-sidebar-text-active)',
               overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
             }}>
               {userName}
@@ -258,7 +258,7 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
             </span>
           </div>
           <Link href="/dashboard/profile" style={{
-            color: 'rgba(255,255,255,0.3)', textDecoration: 'none',
+            color: 'var(--dash-sidebar-label)', textDecoration: 'none',
             fontSize: 14, flexShrink: 0,
           }}>
             <i className="ti ti-settings" />
@@ -270,8 +270,8 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
           width: '100%', padding: '8px', borderRadius: 9,
           fontSize: 12, fontWeight: 500, cursor: 'pointer',
           background: 'transparent',
-          color: 'rgba(255,255,255,0.38)',
-          border: '1px solid rgba(255,255,255,0.08)',
+          color: 'var(--dash-sidebar-text)',
+          border: '1px solid var(--dash-sidebar-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
           transition: 'all 0.15s',
         }}>
@@ -283,10 +283,10 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
   )
 
   const sidebarStyle: React.CSSProperties = {
-    background: 'rgba(255,255,255,0.07)',
+    background: 'var(--dash-sidebar-glass)',
     backdropFilter: 'blur(20px)',
     WebkitBackdropFilter: 'blur(20px)',
-    borderLeft: '1px solid rgba(255,255,255,0.13)',
+    borderLeft: '1px solid var(--dash-sidebar-border)',
     padding: '20px 12px 16px',
     width: 220,
     flexShrink: 0,
