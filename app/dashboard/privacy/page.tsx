@@ -42,7 +42,7 @@ const SECTIONS = [
     title: 'שיתוף מידע',
     items: [
       { label: 'לא מוכרים מידע', desc: 'אנחנו לעולם לא מוכרים את הנתונים שלכם לצדדים שלישיים' },
-      { label: 'ספקי שירות', desc: 'Supabase (DB), Anthropic (AI), Cloudinary (מדיה), PayPlus (תשלום)' },
+      { label: 'ספקי שירות', desc: 'Supabase (מסד נתונים), Google Gemini (מנוע ה-AI), Cloudinary (מדיה), PayPlus (סליקת תשלומים)' },
       { label: 'דרישות חוקיות', desc: 'רק כאשר מחויבים על פי חוק ישראלי' },
     ],
   },
