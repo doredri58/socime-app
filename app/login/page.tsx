@@ -67,16 +67,19 @@ function LoginInner() {
     setError(''); setSuccess(''); setLoading(true)
     try {
       if (mode === 'register') {
-        const { data, error } = await supabase.auth.signUp({
-          email, password,
-          options: { data: { full_name: name } },
+        // Use the server route: it creates an auto-confirmed user AND signs it
+        // in (session cookie), so onboarding works immediately. Client
+        // supabase.auth.signUp would return session:null when email
+        // confirmation is enabled, stranding the new user without a session.
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name }),
         })
-        if (error) throw error
-        if (data.user) {
-          window.location.href = `/onboarding?uid=${data.user.id}`
-          return
-        }
-        setSuccess('נשלח אליך מייל אישור — בדוק את תיבת הדואר שלך 📬')
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error ?? 'שגיאה בהרשמה')
+        window.location.href = `/onboarding?uid=${data.userId}`
+        return
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
