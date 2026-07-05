@@ -1,5 +1,5 @@
 import { generatePost as generateWithGemini } from './gemini'
 
-export async function generatePost(businessDesc: string) {
-  return generateWithGemini(businessDesc)
+export async function generatePost(businessDesc: string, extraContext = '') {
+  return generateWithGemini(businessDesc, extraContext)
 }

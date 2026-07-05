@@ -14,10 +14,12 @@ const SYSTEM_PROMPT = `אתה מומחה שיווק דיגיטלי ישראלי.
 - ענה ב-JSON בלבד בפורמט: { "text": "...", "hashtags": "..." }`
 
 // Text generation — gemini-2.5-flash
-export async function generatePost(businessDesc: string, systemPromptOverride?: string) {
+// extraContext (optional) is appended to the system prompt — used to inject the
+// active business's tone / audience / address / hours while keeping the JSON rules.
+export async function generatePost(businessDesc: string, extraContext = '') {
   const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
 
-  const systemContext = systemPromptOverride ?? SYSTEM_PROMPT
+  const systemContext = SYSTEM_PROMPT + extraContext
 
   const result = await model.generateContent({
     contents: [{ role: 'user', parts: [{ text: `${systemContext}\n\nכתוב פוסט לעסק הבא: ${businessDesc}` }] }],

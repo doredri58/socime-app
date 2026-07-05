@@ -17,6 +17,12 @@ export interface BusinessProfile {
   phone: string | null
   address: string | null
   operating_hours: string | null
+  target_audience: string | null
+  unique_value: string | null
+  website: string | null
+  instagram: string | null
+  facebook: string | null
+  tiktok: string | null
 }
 
 const BUSINESS_LIMIT: Record<string, number> = { free: 1, basic: 1, pro: 1, agency: 5 }

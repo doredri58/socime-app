@@ -14,9 +14,9 @@ const GOLD = '#FFD700'
 
 /* ── Token economy (shown as a small strip) ─────────────────── */
 const TOKEN_COSTS = [
-  { icon: 'ti-video',    label: 'וידאו',  cost: 10 },
-  { icon: 'ti-photo',    label: 'תמונה',  cost: 5 },
-  { icon: 'ti-pencil',   label: 'פוסט',   cost: 2 },
+  { icon: 'ti-video', label: 'וידאו', cost: 15 },
+  { icon: 'ti-photo', label: 'תמונה', cost: 5 },
+  { icon: 'ti-pencil', label: 'פוסט', cost: 2 },
 ]
 
 /* ── Plan data ──────────────────────────────────────────────── */
@@ -188,18 +188,16 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
     >
       <button
         onClick={() => onChange('annual')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
-          billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
-        }`}
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
+          }`}
         style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
       >
         שנתי · חסכו 20%
       </button>
       <button
         onClick={() => onChange('monthly')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${
-          billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
-        }`}
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
+          }`}
         style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
       >
         חודשי
@@ -258,9 +256,8 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 
   return (
     <div
-      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${
-        highlight ? 'shadow-[0_0_50px_rgba(152,80,255,0.25)] md:-mt-4 md:mb-4' : ''
-      }`}
+      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${highlight ? 'shadow-[0_0_50px_rgba(152,80,255,0.25)] md:-mt-4 md:mb-4' : ''
+        }`}
       style={{
         background: 'rgba(255,255,255,0.07)',
         backdropFilter: 'blur(20px)',
@@ -308,9 +305,8 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
       <button
         onClick={() => onSelect(plan.id)}
         disabled={busy}
-        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${
-          highlight ? 'text-white shadow-[0_8px_30px_rgba(152,80,255,0.5)]' : 'text-white'
-        }`}
+        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${highlight ? 'text-white shadow-[0_8px_30px_rgba(152,80,255,0.5)]' : 'text-white'
+          }`}
         style={
           highlight
             ? { background: `linear-gradient(135deg, ${PURPLE}, #6D28D9)` }

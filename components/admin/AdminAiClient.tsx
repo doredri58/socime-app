@@ -8,9 +8,9 @@ const TEXT = '#0F172A', TEXT_MID = '#475569', TEXT_LOW = '#94A3B8'
 type PromptKey = 'ideas' | 'post' | 'onboarding' | 'image'
 
 const PROMPT_META: Record<PromptKey, { label: string; sub: string; icon: string; color: string; vars: string[] }> = {
-  ideas:      { label: 'מנוע רעיונות',  sub: 'Ideas Bank generation',    icon: 'ti-bulb',       color: YELLOW, vars: ['{{business_type}}', '{{business_name}}'] },
-  post:       { label: 'יצירת פוסטים',  sub: 'Post creation studio',     icon: 'ti-pencil',     color: ACCENT, vars: ['{{platform}}', '{{tone}}', '{{business_name}}', '{{business_type}}', '{{target_audience}}'] },
-  onboarding: { label: 'אונבורדינג',    sub: 'Business profile builder', icon: 'ti-user-star',  color: GREEN,  vars: ['{{raw_description}}'] },
+  ideas:      { label: 'מנוע רעיונות',  sub: 'Ideas Bank generation',    icon: 'ti-bulb',       color: YELLOW, vars: ['{{business_name}}', '{{business_type}}', '{{tone}}', '{{target_audience}}', '{{unique_value}}', '{{address}}', '{{phone}}', '{{operating_hours}}'] },
+  post:       { label: 'יצירת פוסטים',  sub: 'Post creation studio',     icon: 'ti-pencil',     color: ACCENT, vars: ['{{platform}}', '{{tone}}', '{{business_name}}', '{{business_type}}', '{{target_audience}}', '{{unique_value}}', '{{address}}', '{{phone}}', '{{operating_hours}}', '{{website}}'] },
+  onboarding: { label: 'אונבורדינג',    sub: 'Business profile builder', icon: 'ti-user-star',  color: GREEN,  vars: ['{{raw_description}}', '{{tone}}', '{{target_audience}}'] },
   image:      { label: 'יצירת תמונות',  sub: 'Image generation prompt',  icon: 'ti-photo-ai',   color: PURPLE, vars: ['{{style}}', '{{platform}}', '{{brand_colors}}', '{{subject}}'] },
 }
 

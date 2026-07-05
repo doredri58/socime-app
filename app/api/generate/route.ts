@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { generatePost } from '@/lib/llm'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
+import { getActiveBusiness } from '@/lib/business'
+import { buildBusinessVars, businessFactsBlock } from '@/lib/prompt-vars'
 
 export async function POST(req: NextRequest) {
   try {
@@ -24,7 +26,12 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim())
+    // Inject the active business's tone / audience / address / hours so the post
+    // matches the brand, not just the generic prompt.
+    const business = await getActiveBusiness(user.id)
+    const facts = businessFactsBlock(buildBusinessVars(business))
+
+    const { text, hashtags, tokensUsed, costUsd } = await generatePost(businessDesc.trim(), facts)
 
     // deduct the FIXED economy cost (TOKEN_COSTS.generate_post); log the real $ cost
     await deductTokens(user.id, 'generate_post', undefined, costUsd)

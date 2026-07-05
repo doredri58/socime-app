@@ -3,6 +3,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { generateIdeas } from '@/lib/gemini'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 import { getActiveBusiness } from '@/lib/business'
+import { enrichSystemPrompt } from '@/lib/prompt-vars'
 
 const CATEGORIES = ['value', 'marketing', 'vibe'] as const
 
@@ -14,8 +15,11 @@ export async function POST(_req: NextRequest) {
   const db = createServiceClient()
   const business = await getActiveBusiness(user.id)
 
-  const systemPrompt = business?.parsed_system_prompt
+  const basePrompt = business?.parsed_system_prompt
     ?? `אתה עוזר שיווק לעסק בשם ${business?.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
+  // Append tone / audience / address / phone / hours / etc. so the AI has the
+  // full business context even if the baked prompt didn't include it.
+  const systemPrompt = enrichSystemPrompt(basePrompt, business)
 
   // בדיקת יתרת טוקנים לפני קריאת AI
   const tokenCheck = await checkTokenBalance(user.id, 'generate_ideas')
