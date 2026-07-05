@@ -1,5 +1,6 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { TONES, type ToneId } from '@/lib/tones'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
 const PURPLE  = '#9850FF'
@@ -22,7 +23,6 @@ const INPUT_STYLE: React.CSSProperties = {
 }
 
 /* ── types ────────────────────────────────────────────────────────────── */
-type ToneId = 'professional' | 'funny' | 'warm' | 'serious' | 'direct' | 'inspiring' | 'casual'
 
 interface Profile {
   business_name?: string
@@ -45,15 +45,6 @@ interface Profile {
 interface Props { userId: string; initialProfile: Profile | null }
 
 /* ── tone options ─────────────────────────────────────────────────────── */
-const TONES: { id: ToneId; label: string; emoji: string }[] = [
-  { id: 'professional', label: 'מקצועי',      emoji: '💼' },
-  { id: 'warm',         label: 'חם ואישי',    emoji: '🤝' },
-  { id: 'funny',        label: 'הומוריסטי',   emoji: '😄' },
-  { id: 'serious',      label: 'רציני',        emoji: '🎯' },
-  { id: 'direct',       label: 'ישיר ותכליתי', emoji: '⚡' },
-  { id: 'inspiring',    label: 'מעורר השראה',  emoji: '✨' },
-  { id: 'casual',       label: 'קז\'ואל ויומיומי', emoji: '😎' },
-]
 
 /* ── labeled input helper ─────────────────────────────────────────────── */
 function Field({ label, icon, children }: { label: string; icon?: string; children: React.ReactNode }) {

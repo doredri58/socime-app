@@ -3,6 +3,7 @@ import { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
+import { notifyTokensSpent } from '@/lib/tokens-client'
 
 // ─── constants ───────────────────────────────────────────────────────────────
 const PURPLE  = '#9850FF'
@@ -227,6 +228,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
     setHashtags(data.hashtags ?? '')
     setCharCount((data.text ?? '').length)
     setTokens(t => Math.max(0, t - 10))
+    notifyTokensSpent()
   }
 
   // ── magic rewrite ──
@@ -243,6 +245,8 @@ export default function CreateStudio({ userId, businessName, businessDescription
     if (!res.ok) { showToast(data.error ?? 'שגיאה', false); return }
     setPostText(data.text ?? postText)
     setCharCount((data.text ?? '').length)
+    setTokens(t => Math.max(0, t - 10))
+    notifyTokensSpent()
   }
 
   // ── AI image generation ──
@@ -258,8 +262,11 @@ export default function CreateStudio({ userId, businessName, businessDescription
     const data = await res.json()
     setImgGenLoading(false)
     if (!res.ok) { showToast(data.error ?? 'שגיאה ביצירת תמונה', false); return }
-    setImageUrl(data.url)
-    setImgAttempts(a => a - 1)
+    setImageUrl(data.imageUrl)
+    if (typeof data.remaining === 'number') setImgAttempts(data.remaining)
+    else setImgAttempts(a => a - 1)
+    setTokens(t => Math.max(0, t - 25))
+    notifyTokensSpent()
   }
 
   // ── file drop ──

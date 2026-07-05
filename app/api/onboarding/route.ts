@@ -6,14 +6,13 @@ import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 const TONE_MAP: Record<string, string> = {
-  funny:        'הומוריסטי, קליל ומצחיק — גורם לאנשים לחייך',
-  serious:      'רציני, עמוק ואמין — מוביל מחשבה',
   professional: 'מקצועי, נקי ועסקי — משדר אמינות',
   warm:         'חם, אישי ואנושי — כאילו חבר כותב',
+  funny:        'הומוריסטי, קליל ומצחיק — גורם לאנשים לחייך',
+  serious:      'רציני, עמוק ואמין — מוביל מחשבה',
   direct:       'ישיר וחותך — הולך לעניין, ללא עטיפות',
-  educational:  'חינוכי ומעשיר — מלמד ומוסיף ערך',
-  marketing:    'סופר-שיווקי — מניע לפעולה, ממוקד המרה',
-  friendly:     'בגובה העיניים — שיחה אנושית, לא שיווקית',
+  inspiring:    'מעורר השראה — מרגש ומניע לפעולה',
+  casual:       "קז'ואל ויומיומי — בגובה העיניים, נינוח",
 }
 
 export async function POST(req: NextRequest) {

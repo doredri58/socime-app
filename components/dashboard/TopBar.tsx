@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import NotificationBell from './NotificationBell'
 import BusinessSwitcher from './BusinessSwitcher'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -10,12 +11,36 @@ interface TopBarProps {
   tier: string
 }
 
-const MAX_TOKENS: Record<string, number> = { free: 100, basic: 500, pro: 2000 }
+const MAX_TOKENS: Record<string, number> = { free: 100, basic: 500, pro: 1000, agency: 2000 }
 
 export default function TopBar({ userName, tokens, tier }: TopBarProps) {
   const { theme, toggle, isDark } = useTheme()
+  // Seed from the server prop, then live-refresh whenever tokens are spent.
+  const [balance, setBalance] = useState(tokens)
+
+  useEffect(() => {
+    let active = true
+    async function refresh() {
+      try {
+        const r = await fetch('/api/tokens/balance')
+        if (!r.ok) return
+        const d = await r.json()
+        if (active && typeof d.balance === 'number') setBalance(d.balance)
+      } catch { /* ignore */ }
+    }
+    // 'tokens-updated' is dispatched by generation call sites after a spend;
+    // focus catches anything that happened on another tab/route.
+    window.addEventListener('tokens-updated', refresh)
+    window.addEventListener('focus', refresh)
+    return () => {
+      active = false
+      window.removeEventListener('tokens-updated', refresh)
+      window.removeEventListener('focus', refresh)
+    }
+  }, [])
+
   const max = MAX_TOKENS[tier] ?? 100
-  const pct = Math.min(Math.round((tokens / max) * 100), 100)
+  const pct = Math.min(Math.round((balance / max) * 100), 100)
   const tokenColor = pct > 50 ? '#A78BFA' : pct > 20 ? '#FCD34D' : '#F87171'
 
   return (
@@ -46,7 +71,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
       }}>
         <i className="ti ti-coins" style={{ fontSize: 14, color: tokenColor }} />
         <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--dash-token-text)', whiteSpace: 'nowrap' }}>
-          נותרו {tokens.toLocaleString('he-IL')} טוקנים
+          נותרו {balance.toLocaleString('he-IL')} טוקנים
         </span>
         <div style={{
           width: 56, height: 4, borderRadius: 99,

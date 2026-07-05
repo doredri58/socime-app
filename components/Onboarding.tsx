@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import { TONES, DEFAULT_TONE } from '@/lib/tones'
 
 interface OnboardingProps {
   userId: string
@@ -10,15 +11,6 @@ interface OnboardingProps {
 const PURPLE  = '#9850FF'
 const PURPLE2 = '#BE56FF'
 const BLUE    = '#3B82EF'
-
-const TONES = [
-  { value: 'professional', label: 'מקצועי ורשמי',       icon: '💼' },
-  { value: 'funny',        label: 'קליל והומוריסטי',     icon: '😄' },
-  { value: 'direct',       label: 'ישיר וחותך',           icon: '🎯' },
-  { value: 'educational',  label: 'חינוכי ומעשיר',        icon: '📚' },
-  { value: 'marketing',    label: 'סופר-שיווקי',           icon: '🚀' },
-  { value: 'friendly',     label: 'בגובה העיניים',         icon: '🤝' },
-]
 
 const LOADING_TEXTS = [
   'SociMe לומדת את העסק שלך...',
@@ -84,7 +76,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
       const res = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, businessName, rawDescription: description, toneOfVoice: tones[0] || 'friendly', targetAudience: audience }),
+        body: JSON.stringify({ userId, businessName, rawDescription: description, toneOfVoice: tones[0] || DEFAULT_TONE, targetAudience: audience }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'שגיאה'); setLoadingStage('idle'); return }
@@ -277,12 +269,12 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {TONES.map(t => {
-                const selected = tones.includes(t.value)
+                const selected = tones.includes(t.id)
                 const disabled = !selected && tones.length >= 2
                 return (
                   <button
-                    key={t.value}
-                    onClick={() => toggleTone(t.value)}
+                    key={t.id}
+                    onClick={() => toggleTone(t.id)}
                     disabled={disabled}
                     style={{
                       padding: '18px 16px', borderRadius: 16, textAlign: 'right',
@@ -294,7 +286,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                       boxShadow: selected ? `0 0 0 4px rgba(152,80,255,0.1)` : 'none',
                       fontFamily: 'var(--font-space), sans-serif',
                     }}>
-                    <div style={{ fontSize: 22, marginBottom: 6 }}>{t.icon}</div>
+                    <div style={{ fontSize: 22, marginBottom: 6 }}>{t.emoji}</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: selected ? PURPLE : '#111827' }}>
                       {t.label}
                     </div>
@@ -368,7 +360,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[
                   { label: 'שם העסק', val: businessName },
-                  { label: 'טון', val: tones.map(t => TONES.find(x => x.value === t)?.label).join(' + ') },
+                  { label: 'טון', val: tones.map(t => TONES.find(x => x.id === t)?.label).join(' + ') },
                 ].map(r => (
                   <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
                     <span style={{ color: '#6B7280' }}>{r.label}</span>

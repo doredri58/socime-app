@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { notifyTokensSpent } from '@/lib/tokens-client'
 
 /* ════════════════════════════════════════════════════════════
    Pro Agents UI — 3 cards wired to /api/agents/*
@@ -30,6 +31,7 @@ async function callAgent(path: string, payload: unknown): Promise<{ ok: true; da
     })
     const body = await res.json().catch(() => ({}))
     if (!res.ok) return { ok: false, msg: errorText(res.status, body) }
+    notifyTokensSpent()   // agent run deducted tokens → refresh the header counter
     return { ok: true, data: body.data }
   } catch {
     return { ok: false, msg: 'שגיאת רשת — נסו שוב.' }
