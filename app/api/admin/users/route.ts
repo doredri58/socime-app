@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAdminContext } from '@/lib/admin'
 import { createServiceClient } from '@/lib/supabase'
 
-const ALLOWED_TIERS    = ['free', 'basic', 'pro']
+const ALLOWED_TIERS    = ['free', 'basic', 'pro', 'agency']
 const ALLOWED_STATUSES = ['active', 'suspended', 'deleted']
 const ASSIGNABLE_ROLES = ['user', 'editor', 'admin']  // 'founder' לא ניתן להקצאה דרך ה-UI
 
@@ -31,10 +31,10 @@ export async function PATCH(req: NextRequest) {
     patch.token_balance = Math.floor(n)
   }
 
-  // שינוי תפקיד — בלעדי למייסד
+  // שינוי תפקיד — אדמין/מייסד יכולים להקצות user/editor/admin (לא founder)
   if (role !== undefined) {
-    if (ctx.role !== 'founder') {
-      return NextResponse.json({ error: 'רק מייסד יכול לשנות תפקידים' }, { status: 403 })
+    if (ctx.role !== 'founder' && ctx.role !== 'admin') {
+      return NextResponse.json({ error: 'אין הרשאה לשנות תפקידים' }, { status: 403 })
     }
     if (!ASSIGNABLE_ROLES.includes(role)) {
       return NextResponse.json({ error: 'תפקיד לא חוקי' }, { status: 400 })

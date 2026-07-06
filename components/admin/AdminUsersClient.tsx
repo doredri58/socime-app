@@ -33,7 +33,7 @@ function Toast({ msg, ok }: { msg: string; ok: boolean }) {
   )
 }
 
-const TIER_COLOR: Record<string, string> = { free: '#64748B', basic: ACCENT, pro: PURPLE }
+const TIER_COLOR: Record<string, string> = { free: '#64748B', basic: ACCENT, pro: PURPLE, agency: '#B45309' }
 const ROLE_COLOR: Record<string, string> = { founder: '#B45309', admin: PURPLE, editor: ACCENT, user: TEXT_MID }
 
 export default function AdminUsersClient({ users: initial }: { users: User[] }) {
@@ -136,7 +136,7 @@ export default function AdminUsersClient({ users: initial }: { users: User[] }) 
             style={{ padding: '7px 32px 7px 12px', borderRadius: 9, fontSize: 12, outline: 'none', direction: 'rtl', width: 240,
               background: BG_PAGE, border: `1px solid ${BD}`, color: TEXT }} />
         </div>
-        {['all','free','basic','pro'].map(t => (
+        {['all','free','basic','pro','agency'].map(t => (
           <button key={t} onClick={() => setTier(t)} style={{ padding: '5px 11px', borderRadius: 7, cursor: 'pointer', fontSize: 11, fontWeight: 700,
             background: tier === t ? 'rgba(26,115,232,0.08)' : BG_PAGE,
             border: `1px solid ${tier === t ? 'rgba(26,115,232,0.35)' : BD}`,
@@ -220,7 +220,7 @@ export default function AdminUsersClient({ users: initial }: { users: User[] }) 
                             onChange={e => setEditVals(p => ({ ...p, tier: e.target.value }))}
                             style={{ padding: '3px 6px', borderRadius: 6, fontSize: 11, background: BG_PAGE,
                               border: `1px solid rgba(26,115,232,0.3)`, color: TEXT, cursor: 'pointer' }}>
-                            {['free','basic','pro'].map(t => <option key={t} value={t}>{t}</option>)}
+                            {['free','basic','pro','agency'].map(t => <option key={t} value={t}>{t}</option>)}
                           </select>
                         ) : (
                           <span style={{ fontSize: 10, fontWeight: 800, padding: '2px 8px', borderRadius: 6,
@@ -345,6 +345,7 @@ export default function AdminUsersClient({ users: initial }: { users: User[] }) 
             { l: 'סה״כ', v: users.length, c: TEXT_MID },
             { l: 'פעיל', v: users.filter(u => u.status !== 'suspended').length, c: GREEN },
             { l: 'מושעה', v: users.filter(u => u.status === 'suspended').length, c: RED },
+            { l: 'Agency', v: users.filter(u => u.tier === 'agency').length, c: '#B45309' },
             { l: 'Pro', v: users.filter(u => u.tier === 'pro').length, c: PURPLE },
             { l: 'Basic', v: users.filter(u => u.tier === 'basic').length, c: ACCENT },
             { l: 'Free', v: users.filter(u => !u.tier || u.tier === 'free').length, c: TEXT_LOW },
