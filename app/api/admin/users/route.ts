@@ -48,10 +48,13 @@ export async function PATCH(req: NextRequest) {
 
   const db = createServiceClient()
 
-  // הגנה — אי אפשר לשנות חשבון מייסד
+  // הגנת מייסד — מותר לעדכן מסלול/טוקנים של חשבון מייסד, אבל את התפקיד או
+  // הסטטוס שלו רק מייסד אחר יכול לשנות (מונע מאדמין להוריד/להשעות מייסד).
   const { data: target } = await db.from('users').select('role').eq('id', userId).single()
-  if (target?.role === 'founder') {
-    return NextResponse.json({ error: 'לא ניתן לשנות חשבון מייסד' }, { status: 403 })
+  if (target?.role === 'founder'
+      && (patch.role !== undefined || patch.status !== undefined)
+      && ctx.role !== 'founder') {
+    return NextResponse.json({ error: 'רק מייסד יכול לשנות תפקיד/סטטוס של חשבון מייסד' }, { status: 403 })
   }
 
   const { error } = await db.from('users').update(patch).eq('id', userId)
