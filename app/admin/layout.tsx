@@ -14,6 +14,7 @@ const TEXT_LOW   = '#94A3B8'
 
 const NAV: { href: string; icon: string; label: string; sub: string }[] = [
   { href: '/admin',         icon: 'ti-layout-dashboard', label: 'מבט על',        sub: 'Overview'         },
+  { href: '/admin/leads',   icon: 'ti-inbox',            label: 'לידים',          sub: 'Landing Leads'    },
   { href: '/admin/users',   icon: 'ti-users-group',      label: 'ניהול לקוחות',   sub: 'Users & CRM'      },
   { href: '/admin/billing', icon: 'ti-credit-card',      label: 'ניהול מינויים',  sub: 'Billing & Stripe' },
   { href: '/admin/ai',      icon: 'ti-brain',            label: 'מנוע ה-AI',      sub: 'System Prompts'   },
