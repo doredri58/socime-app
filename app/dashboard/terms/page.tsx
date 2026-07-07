@@ -147,7 +147,7 @@ export default function TermsPage() {
             <i className="ti ti-shield-check" style={{ fontSize: 14 }} />
             מדיניות פרטיות
           </Link>
-          <a href="mailto:legal@socime.io" style={{
+          <a href="mailto:legal@socime.co.il" style={{
             padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
             background: 'linear-gradient(135deg, #9850FF, #BE56FF)',
             color: '#fff', textDecoration: 'none',
@@ -155,7 +155,7 @@ export default function TermsPage() {
             boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
           }}>
             <i className="ti ti-mail" style={{ fontSize: 14 }} />
-            legal@socime.io
+            legal@socime.co.il
           </a>
         </div>
       </div>

@@ -216,13 +216,13 @@ export default function PrivacyPage() {
           <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 3 }}>שאלות בנושא פרטיות?</div>
           <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>פנו לממונה הפרטיות שלנו בכל שאלה</div>
         </div>
-        <a href="mailto:privacy@socime.io" style={{
+        <a href="mailto:privacy@socime.co.il" style={{
           padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           color: '#fff', textDecoration: 'none', flexShrink: 0,
           boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
         }}>
-          privacy@socime.io
+          privacy@socime.co.il
         </a>
       </div>
     </div>

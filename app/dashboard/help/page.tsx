@@ -181,7 +181,7 @@ export default function HelpPage() {
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', margin: '0 0 18px' }}>
           צוות התמיכה שלנו זמין ראשון–חמישי, 09:00–18:00
         </p>
-        <a href="mailto:support@socime.io" style={{
+        <a href="mailto:support@socime.co.il" style={{
           display: 'inline-flex', alignItems: 'center', gap: 8,
           padding: '11px 26px', borderRadius: 12, fontSize: 13, fontWeight: 700,
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
