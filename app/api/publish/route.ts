@@ -69,7 +69,9 @@ export async function POST(req: NextRequest) {
     if (platform === 'tiktok') {
       result = await publishToTikTok(row, oauthToken)
     } else {
-      result = await publishToMeta(row, oauthToken)
+      // מזהי הדף/IG שהמשתמש חיבר ב-OAuth — כדי לפרסם לחשבון שלו ולא לדף המערכת
+      const extra = (tokenRow.extra_data ?? {}) as { page_id?: string; ig_account_id?: string }
+      result = await publishToMeta(row, oauthToken, { pageId: extra.page_id, igId: extra.ig_account_id })
     }
 
     results[platform] = { success: result.success, postId: result.meta_post_id, error: result.error }

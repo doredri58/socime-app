@@ -21,13 +21,16 @@ const RETRY_DELAY_MS = 5 * 60 * 1000  // 5 minutes
 
 export async function publishToMeta(
   row: SchedulerRow,
-  token: string
+  token: string,
+  ids?: { pageId?: string; igId?: string }
 ): Promise<{ success: boolean; meta_post_id?: string; error?: string }> {
   const text   = row.content_text ?? row.caption ?? ''
-  const pageId = process.env.META_PAGE_ID
+  // מזהה הדף/החשבון של המשתמש שחובר ב-OAuth (extra_data); נופל לחזרה ל-env רק
+  // אם אין — כדי שכל משתמש יפרסם לדף שלו ולא לדף הקבוע של המערכת.
+  const pageId = ids?.pageId ?? process.env.META_PAGE_ID
   const base   = 'https://graph.facebook.com/v19.0'
 
-  if (!pageId) return { success: false, error: 'META_PAGE_ID חסר בסביבה' }
+  if (!pageId) return { success: false, error: 'לא נמצא מזהה דף Facebook מחובר' }
 
   try {
     if (row.platform === 'facebook') {
@@ -44,8 +47,8 @@ export async function publishToMeta(
       return { success: true, meta_post_id: data.id }
 
     } else if (row.platform === 'instagram') {
-      const igId = process.env.META_IG_ACCOUNT_ID
-      if (!igId) return { success: false, error: 'META_IG_ACCOUNT_ID חסר בסביבה' }
+      const igId = ids?.igId ?? process.env.META_IG_ACCOUNT_ID
+      if (!igId) return { success: false, error: 'לא נמצא חשבון Instagram עסקי מחובר' }
       if (!row.payload_url) return { success: false, error: 'Instagram דורש URL של תמונה/וידאו' }
 
       // Step 1: create media container
@@ -155,7 +158,9 @@ export async function processDuePost(
   if (row.platform === 'tiktok') {
     result = await publishToTikTok(row, oauthToken)
   } else {
-    result = await publishToMeta(row, oauthToken)
+    // מזהי הדף/IG שנשמרו per-user בזמן ה-OAuth — כך הפרסום הולך לחשבון של המשתמש
+    const extra = (tokenRow.extra_data ?? {}) as { page_id?: string; ig_account_id?: string }
+    result = await publishToMeta(row, oauthToken, { pageId: extra.page_id, igId: extra.ig_account_id })
   }
 
   if (result.success) {
