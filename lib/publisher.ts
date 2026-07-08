@@ -177,54 +177,77 @@ export async function publishToTikTok(
 export async function processDuePost(
   row: SchedulerRow
 ): Promise<{ success: boolean; error?: string }> {
-  const db          = createServiceClient()
-  const attemptNum  = (row.attempt_count ?? 0) + 1
+  const db         = createServiceClient()
+  const attemptNum = (row.attempt_count ?? 0) + 1
 
-  // Fetch the user's encrypted OAuth token for this platform
-  const { data: tokenRow } = await db
-    .from('social_tokens')
-    .select('encrypted_oauth_token, extra_data')
-    .eq('user_id', row.user_id)
-    .eq('platform', row.platform)
-    .single()
+  // scheduler.platform הוא text[] — פוסט יכול להיות מתוזמן לכמה רשתות בבת אחת.
+  // מנרמלים למערך (הערך מגיע מה-DB כמערך, אך הטיפוס מוגדר string לצורך ה-publishers).
+  const rawPlatforms = row.platform as unknown as string | string[]
+  const platforms = (Array.isArray(rawPlatforms) ? rawPlatforms : [rawPlatforms]).filter(Boolean)
 
-  if (!tokenRow) {
-    await markFailed(db, row.id, `אין token מחובר ל-${row.platform}`, attemptNum)
-    return { success: false, error: `אין token מחובר ל-${row.platform}` }
+  if (platforms.length === 0) {
+    await markFailed(db, row.id, 'לא הוגדרה פלטפורמה', attemptNum)
+    return { success: false, error: 'לא הוגדרה פלטפורמה' }
   }
 
-  let oauthToken: string
-  try {
-    oauthToken = decrypt(tokenRow.encrypted_oauth_token)
-  } catch {
-    await markFailed(db, row.id, 'שגיאת פענוח token', attemptNum)
-    return { success: false, error: 'שגיאת פענוח token' }
+  const perPlatform: { platform: string; success: boolean; error?: string; postId?: string }[] = []
+
+  for (const platform of platforms) {
+    // טוקן ה-OAuth המוצפן של המשתמש לפלטפורמה הזו
+    const { data: tokenRow } = await db
+      .from('social_tokens')
+      .select('encrypted_oauth_token, extra_data')
+      .eq('user_id', row.user_id)
+      .eq('platform', platform)
+      .single()
+
+    if (!tokenRow) {
+      perPlatform.push({ platform, success: false, error: `אין token מחובר ל-${platform}` })
+      continue
+    }
+
+    let oauthToken: string
+    try {
+      oauthToken = decrypt(tokenRow.encrypted_oauth_token)
+    } catch {
+      perPlatform.push({ platform, success: false, error: 'שגיאת פענוח token' })
+      continue
+    }
+
+    // שורה עם פלטפורמה יחידה (string) עבור ה-publishers
+    const singleRow: SchedulerRow = { ...row, platform }
+    let result: { success: boolean; meta_post_id?: string; error?: string }
+    if (platform === 'tiktok') {
+      result = await publishToTikTok(singleRow, oauthToken)
+    } else {
+      // מזהי הדף/IG שנשמרו per-user בזמן ה-OAuth — פרסום לחשבון של המשתמש
+      const extra = (tokenRow.extra_data ?? {}) as { page_id?: string; ig_account_id?: string }
+      result = await publishToMeta(singleRow, oauthToken, { pageId: extra.page_id, igId: extra.ig_account_id })
+    }
+    perPlatform.push({ platform, success: result.success, error: result.error, postId: result.meta_post_id })
   }
 
-  let result: { success: boolean; meta_post_id?: string; error?: string }
+  const allSuccess  = perPlatform.every(p => p.success)
+  const anySuccess  = perPlatform.some(p => p.success)
+  const firstPostId = perPlatform.find(p => p.postId)?.postId ?? null
+  const errorMsg    = perPlatform.filter(p => !p.success).map(p => `${p.platform}: ${p.error}`).join(' · ')
 
-  if (row.platform === 'tiktok') {
-    result = await publishToTikTok(row, oauthToken)
-  } else {
-    // מזהי הדף/IG שנשמרו per-user בזמן ה-OAuth — כך הפרסום הולך לחשבון של המשתמש
-    const extra = (tokenRow.extra_data ?? {}) as { page_id?: string; ig_account_id?: string }
-    result = await publishToMeta(row, oauthToken, { pageId: extra.page_id, igId: extra.ig_account_id })
-  }
-
-  if (result.success) {
-    // Mark as published
+  // הצלחה (מלאה או חלקית) → סמן published. חשוב: לא עושים retry על כשל חלקי,
+  // אחרת ניסיון חוזר יפרסם שוב לרשת שכבר הצליחה (פוסט כפול).
+  if (anySuccess) {
     await db.from('scheduler').update({
       status:        'published',
       published_at:  new Date().toISOString(),
-      meta_post_id:  result.meta_post_id ?? null,
-      error_message: null,
+      meta_post_id:  firstPostId,
+      error_message: allSuccess ? null : errorMsg,
       attempt_count: attemptNum,
     }).eq('id', row.id)
-  } else {
-    await handleFailure(db, row.id, result.error ?? 'שגיאה לא ידועה', attemptNum)
+    return { success: allSuccess, error: allSuccess ? undefined : errorMsg }
   }
 
-  return result
+  // כל הפלטפורמות נכשלו → retry עם back-off (עד MAX_ATTEMPTS)
+  await handleFailure(db, row.id, errorMsg || 'שגיאה לא ידועה', attemptNum)
+  return { success: false, error: errorMsg }
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────

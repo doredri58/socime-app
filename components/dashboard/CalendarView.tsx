@@ -343,14 +343,23 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
   async function save() {
     if (!text.trim()) return
     setSaving(true)
-    const scheduled_at = `${dateStr}T${time}:00`
-    await fetch('/api/scheduler', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contentText: text, platform, scheduled_at, status: 'scheduled' }),
-    })
-    setSaving(false)
-    onSaved()
+    // ה-API מצפה ל-scheduledAt (camelCase) וקובע status='queued' לפי קיומו.
+    const scheduledAt = `${dateStr}T${time}:00`
+    try {
+      const res = await fetch('/api/scheduler', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contentText: text, platform, scheduledAt }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        alert(data.error ?? 'שמירת התזמון נכשלה — נסו שוב')
+        return
+      }
+      onSaved()
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
