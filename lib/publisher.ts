@@ -35,7 +35,7 @@ export async function publishToMeta(
   try {
     if (row.platform === 'facebook') {
       const body: Record<string, string> = { message: text, access_token: token }
-      if (row.payload_url && row.content_type === 'image') body.link = row.payload_url
+      if (row.payload_url) body.link = row.payload_url
 
       const res  = await fetch(`${base}/${pageId}/feed`, {
         method: 'POST',
@@ -43,7 +43,10 @@ export async function publishToMeta(
         body: JSON.stringify(body),
       })
       const data = await res.json()
-      if (!res.ok) return { success: false, error: data.error?.message ?? 'שגיאת Meta' }
+      if (!res.ok) {
+        console.error('[publishToMeta] Facebook publish failed. Response:', JSON.stringify(data, null, 2))
+        return { success: false, error: data.error?.message ?? 'שגיאת Meta' }
+      }
       return { success: true, meta_post_id: data.id }
 
     } else if (row.platform === 'instagram') {
@@ -51,14 +54,55 @@ export async function publishToMeta(
       if (!igId) return { success: false, error: 'לא נמצא חשבון Instagram עסקי מחובר' }
       if (!row.payload_url) return { success: false, error: 'Instagram דורש URL של תמונה/וידאו' }
 
+      const isVideo = row.content_type === 'video' || 
+                      (row.payload_url && /\.(mp4|mov|avi|mkv|webm|ogg)($|\?)/i.test(row.payload_url))
+
+      const body: Record<string, any> = { caption: text, access_token: token }
+      if (isVideo) {
+        body.video_url = row.payload_url
+        body.media_type = 'VIDEO'
+      } else {
+        body.image_url = row.payload_url
+      }
+
       // Step 1: create media container
       const containerRes = await fetch(`${base}/${igId}/media`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image_url: row.payload_url, caption: text, access_token: token }),
+        body: JSON.stringify(body),
       })
       const container = await containerRes.json()
-      if (!containerRes.ok) return { success: false, error: container.error?.message ?? 'שגיאת container' }
+      if (!containerRes.ok) {
+        console.error('[publishToMeta] Instagram container creation failed. Response:', JSON.stringify(container, null, 2))
+        return { success: false, error: container.error?.message ?? 'שגיאת container' }
+      }
+
+      // Step 1.5: If it is a video, poll until finished processing
+      if (isVideo) {
+        let status = 'IN_PROGRESS'
+        let attempts = 0
+        const maxAttempts = 15 // 15 * 4s = 60s
+        while (status !== 'FINISHED' && status !== 'ERROR' && attempts < maxAttempts) {
+          await new Promise(resolve => setTimeout(resolve, 4000))
+          attempts++
+          
+          const statusRes = await fetch(`${base}/${container.id}?fields=status_code,failure_reason&access_token=${token}`)
+          const statusData = await statusRes.json()
+          if (statusRes.ok) {
+            status = statusData.status_code
+            if (status === 'ERROR') {
+              console.error('[publishToMeta] Instagram video container processing error:', JSON.stringify(statusData, null, 2))
+              return { success: false, error: `עיבוד הוידאו באינסטגרם נכשל: ${statusData.failure_reason ?? 'שגיאה לא ידועה'}` }
+            }
+          } else {
+            console.error('[publishToMeta] Checking Instagram video container status failed:', JSON.stringify(statusData, null, 2))
+          }
+        }
+
+        if (status !== 'FINISHED') {
+          return { success: false, error: 'עיבוד הוידאו באינסטגרם לוקח יותר מדי זמן. אנא נסה שוב מאוחר יותר.' }
+        }
+      }
 
       // Step 2: publish container
       const publishRes = await fetch(`${base}/${igId}/media_publish`, {
@@ -67,12 +111,16 @@ export async function publishToMeta(
         body: JSON.stringify({ creation_id: container.id, access_token: token }),
       })
       const published = await publishRes.json()
-      if (!publishRes.ok) return { success: false, error: published.error?.message ?? 'שגיאת פרסום' }
+      if (!publishRes.ok) {
+        console.error('[publishToMeta] Instagram container publish failed. Response:', JSON.stringify(published, null, 2))
+        return { success: false, error: published.error?.message ?? 'שגיאת פרסום' }
+      }
       return { success: true, meta_post_id: published.id }
     }
 
     return { success: false, error: `פלטפורמה לא נתמכת: ${row.platform}` }
   } catch (e: unknown) {
+    console.error('[publishToMeta] Unexpected error during Meta publication:', e)
     return { success: false, error: e instanceof Error ? e.message : 'שגיאה לא ידועה' }
   }
 }

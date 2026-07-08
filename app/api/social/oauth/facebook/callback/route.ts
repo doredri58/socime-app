@@ -38,7 +38,8 @@ export async function GET(req: NextRequest) {
     )
     const tokenData = await tokenRes.json()
     if (!tokenRes.ok || !tokenData.access_token) {
-      throw new Error(tokenData.error?.message ?? 'Failed to get token')
+      console.error('[facebook/callback] Short-lived token exchange failed. Response:', JSON.stringify(tokenData, null, 2))
+      throw new Error(tokenData.error?.message ?? 'Failed to get short-lived token')
     }
     const shortToken: string = tokenData.access_token
 
@@ -52,6 +53,9 @@ export async function GET(req: NextRequest) {
       })
     )
     const longData = await longRes.json()
+    if (!longRes.ok) {
+      console.error('[facebook/callback] Long-lived token exchange failed. Response:', JSON.stringify(longData, null, 2))
+    }
     const longToken: string = longData.access_token ?? shortToken
     const expiresIn: number = longData.expires_in ?? 5184000 // 60 days default
 
@@ -60,7 +64,14 @@ export async function GET(req: NextRequest) {
       `${BASE}/me/accounts?access_token=${longToken}&fields=id,name,access_token`
     )
     const pagesData = await pagesRes.json()
+    if (!pagesRes.ok) {
+      console.error('[facebook/callback] Get pages failed. Status:', pagesRes.status, 'Response:', JSON.stringify(pagesData, null, 2))
+      throw new Error(pagesData.error?.message ?? 'Failed to get pages')
+    }
     const page = pagesData.data?.[0]
+    if (!page) {
+      console.warn('[facebook/callback] User has no Facebook Pages or didn\'t grant access to any page.')
+    }
 
     // Use page token if available (never expires), else use long-lived user token
     const finalToken: string = page?.access_token ?? longToken
@@ -85,6 +96,9 @@ export async function GET(req: NextRequest) {
         `${BASE}/${pageId}?fields=instagram_business_account&access_token=${finalToken}`
       )
       const igData = await igRes.json()
+      if (!igRes.ok) {
+        console.error('[facebook/callback] Instagram lookup failed. Status:', igRes.status, 'Response:', JSON.stringify(igData, null, 2))
+      }
       const igId = igData.instagram_business_account?.id
 
       if (igId) {
@@ -96,6 +110,8 @@ export async function GET(req: NextRequest) {
           expires_at:            null,
           extra_data:            { ig_account_id: igId, page_id: pageId },
         }, { onConflict: 'user_id,platform' })
+      } else {
+        console.warn('[facebook/callback] Page does not have a linked Instagram Business Account. Page ID:', pageId)
       }
     }
 
