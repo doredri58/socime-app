@@ -45,3 +45,5 @@ next-env.d.ts
 
 # Agent worktrees (local scratch — created by Claude Code Agent tool)
 .claude/worktrees/
+
+.env*

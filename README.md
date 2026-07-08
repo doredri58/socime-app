@@ -1,5 +1,8 @@
 # SociMe — AI Social Media Manager
 
+> ⚠️ **חלקים מ-README זה מיושנים** (למשל מבנה קבצים ישן, `PaywallForm.tsx` שנמחק).
+> מקור האמת המעודכן על המצב הקיים בפועל: **[SPEC.md](SPEC.md)**.
+
 ## הפעלה מקומית
 
 ### 1. התקנת Dependencies

@@ -434,7 +434,7 @@ function NotificationsTab() {
 
 /* Tab 4 — Team */
 function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: string, ok: boolean) => void; onUpgrade: () => void }) {
-  const isPro = plan === 'pro'
+  const isPro = ['pro', 'agency'].includes(plan)
   const [inviteEmail, setInviteEmail] = useState('')
   const [role, setRole] = useState<'admin' | 'editor'>('editor')
   const [members, setMembers] = useState([
@@ -668,7 +668,7 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch('/api/account/profile').then(r => r.json()).then(d => {
-      if (d.profile?.plan) setPlan(d.profile.plan)
+      if (d.profile?.tier) setPlan(d.profile.tier)
     })
   }, [])
 
@@ -737,9 +737,9 @@ export default function SettingsPage() {
             <i className="ti ti-crown" style={{ fontSize: 14, color: '#FBBF24' }} />
             <div>
               <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE2 }}>
-                {plan === 'pro' ? 'Pro Plan' : plan === 'basic' ? 'Basic Plan' : 'Free Plan'}
+                {plan === 'agency' ? 'Agency Plan' : plan === 'pro' ? 'Pro Plan' : plan === 'basic' ? 'Basic Plan' : 'Free Plan'}
               </div>
-              {plan !== 'pro' && (
+              {!['pro', 'agency'].includes(plan) && (
                 <div onClick={() => setShowUpgrade(true)} style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', cursor: 'pointer', textDecoration: 'underline', marginTop: 1 }}>
                   שדרג עכשיו
                 </div>

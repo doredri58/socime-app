@@ -36,7 +36,7 @@ interface Post {
 interface Props {
   posts: Post[]
   userName: string
-  plan: string
+  tier: string
   tokenBalance: number
 }
 
@@ -216,12 +216,12 @@ function LeaderRow({ post, rank, onDuplicate }: { post: Post; rank: number; onDu
 }
 
 // ─── main ─────────────────────────────────────────────────────────────────────
-export default function AnalyticsDashboard({ posts, userName, plan, tokenBalance }: Props) {
+export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance }: Props) {
   const router = useRouter()
   const [chartFilter, setChartFilter] = useState<'all' | 'facebook' | 'instagram' | 'tiktok'>('all')
   const [insightIndex, setInsightIndex] = useState(0)
   const [showUpgrade, setShowUpgrade]   = useState(false)
-  const isPro = plan === 'pro' || plan === 'basic'
+  const isPro = tier !== 'free'   // כל מסלול בתשלום (basic/pro/agency)
 
   // ── derive real stats from posts ──
   const publishedPosts = posts.filter(p => p.status === 'published')

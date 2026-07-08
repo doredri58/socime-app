@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react'
+import { PLANS } from '@/lib/plans'
 
 const ACCENT = '#1A73E8', GREEN = '#0F9E60', RED = '#D93025', YELLOW = '#F9AB00', PURPLE = '#7C3AED'
 const BG = '#FFFFFF', BD = '#E2E8F0', BG_PAGE = '#F8FAFD'
@@ -13,7 +14,7 @@ interface Txn { id: string; user_id: string; amount_paid_ils: number | null; tok
 interface Props {
   txns: Txn[]
   userMap: Record<string, { email: string; name: string | null }>
-  tierCount: { free: number; basic: number; pro: number }
+  tierCount: { free: number; basic: number; pro: number; agency: number }
   mrr: number; totalRevenue: number
   monthlyRev: { month: string; total: number }[]
 }
@@ -69,12 +70,13 @@ function BarChart({ data }: { data: { month: string; total: number }[] }) {
 }
 
 /* donut-ish plan distribution using SVG */
-function PlanDonut({ tierCount }: { tierCount: { free: number; basic: number; pro: number } }) {
-  const total = tierCount.free + tierCount.basic + tierCount.pro || 1
+function PlanDonut({ tierCount }: { tierCount: { free: number; basic: number; pro: number; agency: number } }) {
+  const total = tierCount.free + tierCount.basic + tierCount.pro + tierCount.agency || 1
   const segs = [
-    { label: 'Free',  val: tierCount.free,  color: '#CBD5E1' },
-    { label: 'Basic', val: tierCount.basic, color: ACCENT   },
-    { label: 'Pro',   val: tierCount.pro,   color: PURPLE   },
+    { label: 'Free',   val: tierCount.free,   color: '#CBD5E1' },
+    { label: 'Basic',  val: tierCount.basic,  color: ACCENT    },
+    { label: 'Pro',    val: tierCount.pro,    color: PURPLE    },
+    { label: 'Agency', val: tierCount.agency, color: YELLOW    },
   ]
   const R = 52, cx = 70, cy = 70, stroke = 18
   let cumAngle = -90
@@ -131,7 +133,7 @@ export default function AdminBillingClient({ txns, userMap, tierCount, mrr, tota
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 20 }}>
         <KpiCard icon="ti-trending-up"    iconColor={GREEN}  iconBg="rgba(15,158,96,0.10)"  label="MRR חודשי"      value={`₪${mrr.toLocaleString()}`}         sub="הכנסה חוזרת חודשית" />
         <KpiCard icon="ti-currency-shekel" iconColor={ACCENT} iconBg="rgba(26,115,232,0.10)" label="הכנסות כולל"   value={`₪${totalRevenue.toLocaleString()}`} sub="כל הזמנים" />
-        <KpiCard icon="ti-diamond"        iconColor={PURPLE} iconBg="rgba(124,58,237,0.10)" label="משלמים פעילים" value={tierCount.basic + tierCount.pro}      sub={`Basic ${tierCount.basic} · Pro ${tierCount.pro}`} />
+        <KpiCard icon="ti-diamond"        iconColor={PURPLE} iconBg="rgba(124,58,237,0.10)" label="משלמים פעילים" value={tierCount.basic + tierCount.pro + tierCount.agency} sub={`Basic ${tierCount.basic} · Pro ${tierCount.pro} · Agency ${tierCount.agency}`} />
         <KpiCard icon="ti-receipt"        iconColor={YELLOW} iconBg="rgba(249,171,0,0.10)"  label="עסקאות"        value={txns.length}                          sub="PayPlus transactions" />
       </div>
 
@@ -153,7 +155,7 @@ export default function AdminBillingClient({ txns, userMap, tierCount, mrr, tota
           <div style={{ marginTop: 16, padding: '10px 12px', borderRadius: 10, background: BG_PAGE, border: `1px solid ${BD}` }}>
             <div style={{ fontSize: 10, color: TEXT_LOW, marginBottom: 3 }}>ARPU (ממוצע הכנסה למשתמש)</div>
             <div style={{ fontSize: 18, fontWeight: 900, color: YELLOW, fontFamily: 'monospace' }}>
-              ₪{((tierCount.basic * 79 + tierCount.pro * 149) / Math.max(tierCount.basic + tierCount.pro, 1)).toFixed(0)}
+              ₪{((tierCount.basic * PLANS.basic.monthly + tierCount.pro * PLANS.pro.monthly + tierCount.agency * PLANS.agency.monthly) / Math.max(tierCount.basic + tierCount.pro + tierCount.agency, 1)).toFixed(0)}
             </div>
           </div>
         </div>

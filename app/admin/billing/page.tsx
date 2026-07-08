@@ -1,5 +1,6 @@
 import { requireAdmin }       from '@/lib/admin'
 import { createServiceClient }  from '@/lib/supabase'
+import { PLANS }                from '@/lib/plans'
 import AdminBillingClient       from '@/components/admin/AdminBillingClient'
 
 export default async function AdminBillingPage() {
@@ -17,14 +18,16 @@ export default async function AdminBillingPage() {
     .select('id, email, name, tier, created_at')
 
   /* build plan distribution */
-  const tierCount = { free: 0, basic: 0, pro: 0 }
+  const tierCount = { free: 0, basic: 0, pro: 0, agency: 0 }
   for (const u of users ?? []) {
     const t = (u.tier ?? 'free') as keyof typeof tierCount
     if (t in tierCount) tierCount[t]++
   }
 
-  /* MRR */
-  const mrr = tierCount.basic * 79 + tierCount.pro * 149
+  /* MRR — monthly prices from lib/plans (₪199 / ₪299 / ₪999) */
+  const mrr = tierCount.basic  * PLANS.basic.monthly
+            + tierCount.pro    * PLANS.pro.monthly
+            + tierCount.agency * PLANS.agency.monthly
 
   /* monthly revenue buckets (last 6 months) */
   const buckets: Record<string, number> = {}

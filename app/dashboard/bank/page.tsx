@@ -11,7 +11,7 @@ export default async function BankPage() {
   const db = createServiceClient()
   const { data: profile } = await db
     .from('users')
-    .select('name, plan, token_balance')
+    .select('name, tier, token_balance')
     .eq('id', user.id)
     .single()
 
@@ -20,7 +20,7 @@ export default async function BankPage() {
   return (
     <IdeasBank
       userName={profile?.name ?? ''}
-      plan={profile?.plan ?? 'free'}
+      tier={profile?.tier ?? 'free'}
       tokenBalance={profile?.token_balance ?? 0}
       businessName={business?.business_name ?? ''}
       businessType={business?.raw_description ?? ''}

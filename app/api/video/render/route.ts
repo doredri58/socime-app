@@ -46,13 +46,15 @@ export async function POST(req: NextRequest) {
     transformations.push({ effect: 'trim' })
   }
 
-  // Music overlay (placeholder — Cloudinary built-in sample)
+  // Music overlay — use the actual track public_id the client selected.
+  // Cloudinary references a video/audio overlay as `video:<public_id>` with any
+  // folder slashes replaced by colons.
   if (options.musicTrack) {
+    const trackId = options.musicTrack.replace(/^video:/, '').replace(/\//g, ':')
     transformations.push({
-      overlay: 'video:sample',
+      overlay: `video:${trackId}`,
       flags: 'splice',
     })
-    // TODO: replace 'video:sample' with an actual uploaded music track public_id
   }
 
   // Output format

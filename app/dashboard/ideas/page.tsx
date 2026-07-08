@@ -18,7 +18,7 @@ export default async function IdeasPage() {
 
   const { data: profile } = await db
     .from('users')
-    .select('name, token_balance, plan')
+    .select('name, token_balance, tier')
     .eq('id', user.id)
     .single()
 
@@ -26,7 +26,7 @@ export default async function IdeasPage() {
     <AnalyticsDashboard
       posts={posts ?? []}
       userName={profile?.name ?? ''}
-      plan={profile?.plan ?? 'free'}
+      tier={profile?.tier ?? 'free'}
       tokenBalance={profile?.token_balance ?? 0}
     />
   )

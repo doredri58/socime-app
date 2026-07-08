@@ -21,9 +21,10 @@ const PLAN_META: Record<string, {
   label: string; price: string; tokenLimit: number
   color: string; bg: string; border: string; icon: string
 }> = {
-  free:  { label: 'חינמי',    price: '₪0',    tokenLimit: 100,  color: '#94A3B8', bg: 'rgba(148,163,184,0.12)', border: 'rgba(148,163,184,0.25)', icon: 'ti-user'   },
-  basic: { label: 'Basic',    price: '₪49',   tokenLimit: 500,  color: BLUE,      bg: 'rgba(59,130,239,0.12)',  border: 'rgba(59,130,239,0.28)',  icon: 'ti-rocket' },
-  pro:   { label: 'Pro',      price: '₪99',   tokenLimit: 1500, color: PURPLE2,   bg: 'rgba(152,80,255,0.12)', border: 'rgba(152,80,255,0.28)', icon: 'ti-crown'  },
+  free:   { label: 'חינמי',   price: '₪0',    tokenLimit: 100,  color: '#94A3B8', bg: 'rgba(148,163,184,0.12)', border: 'rgba(148,163,184,0.25)', icon: 'ti-user'      },
+  basic:  { label: 'Basic',   price: '₪199',  tokenLimit: 500,  color: BLUE,      bg: 'rgba(59,130,239,0.12)',  border: 'rgba(59,130,239,0.28)',  icon: 'ti-rocket'    },
+  pro:    { label: 'Pro',     price: '₪299',  tokenLimit: 1000, color: PURPLE2,   bg: 'rgba(152,80,255,0.12)', border: 'rgba(152,80,255,0.28)', icon: 'ti-crown'     },
+  agency: { label: 'Agency',  price: '₪999',  tokenLimit: 2000, color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.28)', icon: 'ti-building'  },
 }
 
 /* ── types ────────────────────────────────────────────────────────────── */
@@ -99,10 +100,10 @@ function InfoRow({ label, value, icon }: { label: string; value: string; icon?: 
 /* ── main ─────────────────────────────────────────────────────────────── */
 export default function BillingDashboard({ profile, transactions, business }: Props) {
   const router  = useRouter()
-  const plan    = PLAN_META[profile?.plan ?? 'free'] ?? PLAN_META.free
+  const plan    = PLAN_META[profile?.tier ?? 'free'] ?? PLAN_META.free
   const tokens  = profile?.token_balance ?? 0
   const usedPct = Math.max(0, Math.min(100, 100 - (tokens / plan.tokenLimit) * 100))
-  const isPro   = profile?.plan === 'pro'
+  const isPro   = ['pro', 'agency'].includes(profile?.tier ?? '')
 
   const [showUpgrade,   setShowUpgrade]   = useState(false)
   const [editingBill,   setEditingBill]   = useState(false)
@@ -172,7 +173,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
           icon={plan.icon} iconBg={plan.bg} iconColor={plan.color}
           title="מסלול נוכחי ושימוש"
           subtitle="ניצול טוקנים ומנוי פעיל"
-          glow={profile.plan === 'pro'}
+          glow={isPro}
         >
           {/* plan badge */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18 }}>

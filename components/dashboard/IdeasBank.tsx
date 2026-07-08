@@ -34,7 +34,7 @@ interface VideoIdea {
 }
 
 interface Props {
-  userName: string; plan: string; tokenBalance: number
+  userName: string; tier: string; tokenBalance: number
   businessName: string; businessType: string
 }
 
@@ -389,9 +389,9 @@ function EmptyState() {
 }
 
 /* ── main export ──────────────────────────────────────────────────────── */
-export default function IdeasBank({ userName, plan, businessName }: Props) {
+export default function IdeasBank({ userName, tier, businessName }: Props) {
   const router = useRouter()
-  const isPro  = plan === 'pro' || plan === 'basic'
+  const isPro  = tier !== 'free'   // כל מסלול בתשלום (basic/pro/agency)
 
   const [tab,         setTab]         = useState<Tab>('posts')
   const [category,    setCategory]    = useState<CategoryId>('all')
