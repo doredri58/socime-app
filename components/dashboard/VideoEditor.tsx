@@ -664,6 +664,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
       formData.append('folder', folder)
       formData.append('resource_type', 'video')
 
+      let uploadedUrl = ''   // נלכד מקומית — ה-state cloudinaryUrl עדיין null בסגירה הזו
       const uploadedPublicId = await new Promise<string>((resolve, reject) => {
         const xhr = new XMLHttpRequest()
         xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloud_name}/video/upload`)
@@ -678,6 +679,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
             const data = JSON.parse(xhr.responseText) as { public_id: string; secure_url: string }
             setCloudinaryPublicId(data.public_id)
             setCloudinaryUrl(data.secure_url)
+            uploadedUrl = data.secure_url
             resolve(data.public_id)
           } else {
             reject(new Error('שגיאה בהעלאת הסרטון לענן'))
@@ -691,13 +693,13 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
 
       // ── Stage 2: transcribe (if subtitles enabled) ──
       let _srtText: string | undefined
-      if (subtitles && cloudinaryUrl) {
+      if (subtitles && uploadedUrl) {
         setProcStep('שולח לתמלול AI...'); setProcProgress(45)
 
         const transcribeRes = await fetch('/api/video/transcribe', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ cloudinary_url: cloudinaryUrl, language: 'he' }),
+          body: JSON.stringify({ cloudinary_url: uploadedUrl, language: 'he' }),
         })
         if (!transcribeRes.ok) throw new Error('שגיאה בתמלול')
         const { job_id } = await transcribeRes.json() as { job_id: string }

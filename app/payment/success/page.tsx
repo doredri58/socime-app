@@ -3,9 +3,11 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Image from 'next/image'
 
+// מסונכרן עם lib/plans.ts (מחיר חודשי).
 const PLAN_NAMES: Record<string, { label: string; tokens: number; price: number }> = {
-  basic: { label: 'Basic', tokens: 100, price: 49 },
-  pro:   { label: 'Pro',   tokens: 300, price: 99 },
+  basic:  { label: 'Basic',  tokens: 500,  price: 199 },
+  pro:    { label: 'Pro',    tokens: 1000, price: 299 },
+  agency: { label: 'Agency', tokens: 2000, price: 999 },
 }
 
 function SuccessInner() {

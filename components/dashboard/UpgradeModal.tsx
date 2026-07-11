@@ -8,14 +8,14 @@ const BLUE    = '#3B82EF'
 const TRIGGER_COPY: Record<string, { title: string; subtitle: string }> = {
   image_limit:    { title: 'נגמרו ניסיונות יצירת התמונה',   subtitle: 'שדרג לPro וקבל יצירת תמונות ללא הגבלה' },
   smart_schedule: { title: 'תזמון חכם זמין ב-Pro',          subtitle: 'הAI מזהה שעות שיא ומתזמן אוטומטית לתוצאות מקסימליות' },
-  tokens_empty:   { title: 'נגמרו הטוקנים שלך',             subtitle: 'שדרג לPro וקבל פי 3 טוקנים בכל חודש' },
+  tokens_empty:   { title: 'נגמרו הטוקנים שלך',             subtitle: 'שדרג לPro וקבל פי 10 טוקנים בכל חודש' },
   generic:        { title: 'פיצ\'ר זה זמין ב-Pro',          subtitle: 'שדרג ופתח את מלוא הכוח של SociMe' },
 }
 
 const PLAN_FEATURES = [
   { icon: 'ti-sparkles',         text: 'יצירת תמונות AI ללא הגבלה' },
   { icon: 'ti-brain',            text: 'תזמון חכם — AI מזהה שעות שיא' },
-  { icon: 'ti-coins',            text: 'פי 3 טוקנים בכל חודש (300 במקום 100)' },
+  { icon: 'ti-coins',            text: 'פי 10 טוקנים בכל חודש (1,000 במקום 100)' },
   { icon: 'ti-calendar-stats',   text: 'לוח שנה מתקדם עם סטטיסטיקות' },
   { icon: 'ti-brand-instagram',  text: 'חיבור בלתי מוגבל לרשתות חברתיות' },
   { icon: 'ti-headset',          text: 'תמיכה עדיפותית 24/7' },
@@ -101,7 +101,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
           {/* price */}
           <div style={{ marginTop: 28, padding: '16px 20px', borderRadius: 16, background: 'rgba(152,80,255,0.08)', border: '1px solid rgba(152,80,255,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 32, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₪99</span>
+              <span style={{ fontSize: 32, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₪299</span>
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>/ לחודש</span>
             </div>
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>ביטול בכל עת · ללא התחייבות</div>
