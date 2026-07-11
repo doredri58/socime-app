@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createHmac } from 'crypto'
+import { createHmac, timingSafeEqual } from 'crypto'
 import { createServiceClient } from '@/lib/supabase'
 import { encrypt } from '@/lib/crypto'
 import { PLANS, isPlanId, planAmountIls, type BillingCycle } from '@/lib/plans'
@@ -9,7 +9,10 @@ export const runtime = 'nodejs'
 function verifyPayPlusSignature(body: string, signature: string | null): boolean {
   if (!signature || !process.env.PAYPLUS_SECRET) return false
   const expected = createHmac('sha256', process.env.PAYPLUS_SECRET).update(body).digest('hex')
-  return expected === signature
+  // השוואה timing-safe (מונע timing attack; מחייב אורך זהה לפני ההשוואה).
+  const a = Buffer.from(expected)
+  const b = Buffer.from(signature)
+  return a.length === b.length && timingSafeEqual(a, b)
 }
 
 export async function POST(req: NextRequest) {
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
     else                    expiresAt.setMonth(expiresAt.getMonth() + 1)
 
     // Activate subscription: tier + fresh token allotment + renewal metadata.
-    await db.from('users')
+    const { error: updErr } = await db.from('users')
       .update({
         tier:                     config.tier,
         token_balance:            config.tokens,
@@ -71,14 +74,22 @@ export async function POST(req: NextRequest) {
       })
       .eq('id', userId)
 
-    // Record the transaction.
-    await db.from('transactions').insert({
+    // כשל בהפעלת המנוי → 500 כדי ש-PayPlus ינסה שוב. הטוקנים מוגדרים כערך
+    // מוחלט (SET), ולכן עיבוד חוזר אינו מזכה פעמיים.
+    if (updErr) {
+      console.error('[payplus/webhook] user update', updErr)
+      return NextResponse.json({ ok: false }, { status: 500 })
+    }
+
+    // רישום העסקה (משמש כסמן idempotency). כשל כאן אינו קריטי — הטוקנים כבר הוענקו.
+    const { error: txnErr } = await db.from('transactions').insert({
       user_id:           userId,
       transaction_type:  'subscription',
       amount_paid_ils:   planAmountIls(plan, cycle),
       tokens_granted:    config.tokens,
       stripe_payment_id: transactionId ?? null,
     })
+    if (txnErr) console.error('[payplus/webhook] transaction insert', txnErr)
 
     return NextResponse.json({ ok: true })
   } catch (err) {

@@ -9,7 +9,7 @@ export default async function AdminBillingPage() {
 
   const { data: txns } = await db
     .from('transactions')
-    .select('id, user_id, amount_paid_ils, tokens_granted, created_at, status')
+    .select('id, user_id, amount_paid_ils, tokens_granted, created_at')
     .order('created_at', { ascending: false })
     .limit(100)
 

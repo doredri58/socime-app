@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
         payload_url:  publicUrl,
         caption,
         platform:     ['instagram'],
-        status:       'pending',
+        // 'pending' אינו ערך חוקי ב-CHECK constraint → כל insert נכשל.
+        // קובץ שהועלה אך טרם תוזמן = 'draft' (המשתמש יתזמן אותו אח"כ).
+        status:       'draft',
       })
       .select('id')
       .single()

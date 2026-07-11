@@ -18,9 +18,26 @@ export async function GET() {
   return NextResponse.json({ notifications: data ?? [] })
 }
 
-// POST — יצירת התראה (שרת בלבד)
+// POST — יצירת התראה (שרת בלבד; מוגן ב-CRON_SECRET, לא נגיש ללקוח).
+// היה חשוף: כל אחד יכל ליצור התראות ל-user_id שרירותי (IDOR/spoof).
 export async function POST(req: NextRequest) {
-  const { userId, title, body, url, icon } = await req.json()
+  const auth = req.headers.get("authorization")
+  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+
+  let payload: { userId?: string; title?: string; body?: string; url?: string; icon?: string }
+  try {
+    payload = await req.json()
+  } catch {
+    return NextResponse.json({ error: "גוף לא תקין" }, { status: 400 })
+  }
+
+  const { userId, title, body, url, icon } = payload
+  if (!userId || !title) {
+    return NextResponse.json({ error: "חסר userId או title" }, { status: 400 })
+  }
+
   const db = createServiceClient()
   const { data, error } = await db.from("notifications").insert({
     user_id: userId,

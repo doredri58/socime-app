@@ -9,14 +9,14 @@ export default async function AdminLogsPage() {
   /* pull recent scheduler activity as a proxy for system events */
   const { data: schedulerEvents } = await db
     .from('scheduler')
-    .select('id, user_id, platform, status, created_at, scheduled_at, content')
+    .select('id, user_id, platform, status, created_at, scheduled_at, content_text')
     .order('created_at', { ascending: false })
     .limit(200)
 
   /* pull recent transactions */
   const { data: txnEvents } = await db
     .from('transactions')
-    .select('id, user_id, amount_paid_ils, status, created_at')
+    .select('id, user_id, amount_paid_ils, created_at')
     .order('created_at', { ascending: false })
     .limit(50)
 
@@ -26,14 +26,14 @@ export default async function AdminLogsPage() {
       id: e.id, ts: e.created_at ?? '',
       level: e.status === 'failed' ? 'error' : e.status === 'pending' ? 'warn' : 'info',
       source: `scheduler/${e.platform ?? 'unknown'}`,
-      message: `פוסט ${e.status ?? '?'} — ${(e.content ?? '').slice(0, 60)}${(e.content?.length ?? 0) > 60 ? '...' : ''}`,
+      message: `פוסט ${e.status ?? '?'} — ${(e.content_text ?? '').slice(0, 60)}${(e.content_text?.length ?? 0) > 60 ? '...' : ''}`,
       userId: e.user_id,
     })),
     ...(txnEvents ?? []).map(e => ({
       id: e.id, ts: e.created_at ?? '',
-      level: e.status === 'failed' ? 'error' : 'info',
+      level: 'info',
       source: 'billing/payplus',
-      message: `תשלום ₪${e.amount_paid_ils ?? 0} — ${e.status ?? 'completed'}`,
+      message: `תשלום ₪${e.amount_paid_ils ?? 0}`,
       userId: e.user_id,
     })),
   ].sort((a, b) => b.ts.localeCompare(a.ts)).slice(0, 300)

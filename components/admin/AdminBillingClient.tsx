@@ -10,7 +10,7 @@ const CARD: React.CSSProperties = {
   boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)',
 }
 
-interface Txn { id: string; user_id: string; amount_paid_ils: number | null; tokens_granted: number | null; created_at: string; status: string | null }
+interface Txn { id: string; user_id: string; amount_paid_ils: number | null; tokens_granted: number | null; created_at: string; status?: string | null }
 interface Props {
   txns: Txn[]
   userMap: Record<string, { email: string; name: string | null }>
