@@ -13,7 +13,6 @@ export interface CommentItem {
   postPreview: string
   timestamp: string
   pageId: string
-  pageToken: string
 }
 
 interface GraphComment {
@@ -123,7 +122,6 @@ export async function GET() {
             postPreview: post.message ?? '',
             timestamp: comment.created_time,
             pageId: page.id,
-            pageToken: page.access_token,
           })
         }
       }
@@ -176,7 +174,6 @@ export async function GET() {
                 postPreview: media.caption ?? '',
                 timestamp: c.timestamp,
                 pageId: igId,
-                pageToken: igToken,
               })
             }
           }

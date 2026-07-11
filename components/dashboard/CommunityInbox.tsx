@@ -57,7 +57,6 @@ interface Thread {
   aiDrafts: string[]
   /* real API fields */
   _pageId?: string
-  _pageToken?: string
   _commentId?: string
 }
 
@@ -71,7 +70,6 @@ interface ApiCommentItem {
   postPreview: string
   timestamp: string
   pageId: string
-  pageToken: string
 }
 
 interface CommentsApiResponse {
@@ -124,7 +122,6 @@ function apiItemToThread(item: ApiCommentItem): Thread {
     ],
     aiDrafts: [],
     _pageId: item.pageId,
-    _pageToken: item.pageToken,
     _commentId: item.id,
   }
 }
@@ -438,7 +435,6 @@ export default function CommunityInbox() {
         body: JSON.stringify({
           commentId: activeThread._commentId ?? activeThread.id,
           pageId: activeThread._pageId ?? '',
-          pageAccessToken: activeThread._pageToken ?? '',
           message: replyText,
           platform: activeThread.platform,
         }),
