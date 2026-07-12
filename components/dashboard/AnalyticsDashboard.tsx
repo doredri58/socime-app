@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 // ─── constants ────────────────────────────────────────────────────────────────
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 const GREEN   = '#34D399'
 
 const GLASS: React.CSSProperties = {
@@ -87,7 +87,7 @@ function AreaChart({ data, color }: { data: number[]; color: string }) {
       {/* dots */}
       {pts.map((p, i) => (
         <circle key={i} cx={p.x} cy={p.y} r="4" fill={color}
-          stroke="rgba(13,8,41,0.9)" strokeWidth="2" />
+          stroke="rgba(28,15,43,0.9)" strokeWidth="2" />
       ))}
     </svg>
   )
@@ -201,12 +201,12 @@ function LeaderRow({ post, rank, onDuplicate }: { post: Post; rank: number; onDu
       {/* CTA */}
       <button onClick={() => onDuplicate(post)} style={{
         flexShrink: 0, padding: '8px 16px', borderRadius: 12, cursor: 'pointer',
-        background: 'rgba(152,80,255,0.12)', border: '1px solid rgba(152,80,255,0.28)',
+        background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.28)',
         color: PURPLE2, fontSize: 12, fontWeight: 700,
         display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s',
       }}
-      onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(152,80,255,0.22)'; b.style.boxShadow = '0 4px 14px rgba(152,80,255,0.25)' }}
-      onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(152,80,255,0.12)'; b.style.boxShadow = '' }}
+      onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(176,48,245,0.22)'; b.style.boxShadow = '0 4px 14px rgba(176,48,245,0.25)' }}
+      onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(176,48,245,0.12)'; b.style.boxShadow = '' }}
       >
         <i className="ti ti-copy" style={{ fontSize: 13 }} />
         שכפל הצלחה
@@ -295,11 +295,11 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
           border: isPro ? 'none' : '1px solid rgba(255,255,255,0.12)',
           color: '#fff', fontSize: 13, fontWeight: 700,
           display: 'flex', alignItems: 'center', gap: 8,
-          boxShadow: isPro ? '0 4px 18px rgba(152,80,255,0.35)' : 'none',
+          boxShadow: isPro ? '0 4px 18px rgba(176,48,245,0.35)' : 'none',
         }}>
           <i className="ti ti-file-download" style={{ fontSize: 16 }} />
           הפקת דוח ללקוח (PDF)
-          <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 999, background: isPro ? 'rgba(255,255,255,0.15)' : 'rgba(152,80,255,0.2)', border: isPro ? 'none' : '1px solid rgba(152,80,255,0.35)', fontSize: 10, fontWeight: 800, color: isPro ? '#fff' : PURPLE2 }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 999, background: isPro ? 'rgba(255,255,255,0.15)' : 'rgba(176,48,245,0.2)', border: isPro ? 'none' : '1px solid rgba(176,48,245,0.35)', fontSize: 10, fontWeight: 800, color: isPro ? '#fff' : PURPLE2 }}>
             {isPro ? '' : <i className="ti ti-lock" style={{ fontSize: 10 }} />}
             {isPro ? 'Enterprise' : 'Enterprise'}
           </span>
@@ -309,16 +309,16 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
       {/* ── AI Insights Banner ── */}
       <div style={{
         borderRadius: 20, padding: '20px 24px', marginBottom: 24, position: 'relative', overflow: 'hidden',
-        background: 'linear-gradient(135deg, rgba(152,80,255,0.14) 0%, rgba(59,130,239,0.10) 50%, rgba(190,86,255,0.08) 100%)',
-        border: '1px solid rgba(152,80,255,0.28)',
+        background: 'linear-gradient(135deg, rgba(176,48,245,0.14) 0%, rgba(247,45,147,0.10) 50%, rgba(206,123,255,0.08) 100%)',
+        border: '1px solid rgba(176,48,245,0.28)',
       }}>
         {/* animated glow blobs */}
-        <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(152,80,255,0.15)', filter: 'blur(40px)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -20, left: 60, width: 80, height: 80, borderRadius: '50%', background: 'rgba(59,130,239,0.12)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: 'rgba(176,48,245,0.15)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', bottom: -20, left: 60, width: 80, height: 80, borderRadius: '50%', background: 'rgba(247,45,147,0.12)', filter: 'blur(30px)', pointerEvents: 'none' }} />
 
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, position: 'relative' }}>
           {/* brain icon */}
-          <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <div style={{ width: 44, height: 44, borderRadius: 14, background: 'rgba(176,48,245,0.2)', border: '1px solid rgba(176,48,245,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             <i className="ti ti-brain" style={{ fontSize: 22, color: PURPLE2 }} />
           </div>
 
@@ -494,7 +494,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
             </div>
             <button onClick={() => setShowUpgrade(true)} style={{
               width: '100%', padding: '8px', borderRadius: 12, cursor: 'pointer',
-              background: 'rgba(152,80,255,0.12)', border: '1px solid rgba(152,80,255,0.25)',
+              background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.25)',
               color: PURPLE2, fontSize: 11, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}>
@@ -545,7 +545,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
 
         {/* demo rows if no real posts */}
         {topPosts.length === 0 && (
-          <div style={{ marginTop: 8, padding: '12px 20px', borderRadius: 14, background: 'rgba(152,80,255,0.06)', border: '1px dashed rgba(152,80,255,0.2)', fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
+          <div style={{ marginTop: 8, padding: '12px 20px', borderRadius: 14, background: 'rgba(176,48,245,0.06)', border: '1px dashed rgba(176,48,245,0.2)', fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center' }}>
             הנתונים יופיעו כאן לאחר פרסום הפוסטים הראשונים
           </div>
         )}

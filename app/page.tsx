@@ -6,9 +6,9 @@ import Onboarding from '@/components/Onboarding'
 import PricingPlans from '@/components/pricing/PricingPlans'
 
 /* ─── Tokens ─── */
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 
 /* ─── Styles ─── */
 const glass = (ex?: React.CSSProperties): React.CSSProperties => ({
@@ -26,8 +26,8 @@ const btn = (ex?: React.CSSProperties): React.CSSProperties => ({
   background: BLUE, color: '#fff',
   fontWeight: 700, fontSize: 15,
   border: 'none', cursor: 'pointer',
-  fontFamily: 'var(--font-space),sans-serif',
-  boxShadow: '0 4px 20px rgba(59,130,239,0.45)',
+  fontFamily: 'var(--font-rubik),sans-serif',
+  boxShadow: '0 4px 20px rgba(247,45,147,0.45)',
   transition: 'all .2s', textDecoration: 'none',
   ...ex,
 })
@@ -38,7 +38,7 @@ const ghost = (ex?: React.CSSProperties): React.CSSProperties => ({
   background: 'rgba(255,255,255,0.1)', color: '#fff',
   fontWeight: 600, fontSize: 15,
   border: '1px solid rgba(255,255,255,0.22)', cursor: 'pointer',
-  fontFamily: 'var(--font-space),sans-serif',
+  fontFamily: 'var(--font-rubik),sans-serif',
   transition: 'all .2s', textDecoration: 'none',
   ...ex,
 })
@@ -56,7 +56,7 @@ function NCard({ children, style, delay = 0 }: {
         animationDelay: `${delay}s`,
         transform: h ? 'translateY(-5px)' : 'none',
         transition: 'transform .28s ease, box-shadow .28s ease',
-        boxShadow: h ? '0 0 0 1.5px rgba(152,80,255,.5),0 0 48px rgba(152,80,255,.45),0 20px 60px rgba(0,0,0,.3)' : undefined,
+        boxShadow: h ? '0 0 0 1.5px rgba(176,48,245,.5),0 0 48px rgba(176,48,245,.45),0 20px 60px rgba(0,0,0,.3)' : undefined,
         ...style,
       }}
       onMouseEnter={() => setH(true)}
@@ -131,8 +131,8 @@ function BaitSection() {
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '5px 16px', borderRadius: 999,
-          background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
-          fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)',
+          background: 'rgba(247,45,147,0.15)', color: '#60A5FA',
+          fontSize: 11, fontWeight: 700, border: '1px solid rgba(247,45,147,0.3)',
           marginBottom: 24,
         }}>הדגמה חיה</div>
 
@@ -160,11 +160,11 @@ function BaitSection() {
               width: '100%', padding: '16px 24px', borderRadius: 16,
               background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.18)',
               color: '#fff', fontSize: 15, outline: 'none',
-              fontFamily: 'var(--font-space),sans-serif',
+              fontFamily: 'var(--font-rubik),sans-serif',
               textAlign: 'right', boxSizing: 'border-box',
               transition: 'border-color .2s, box-shadow .2s',
             }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(190,86,255,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(152,80,255,0.15)' }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(206,123,255,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(176,48,245,0.15)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'; e.currentTarget.style.boxShadow = 'none' }}
           />
           <button onClick={handleBait} disabled={stage === 'loading'} style={btn({ fontSize: 15, padding: '14px 40px', opacity: stage === 'loading' ? 0.7 : 1 })}>
@@ -205,10 +205,10 @@ function BaitSection() {
                   }}>
                     <div style={{
                       width: '100%', maxWidth: 440,
-                      background: 'rgba(13,8,41,0.9)', backdropFilter: 'blur(8px)',
+                      background: 'rgba(28,15,43,0.9)', backdropFilter: 'blur(8px)',
                       borderRadius: 18, padding: '22px 24px', textAlign: 'center',
-                      border: '1px solid rgba(190,86,255,0.4)',
-                      boxShadow: '0 0 44px rgba(152,80,255,0.28)',
+                      border: '1px solid rgba(206,123,255,0.4)',
+                      boxShadow: '0 0 44px rgba(176,48,245,0.28)',
                     }}>
                       {emailStage === 'sent' ? (
                         <>
@@ -246,9 +246,9 @@ function BaitSection() {
                                 width: '100%', padding: '12px 16px', borderRadius: 12,
                                 background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.18)',
                                 color: '#fff', fontSize: 14, outline: 'none', textAlign: 'left',
-                                fontFamily: 'var(--font-space),sans-serif', boxSizing: 'border-box',
+                                fontFamily: 'var(--font-rubik),sans-serif', boxSizing: 'border-box',
                               }}
-                              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(190,86,255,0.5)' }}
+                              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(206,123,255,0.5)' }}
                               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)' }}
                             />
                             <button
@@ -303,7 +303,7 @@ function HomeInner() {
 
   if (needsOnboarding && oauthUid) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#0D0829' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#1C0F2B' }}>
         <Onboarding userId={oauthUid} onComplete={() => { window.location.href = '/dashboard' }} />
       </div>
     )
@@ -312,10 +312,10 @@ function HomeInner() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: `radial-gradient(ellipse at 20% 0%,rgba(190,86,255,.3) 0%,transparent 55%),
-                   radial-gradient(ellipse at 80% 100%,rgba(59,130,239,.2) 0%,transparent 50%),
-                   linear-gradient(160deg,#0D0829 0%,#160C3D 45%,#0F1654 100%)`,
-      fontFamily: 'var(--font-space),sans-serif',
+      background: `radial-gradient(ellipse at 20% 0%,rgba(206,123,255,.3) 0%,transparent 55%),
+                   radial-gradient(ellipse at 80% 100%,rgba(247,45,147,.2) 0%,transparent 50%),
+                   linear-gradient(160deg,#1C0F2B 0%,#20112F 45%,#261141 100%)`,
+      fontFamily: 'var(--font-rubik),sans-serif',
     }}>
       {/* ══ NAV ══ */}
       <nav style={{
@@ -467,8 +467,8 @@ function HomeInner() {
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <div style={{
             display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
-            background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
-            fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)', marginBottom: 14,
+            background: 'rgba(247,45,147,0.15)', color: '#60A5FA',
+            fontSize: 11, fontWeight: 700, border: '1px solid rgba(247,45,147,0.3)', marginBottom: 14,
           }}>איך זה עובד</div>
           <h2 className="font-arimo" style={{ fontSize: 'clamp(1.6rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 8px' }}>
             שלושה צעדים. ואז אתם חופשיים.
@@ -598,7 +598,7 @@ function HomeInner() {
             </p>
             <div style={{
               padding: '16px 20px', borderRadius: 14,
-              background: 'rgba(152,80,255,0.1)', border: '1px solid rgba(190,86,255,0.2)',
+              background: 'rgba(176,48,245,0.1)', border: '1px solid rgba(206,123,255,0.2)',
               fontSize: 13, color: 'rgba(255,255,255,0.68)', lineHeight: 1.7,
             }}>
               <strong style={{ color: PURPLE2 }}>המשימה שלנו:</strong> לתת לכל עסק קטן בישראל את הכלים שהיו עד עכשיו שמורים רק לתאגידים עם תקציבי שיווק ענקיים.
@@ -612,7 +612,7 @@ function HomeInner() {
                   width: 64, height: 64, borderRadius: 20, flexShrink: 0,
                   background: `linear-gradient(135deg,${PURPLE},${PURPLE2})`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', boxShadow: `0 8px 28px rgba(152,80,255,0.4)`,
+                  color: '#fff', boxShadow: `0 8px 28px rgba(176,48,245,0.4)`,
                 }}>
                   <i className="ti ti-code" style={{ fontSize: 28 }} />
                 </div>

@@ -9,7 +9,7 @@ import { useState } from 'react'
 ════════════════════════════════════════════════════════════════ */
 
 /* ── Theme tokens ───────────────────────────────────────────── */
-const PURPLE = '#9850FF'
+const PURPLE = '#B030F5'
 const GOLD = '#FFD700'
 
 /* ── Token economy (shown as a small strip) ─────────────────── */
@@ -126,7 +126,7 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
     >
       <div
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-3xl border border-[#9850FF]/40 bg-[#14101D] p-8 text-right shadow-[0_0_60px_rgba(152,80,255,0.35)]"
+        className="relative w-full max-w-md rounded-3xl border border-[#B030F5]/40 bg-[#14101D] p-8 text-right shadow-[0_0_60px_rgba(176,48,245,0.35)]"
       >
         {/* Close */}
         <button
@@ -160,7 +160,7 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
 
         {/* CTA — wire to checkout / PayPlus */}
         <button
-          className="w-full rounded-full py-3.5 text-base font-extrabold text-white shadow-[0_8px_30px_rgba(152,80,255,0.5)] transition hover:brightness-110"
+          className="w-full rounded-full py-3.5 text-base font-extrabold text-white shadow-[0_8px_30px_rgba(176,48,245,0.5)] transition hover:brightness-110"
           style={{ background: `linear-gradient(135deg, ${PURPLE}, #6D28D9)` }}
           onClick={onClose}
         >
@@ -191,7 +191,7 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
         onClick={() => onChange('annual')}
         className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
           }`}
-        style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
+        style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(176,48,245,0.45)' } : undefined}
       >
         שנתי · חסכו 20%
       </button>
@@ -199,7 +199,7 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
         onClick={() => onChange('monthly')}
         className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
           }`}
-        style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(152,80,255,0.45)' } : undefined}
+        style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(176,48,245,0.45)' } : undefined}
       >
         חודשי
       </button>
@@ -257,19 +257,19 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 
   return (
     <div
-      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${highlight ? 'shadow-[0_0_50px_rgba(152,80,255,0.25)] md:-mt-4 md:mb-4' : ''
+      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${highlight ? 'shadow-[0_0_50px_rgba(176,48,245,0.25)] md:-mt-4 md:mb-4' : ''
         }`}
       style={{
         background: 'rgba(255,255,255,0.07)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: highlight ? '1px solid rgba(152,80,255,0.6)' : '1px solid rgba(255,255,255,0.13)',
+        border: highlight ? '1px solid rgba(176,48,245,0.6)' : '1px solid rgba(255,255,255,0.13)',
       }}
     >
       {/* "Best value" ribbon */}
       {highlight && (
         <span
-          className="absolute right-1/2 top-0 -translate-y-1/2 translate-x-1/2 rounded-full px-4 py-1 text-xs font-extrabold text-white shadow-[0_4px_20px_rgba(152,80,255,0.6)]"
+          className="absolute right-1/2 top-0 -translate-y-1/2 translate-x-1/2 rounded-full px-4 py-1 text-xs font-extrabold text-white shadow-[0_4px_20px_rgba(176,48,245,0.6)]"
           style={{ background: PURPLE }}
         >
           הכי משתלם ✦
@@ -306,7 +306,7 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
       <button
         onClick={() => onSelect(plan.id)}
         disabled={busy}
-        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${highlight ? 'text-white shadow-[0_8px_30px_rgba(152,80,255,0.5)]' : 'text-white'
+        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${highlight ? 'text-white shadow-[0_8px_30px_rgba(176,48,245,0.5)]' : 'text-white'
           }`}
         style={
           highlight

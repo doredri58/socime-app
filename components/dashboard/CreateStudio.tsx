@@ -6,9 +6,9 @@ import UpgradeModal from '@/components/dashboard/UpgradeModal'
 import { notifyTokensSpent } from '@/lib/tokens-client'
 
 // ─── constants ───────────────────────────────────────────────────────────────
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.06)',
@@ -75,7 +75,7 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
   return (
     <div style={{
       width: 280, margin: '0 auto',
-      background: 'linear-gradient(180deg, #1a1040 0%, #0D0829 100%)',
+      background: 'linear-gradient(180deg, #1a1040 0%, #1C0F2B 100%)',
       border: '6px solid rgba(255,255,255,0.12)',
       borderRadius: 44, padding: '0', overflow: 'hidden',
       boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.5), 0 0 40px ${plat.color}22`,
@@ -340,7 +340,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           <div style={{
             display: 'flex', alignItems: 'center', gap: 7,
             padding: '6px 14px', borderRadius: 999,
-            background: 'rgba(152,80,255,0.12)', border: '1px solid rgba(152,80,255,0.25)',
+            background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.25)',
           }}>
             <i className="ti ti-coins" style={{ fontSize: 14, color: PURPLE }} />
             <span style={{ fontSize: 12, fontWeight: 700, color: PURPLE2 }}>{tokens.toLocaleString()}</span>
@@ -373,9 +373,9 @@ export default function CreateStudio({ userId, businessName, businessDescription
               disabled={loading || !prompt.trim()}
               style={{
                 padding: '12px 20px', borderRadius: 14, cursor: loading ? 'wait' : 'pointer',
-                background: loading ? 'rgba(152,80,255,0.3)' : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
+                background: loading ? 'rgba(176,48,245,0.3)' : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                 color: '#fff', fontSize: 13, fontWeight: 700, border: 'none',
-                boxShadow: loading ? 'none' : '0 4px 18px rgba(152,80,255,0.4)',
+                boxShadow: loading ? 'none' : '0 4px 18px rgba(176,48,245,0.4)',
                 whiteSpace: 'nowrap', minWidth: 110, transition: 'all 0.2s',
                 display: 'flex', alignItems: 'center', gap: 7,
                 opacity: !prompt.trim() ? 0.5 : 1,
@@ -420,7 +420,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
               outline: 'none', resize: 'none', direction: 'rtl', lineHeight: 1.75,
               fontFamily: 'inherit', transition: 'border-color 0.2s',
             }}
-            onFocus={e => { e.target.style.borderColor = 'rgba(152,80,255,0.35)' }}
+            onFocus={e => { e.target.style.borderColor = 'rgba(176,48,245,0.35)' }}
             onBlur={e => { e.target.style.borderColor = 'rgba(255,255,255,0.08)' }}
           />
 
@@ -428,7 +428,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           {hashtags && (
             <div style={{
               marginTop: 10, padding: '10px 14px', borderRadius: 12,
-              background: 'rgba(152,80,255,0.06)', border: '1px solid rgba(152,80,255,0.15)',
+              background: 'rgba(176,48,245,0.06)', border: '1px solid rgba(176,48,245,0.15)',
               display: 'flex', alignItems: 'flex-start', gap: 8,
             }}>
               <i className="ti ti-hash" style={{ fontSize: 14, color: PURPLE, marginTop: 1, flexShrink: 0 }} />
@@ -457,15 +457,15 @@ export default function CreateStudio({ userId, businessName, businessDescription
                 style={{
                   padding: '7px 14px', borderRadius: 999, fontSize: 12, fontWeight: 600,
                   cursor: magicLoading || !postText.trim() ? 'not-allowed' : 'pointer',
-                  background: magicLoading === action.label ? 'rgba(152,80,255,0.25)' : 'rgba(255,255,255,0.06)',
-                  border: `1px solid ${magicLoading === action.label ? 'rgba(152,80,255,0.4)' : 'rgba(255,255,255,0.1)'}`,
+                  background: magicLoading === action.label ? 'rgba(176,48,245,0.25)' : 'rgba(255,255,255,0.06)',
+                  border: `1px solid ${magicLoading === action.label ? 'rgba(176,48,245,0.4)' : 'rgba(255,255,255,0.1)'}`,
                   color: magicLoading === action.label ? PURPLE2 : 'rgba(255,255,255,0.6)',
                   display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.2s',
                   opacity: !postText.trim() ? 0.4 : 1,
                 }}
               >
                 {magicLoading === action.label
-                  ? <div style={{ width: 10, height: 10, border: '1.5px solid rgba(152,80,255,0.3)', borderTop: '1.5px solid #BE56FF', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                  ? <div style={{ width: 10, height: 10, border: '1.5px solid rgba(176,48,245,0.3)', borderTop: '1.5px solid #CE7BFF', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                   : <i className={`ti ${action.icon}`} style={{ fontSize: 13 }} />
                 }
                 {action.label}
@@ -512,7 +512,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
               style={{
                 border: `2px dashed ${dragOver ? PURPLE : 'rgba(255,255,255,0.12)'}`,
                 borderRadius: 16, padding: '28px 20px', textAlign: 'center', cursor: 'pointer',
-                background: dragOver ? 'rgba(152,80,255,0.06)' : 'transparent',
+                background: dragOver ? 'rgba(176,48,245,0.06)' : 'transparent',
                 transition: 'all 0.2s', marginBottom: 10,
               }}
             >
@@ -533,8 +533,8 @@ export default function CreateStudio({ userId, businessName, businessDescription
             disabled={imgGenLoading}
             style={{
               width: '100%', padding: '11px', borderRadius: 14, cursor: imgGenLoading ? 'wait' : 'pointer',
-              background: imgAttempts <= 0 ? 'rgba(255,255,255,0.04)' : 'rgba(59,130,239,0.12)',
-              border: `1px solid ${imgAttempts <= 0 ? 'rgba(255,255,255,0.1)' : 'rgba(59,130,239,0.25)'}`,
+              background: imgAttempts <= 0 ? 'rgba(255,255,255,0.04)' : 'rgba(247,45,147,0.12)',
+              border: `1px solid ${imgAttempts <= 0 ? 'rgba(255,255,255,0.1)' : 'rgba(247,45,147,0.25)'}`,
               color: imgAttempts <= 0 ? 'rgba(255,255,255,0.35)' : '#60A5FA',
               fontSize: 13, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
@@ -544,7 +544,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
             {imgGenLoading
               ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(96,165,250,0.3)', borderTop: '2px solid #60A5FA', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר תמונה...</>
               : imgAttempts <= 0
-                ? <><i className="ti ti-lock" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI<span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.3)', color: PURPLE2 }}>שדרג לPro</span></>
+                ? <><i className="ti ti-lock" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI<span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(176,48,245,0.2)', border: '1px solid rgba(176,48,245,0.3)', color: PURPLE2 }}>שדרג לPro</span></>
                 : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
                     <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: imgAttempts === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.12)', border: `1px solid ${imgAttempts === 1 ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.2)'}`, color: imgAttempts === 1 ? '#FBBF24' : '#34D399', fontWeight: 700 }}>נותרו {imgAttempts} ניסיונות</span>
                   </>
@@ -605,7 +605,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
         position: 'fixed', bottom: 0, right: 0, left: 0,
         height: 68, display: 'flex', alignItems: 'center', justifyContent: 'flex-end',
         paddingInline: 24, gap: 10, direction: 'rtl',
-        background: 'rgba(13,8,41,0.92)', backdropFilter: 'blur(20px)',
+        background: 'rgba(28,15,43,0.92)', backdropFilter: 'blur(20px)',
         borderTop: '1px solid rgba(255,255,255,0.08)', zIndex: 50,
       }}>
         {/* post char count summary */}
@@ -638,9 +638,9 @@ export default function CreateStudio({ userId, businessName, businessDescription
           disabled={scheduling || !postText.trim()}
           style={{
             padding: '11px 28px', borderRadius: 14, cursor: 'pointer',
-            background: postText.trim() ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(152,80,255,0.2)',
+            background: postText.trim() ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(176,48,245,0.2)',
             border: 'none', color: '#fff', fontSize: 14, fontWeight: 800,
-            boxShadow: postText.trim() ? '0 4px 24px rgba(152,80,255,0.45)' : 'none',
+            boxShadow: postText.trim() ? '0 4px 24px rgba(176,48,245,0.45)' : 'none',
             display: 'flex', alignItems: 'center', gap: 8,
             opacity: !postText.trim() ? 0.4 : 1, transition: 'all 0.2s',
             letterSpacing: '-0.2px',

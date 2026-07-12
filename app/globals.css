@@ -15,28 +15,28 @@
   --dash-text-mid: rgba(255,255,255,0.65);
   --dash-text-low: rgba(255,255,255,0.38);
   --dash-card-bg:      rgba(255,255,255,0.05);
-  --dash-card-border:  rgba(152,80,255,0.14);
+  --dash-card-border:  rgba(176,48,245,0.14);
   --dash-input-bg:     rgba(255,255,255,0.06);
   --dash-input-border: rgba(255,255,255,0.12);
 
-  --dash-page-bg: linear-gradient(160deg, #0D0829 0%, #160C3D 55%, #0F1654 100%);
-  --dash-body-bg: #0D0829;
-  --dash-topbar-bg: rgba(13,8,41,0.88);
-  --dash-topbar-border: rgba(152,80,255,0.18);
+  --dash-page-bg: linear-gradient(160deg, #1C0F2B 0%, #20112F 55%, #261141 100%);
+  --dash-body-bg: #1C0F2B;
+  --dash-topbar-bg: rgba(28,15,43,0.88);
+  --dash-topbar-border: rgba(176,48,245,0.18);
   --dash-topbar-text: rgba(255,255,255,0.45);
-  --dash-sidebar-bg: linear-gradient(180deg, #0F0A1E 0%, #130C24 40%, #170F2E 100%);
+  --dash-sidebar-bg: linear-gradient(180deg, #170B24 0%, #1C0D2C 40%, #221136 100%);
   --dash-sidebar-glass: rgba(255,255,255,0.07);
-  --dash-sidebar-border: rgba(139,92,246,0.15);
+  --dash-sidebar-border: rgba(176,48,245,0.15);
   --dash-sidebar-text: rgba(255,255,255,0.62);
   --dash-sidebar-text-active: #ffffff;
-  --dash-sidebar-active-bg: rgba(139,92,246,0.18);
-  --dash-sidebar-active-border: rgba(139,92,246,0.5);
+  --dash-sidebar-active-bg: rgba(176,48,245,0.18);
+  --dash-sidebar-active-border: rgba(176,48,245,0.5);
   --dash-sidebar-label: rgba(255,255,255,0.28);
-  --dash-token-bg: rgba(167,139,250,0.08);
-  --dash-token-border: rgba(167,139,250,0.22);
+  --dash-token-bg: rgba(206,123,255,0.08);
+  --dash-token-border: rgba(206,123,255,0.22);
   --dash-token-text: #ffffff;
-  --dash-avatar-bg: linear-gradient(135deg, #9850FF, #5B21B6);
-  --dash-avatar-shadow: rgba(152,80,255,0.45);
+  --dash-avatar-bg: linear-gradient(135deg, #B030F5, #7A1E6B);
+  --dash-avatar-shadow: rgba(176,48,245,0.45);
 }
 
 [data-theme="light"] {
@@ -81,11 +81,11 @@
   --p-100: #EDE9FE;
   --p-200: #DDD6FE;
   --p-300: #C4B5FD;
-  --p-400: #A78BFA;
-  --p-500: #8B5CF6;
+  --p-400: #CE7BFF;
+  --p-500: #B030F5;
   --p-600: #7C3AED;
   --p-700: #6D28D9;
-  --p-800: #5B21B6;
+  --p-800: #7A1E6B;
   --p-900: #4C1D95;
 
   /* ── Semantic aliases ── */
@@ -98,23 +98,23 @@
   --purple-glow-sm: 0 0 16px rgba(109,40,217,0.12), 0 2px 8px rgba(109,40,217,0.06);
 
   /* ── Obsidian scale (sidebar & dark elements) ── */
-  --obsidian-900: #0D0A1F;
-  --obsidian-800: #130E28;
-  --obsidian-700: #1A1235;
-  --obsidian-600: #231840;
-  --obsidian-500: #2D1F52;
-  --obsidian-border: rgba(139,92,246,0.15);
-  --obsidian-border-bright: rgba(139,92,246,0.3);
+  --obsidian-900: #1A0D28;
+  --obsidian-800: #1E1030;
+  --obsidian-700: #24123A;
+  --obsidian-600: #2C1548;
+  --obsidian-500: #361B5C;
+  --obsidian-border: rgba(176,48,245,0.15);
+  --obsidian-border-bright: rgba(176,48,245,0.3);
 
   /* ── Sidebar ── */
   --sidebar-bg: var(--obsidian-800);
   --sidebar-gradient: linear-gradient(180deg,
-    #0F0A1E 0%,
-    #130C24 40%,
-    #170F2E 100%
+    #170B24 0%,
+    #1C0D2C 40%,
+    #221136 100%
   );
-  --sidebar-active-bg: rgba(139,92,246,0.18);
-  --sidebar-active-border: rgba(139,92,246,0.5);
+  --sidebar-active-bg: rgba(176,48,245,0.18);
+  --sidebar-active-border: rgba(176,48,245,0.5);
   --sidebar-text: rgba(255,255,255,0.65);
   --sidebar-text-active: #ffffff;
 
@@ -131,7 +131,7 @@
   --text-muted: #B5A8D4;
 
   /* ── Dashboard ── */
-  --dash-bg: #0D0829;
+  --dash-bg: #1C0F2B;
 
   /* ── Borders ── */
   --border-soft:   rgba(109,40,217,0.1);
@@ -198,7 +198,7 @@ html {
 }
 
 body {
-  font-family: 'Heebo', sans-serif;
+  font-family: var(--font-rubik), 'Rubik', sans-serif;
   background: var(--bg-base);
   color: var(--text-dark);
   overflow-x: hidden;
@@ -283,16 +283,16 @@ body {
    Must come after rule 1 to win. */
 [data-theme="light"] #dash-content [style*="linear-gradient(135deg"],
 [data-theme="light"] #dash-content [style*="linear-gradient(135deg"] *,
-[data-theme="light"] #dash-content [style*="rgb(59, 130, 239)"],
-[data-theme="light"] #dash-content [style*="rgb(59, 130, 239)"] *,
-[data-theme="light"] #dash-content [style*="rgb(59,130,239)"],
-[data-theme="light"] #dash-content [style*="rgb(59,130,239)"] *,
-[data-theme="light"] #dash-content [style*="#3B82EF"],
-[data-theme="light"] #dash-content [style*="#3B82EF"] *,
-[data-theme="light"] #dash-content [style*="rgb(152, 80, 255)"],
-[data-theme="light"] #dash-content [style*="rgb(152, 80, 255)"] *,
-[data-theme="light"] #dash-content [style*="rgb(152,80,255)"],
-[data-theme="light"] #dash-content [style*="rgb(152,80,255)"] * {
+[data-theme="light"] #dash-content [style*="rgb(247, 45, 147)"],
+[data-theme="light"] #dash-content [style*="rgb(247, 45, 147)"] *,
+[data-theme="light"] #dash-content [style*="rgb(247,45,147)"],
+[data-theme="light"] #dash-content [style*="rgb(247,45,147)"] *,
+[data-theme="light"] #dash-content [style*="#F72D93"],
+[data-theme="light"] #dash-content [style*="#F72D93"] *,
+[data-theme="light"] #dash-content [style*="rgb(176, 48, 245)"],
+[data-theme="light"] #dash-content [style*="rgb(176, 48, 245)"] *,
+[data-theme="light"] #dash-content [style*="rgb(176,48,245)"],
+[data-theme="light"] #dash-content [style*="rgb(176,48,245)"] * {
   color: #ffffff !important;
 }
 /* colored buttons keep their own background (undo rule 2 if it ever matched) */
@@ -328,20 +328,20 @@ body {
 
 /* 9 — blue tints (bg/hover/border) → purple tints.
    Keeps the design language purple, never a jarring blue in light mode. */
-[data-theme="light"] #dash-content [style*="rgba(59, 130, 239"],
-[data-theme="light"] #dash-content [style*="rgba(59,130,239"] {
+[data-theme="light"] #dash-content [style*="rgba(247, 45, 147"],
+[data-theme="light"] #dash-content [style*="rgba(247,45,147"] {
   background-color: rgba(124, 58, 237, 0.10) !important;
   border-color: rgba(124, 58, 237, 0.28) !important;
 }
 
-.sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(152,80,255,0.2) transparent; }
+.sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(176,48,245,0.2) transparent; }
 .sidebar-scroll::-webkit-scrollbar { width: 3px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(152,80,255,0.25); border-radius: 99px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(176,48,245,0.25); border-radius: 99px; }
 
 /* Dashboard dark override */
 .dash-root {
-  background: linear-gradient(160deg, #0D0829 0%, #160C3D 55%, #0F1654 100%);
+  background: linear-gradient(160deg, #1C0F2B 0%, #20112F 55%, #261141 100%);
   min-height: 100vh;
   color: #ffffff;
 }
@@ -469,7 +469,7 @@ body {
   background: var(--bg-card);
   color: var(--text-dark);
   font-size: 14px;
-  font-family: 'Heebo', sans-serif;
+  font-family: var(--font-rubik), 'Rubik', sans-serif;
   outline: none;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
@@ -600,16 +600,17 @@ body {
 }
 
 .neon-card {
-  box-shadow: 0 0 32px rgba(152,80,255,0.25), 0 16px 48px rgba(0,0,0,0.25);
+  box-shadow: 0 0 32px rgba(176,48,245,0.25), 0 16px 48px rgba(0,0,0,0.25);
 }
 .neon-card:hover {
-  box-shadow: 0 0 0 1.5px rgba(152,80,255,0.5), 0 0 48px rgba(152,80,255,0.5), 0 0 96px rgba(190,86,255,0.25), 0 20px 60px rgba(0,0,0,0.3);
+  box-shadow: 0 0 0 1.5px rgba(176,48,245,0.5), 0 0 48px rgba(176,48,245,0.5), 0 0 96px rgba(206,123,255,0.25), 0 20px 60px rgba(0,0,0,0.3);
   transform: translateY(-6px);
 }
 
-/* ── Landing page font utility ── */
-.font-arimo { font-family: var(--font-arimo), 'Arimo', sans-serif; }
-.font-space  { font-family: var(--font-space), 'Space Grotesk', sans-serif; }
+/* ── Font utility — rebranded: unified on Rubik across the whole app
+   (class names kept so existing markup adopts the new face with no edits) ── */
+.font-arimo { font-family: var(--font-rubik), 'Rubik', sans-serif; }
+.font-space  { font-family: var(--font-rubik), 'Rubik', sans-serif; }
 
 .logo-float   { animation: logo-float 4s ease-in-out infinite; }
 .logo-reveal  { animation: logo-reveal 0.9s cubic-bezier(0.34,1.56,0.64,1) both; }
@@ -626,8 +627,8 @@ body {
 .animate-scale-in { animation: scale-in 0.35s ease both; }
 
 @theme inline {
-  --font-heading:  var(--font-sans);
-  --font-sans:  var(--font-sans);
+  --font-heading:  var(--font-rubik), 'Rubik', sans-serif;
+  --font-sans:  var(--font-rubik), 'Rubik', sans-serif;
   --color-sidebar-ring:  var(--sidebar-ring);
   --color-sidebar-border:  var(--sidebar-border);
   --color-sidebar-accent-foreground:  var(--sidebar-accent-foreground);

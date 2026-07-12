@@ -4,9 +4,9 @@ import React, { useState, useRef, useEffect, useCallback } from 'react'
 /* ══════════════════════════════════════════════════════════════════════
    DESIGN TOKENS
 ══════════════════════════════════════════════════════════════════════ */
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 const GREEN   = '#34D399'
 const RED     = '#F87171'
 const YELLOW  = '#FBBF24'
@@ -47,7 +47,7 @@ const SUBTITLE_PRESETS = [
     id: 'gradient',
     label: 'גרדיאנט בוהק',
     sub: 'Reels / Shorts',
-    preview: { bg: 'rgba(152,80,255,0.3)', mainColor: '#fff', accentColor: PURPLE2, weight: 800, shadow: true },
+    preview: { bg: 'rgba(176,48,245,0.3)', mainColor: '#fff', accentColor: PURPLE2, weight: 800, shadow: true },
     icon: 'ti-color-filter',
     popular: false,
   },
@@ -172,7 +172,7 @@ function MiniTimeline({ smartTrim, subtitles, audio }: { smartTrim: boolean; sub
         <div style={trackStyle}>
           {/* main video strip gradient */}
           <div style={{ position: 'absolute', inset: 0,
-            background: 'linear-gradient(90deg, rgba(59,130,239,0.25) 0%, rgba(152,80,255,0.2) 100%)' }} />
+            background: 'linear-gradient(90deg, rgba(247,45,147,0.25) 0%, rgba(176,48,245,0.2) 100%)' }} />
           {/* filmstrip dashes */}
           {Array.from({ length: 20 }).map((_, i) => (
             <div key={i} style={{
@@ -249,7 +249,7 @@ function SubtitleCard({ preset, selected, onSelect, previewLabel }: {
   return (
     <button onClick={onSelect} style={{
       flex: 1, padding: '10px 8px', borderRadius: 12, cursor: 'pointer', textAlign: 'center',
-      background: selected ? 'rgba(152,80,255,0.14)' : 'rgba(255,255,255,0.03)',
+      background: selected ? 'rgba(176,48,245,0.14)' : 'rgba(255,255,255,0.03)',
       border: `1.5px solid ${selected ? PURPLE + '55' : 'rgba(255,255,255,0.08)'}`,
       transition: 'all 0.18s', position: 'relative',
     }}>
@@ -305,8 +305,8 @@ function DropZone({ onFile }: { onFile: (f: File) => void }) {
         flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
         cursor: 'pointer', borderRadius: 24, gap: 18, transition: 'all 0.25s',
         border: `2px dashed ${drag ? PURPLE2 : 'rgba(255,255,255,0.12)'}`,
-        background: drag ? 'rgba(152,80,255,0.08)' : 'rgba(255,255,255,0.02)',
-        boxShadow: drag ? `0 0 40px rgba(152,80,255,0.15)` : 'none',
+        background: drag ? 'rgba(176,48,245,0.08)' : 'rgba(255,255,255,0.02)',
+        boxShadow: drag ? `0 0 40px rgba(176,48,245,0.15)` : 'none',
       }}>
       <input ref={inputRef} type="file" accept="video/*" style={{ display: 'none' }} onChange={onInput} />
 
@@ -314,9 +314,9 @@ function DropZone({ onFile }: { onFile: (f: File) => void }) {
       <div style={{ position: 'relative' }}>
         <div style={{ width: 90, height: 90, borderRadius: 24,
           background: `linear-gradient(135deg, ${PURPLE}22, ${BLUE}15)`,
-          border: `1px solid rgba(152,80,255,0.25)`,
+          border: `1px solid rgba(176,48,245,0.25)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 40px rgba(152,80,255,0.12)' }}>
+          boxShadow: '0 0 40px rgba(176,48,245,0.12)' }}>
           <i className="ti ti-video-plus" style={{ fontSize: 38, color: drag ? PURPLE2 : 'rgba(255,255,255,0.3)' }} />
         </div>
         {/* sparkle dots */}
@@ -580,7 +580,7 @@ function ProcessingOverlay({ progress, step }: { progress: number; step: string 
             <div key={s} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 0',
               borderBottom: i < 3 ? '1px solid rgba(255,255,255,0.05)' : 'none' }}>
               <div style={{ width: 20, height: 20, borderRadius: '50%', flexShrink: 0,
-                background: done ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : active ? 'rgba(152,80,255,0.2)' : 'rgba(255,255,255,0.06)',
+                background: done ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : active ? 'rgba(176,48,245,0.2)' : 'rgba(255,255,255,0.06)',
                 border: `1px solid ${done ? 'transparent' : active ? PURPLE + '55' : 'rgba(255,255,255,0.08)'}`,
                 display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {done ? <i className="ti ti-check" style={{ fontSize: 10, color: '#fff' }} />
@@ -815,7 +815,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
             {/* active modules badge */}
             {activeCount > 0 && (
               <div style={{ padding: '4px 11px', borderRadius: 999, fontSize: 10, fontWeight: 800,
-                background: 'rgba(152,80,255,0.12)', border: '1px solid rgba(152,80,255,0.25)', color: PURPLE2,
+                background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.25)', color: PURPLE2,
                 display: 'flex', alignItems: 'center', gap: 5 }}>
                 <i className="ti ti-sparkles" style={{ fontSize: 11 }} />{activeCount} כלים פעילים
               </div>
@@ -855,7 +855,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
           {/* legend */}
           <div style={{ display: 'flex', gap: 14, marginTop: 10 }}>
             {[
-              { color: 'rgba(59,130,239,0.5)', label: 'קטע וידאו' },
+              { color: 'rgba(247,45,147,0.5)', label: 'קטע וידאו' },
               ...(smartTrim ? [{ color: RED, label: 'חיתוך חכם' }] : []),
               ...(subtitles ? [{ color: PURPLE2, label: 'כתוביות' }] : []),
               ...(aiAudio ? [{ color: BLUE, label: 'אודיו' }] : []),
@@ -917,19 +917,19 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
             </div>
             <select value={musicStyle} onChange={e => setMusicStyle(e.target.value)} style={{
               width: '100%', padding: '9px 12px', borderRadius: 10, fontSize: 12, cursor: 'pointer',
-              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(59,130,239,0.25)',
+              background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(247,45,147,0.25)',
               color: '#fff', direction: 'rtl', outline: 'none',
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
               backgroundRepeat: 'no-repeat', backgroundPosition: 'left 10px center', paddingLeft: 28,
             }}>
-              {MUSIC_STYLES.map(s => <option key={s} value={s} style={{ background: '#160C3D' }}>{s}</option>)}
+              {MUSIC_STYLES.map(s => <option key={s} value={s} style={{ background: '#20112F' }}>{s}</option>)}
             </select>
           </div>
           {/* voiceover toggle */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '10px 12px', borderRadius: 10,
-            background: voiceover ? 'rgba(59,130,239,0.08)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${voiceover ? 'rgba(59,130,239,0.22)' : 'rgba(255,255,255,0.06)'}` }}>
+            background: voiceover ? 'rgba(247,45,147,0.08)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${voiceover ? 'rgba(247,45,147,0.22)' : 'rgba(255,255,255,0.06)'}` }}>
             <div>
               <div style={{ fontSize: 12, fontWeight: 700, color: voiceover ? '#fff' : 'rgba(255,255,255,0.5)' }}>
                 קריינות AI
@@ -940,7 +940,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
           </div>
           {voiceover && (
             <div style={{ marginTop: 10, padding: '9px 12px', borderRadius: 10,
-              background: 'rgba(59,130,239,0.06)', border: '1px solid rgba(59,130,239,0.15)',
+              background: 'rgba(247,45,147,0.06)', border: '1px solid rgba(247,45,147,0.15)',
               fontSize: 11, color: 'rgba(255,255,255,0.4)', lineHeight: 1.6 }}>
               <i className="ti ti-microphone" style={{ color: BLUE, marginLeft: 5 }} />
               טקסט הוידאו ינוקה ויוקרא ע&quot;י קריין AI בעברית
@@ -1000,11 +1000,11 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
                   style={{ flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
                     background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    boxShadow: '0 4px 16px rgba(152,80,255,0.35)' }}>
+                    boxShadow: '0 4px 16px rgba(176,48,245,0.35)' }}>
                   <i className="ti ti-download" style={{ fontSize: 14 }} /> {outputUrl ? 'הורד סרטון' : 'הורד'}
                 </button>
                 <button style={{ flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
-                  background: 'rgba(59,130,239,0.12)', border: '1px solid rgba(59,130,239,0.25)', color: BLUE,
+                  background: 'rgba(247,45,147,0.12)', border: '1px solid rgba(247,45,147,0.25)', color: BLUE,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                   <i className="ti ti-send" style={{ fontSize: 14 }} /> פרסם
                 </button>
@@ -1015,7 +1015,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
               {/* token cost notice */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 padding: '10px 12px', borderRadius: 12, marginBottom: 12,
-                background: 'rgba(152,80,255,0.08)', border: '1px solid rgba(152,80,255,0.18)' }}>
+                background: 'rgba(176,48,245,0.08)', border: '1px solid rgba(176,48,245,0.18)' }}>
                 <div>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.45)', marginBottom: 2 }}>עלות גנרוט וידאו AI</div>
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
@@ -1043,11 +1043,11 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
               {activeCount > 0 && (
                 <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap', marginBottom: 12 }}>
                   {subtitles && <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 999,
-                    background: 'rgba(190,86,255,0.10)', border: '1px solid rgba(190,86,255,0.22)', color: PURPLE2 }}>
+                    background: 'rgba(206,123,255,0.10)', border: '1px solid rgba(206,123,255,0.22)', color: PURPLE2 }}>
                     כתוביות · {SUBTITLE_PRESETS.find(p => p.id === subtitlePreset)?.label}
                   </span>}
                   {aiAudio && <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 999,
-                    background: 'rgba(59,130,239,0.10)', border: '1px solid rgba(59,130,239,0.22)', color: BLUE }}>
+                    background: 'rgba(247,45,147,0.10)', border: '1px solid rgba(247,45,147,0.22)', color: BLUE }}>
                     🎵 {musicStyle}
                   </span>}
                   {smartTrim && <span style={{ fontSize: 9, padding: '2px 7px', borderRadius: 999,
@@ -1065,7 +1065,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
                   : 'rgba(255,255,255,0.06)',
                 border: 'none', color: canRender ? '#fff' : 'rgba(255,255,255,0.25)',
                 fontSize: 13, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
-                boxShadow: canRender ? '0 4px 20px rgba(152,80,255,0.4)' : 'none',
+                boxShadow: canRender ? '0 4px 20px rgba(176,48,245,0.4)' : 'none',
                 transition: 'all 0.2s', letterSpacing: '-0.2px',
               }}>
                 <i className="ti ti-device-gamepad-2" style={{ fontSize: 17 }} />

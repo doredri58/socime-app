@@ -18,15 +18,15 @@ const STORAGE_KEY = 'socime-theme'
    apply these [style*="rgba(13,…)"] overrides from the compiled stylesheet,
    while a raw <style> works reliably. Gated by [data-theme="light"]. */
 const LIGHT_CARD_FIX = `
-[data-theme="light"] #dash-content [style*="rgba(13,10,31"],
-[data-theme="light"] #dash-content [style*="rgba(13, 10, 31"],
-[data-theme="light"] #dash-content [style*="rgba(13,8,41"],
-[data-theme="light"] #dash-content [style*="rgba(13, 8, 41"],
+[data-theme="light"] #dash-content [style*="rgba(26,13,40"],
+[data-theme="light"] #dash-content [style*="rgba(26, 13, 40"],
+[data-theme="light"] #dash-content [style*="rgba(28,15,43"],
+[data-theme="light"] #dash-content [style*="rgba(28, 15, 43"],
 [data-theme="light"] #dash-content [style*="rgba(16,9,44"],
 [data-theme="light"] #dash-content [style*="rgba(22,12,61"],
-[data-theme="light"] #dash-content [style*="#160C3D"],
-[data-theme="light"] #dash-content [style*="#0D0829"],
-[data-theme="light"] #dash-content [style*="#130E28"] {
+[data-theme="light"] #dash-content [style*="#20112F"],
+[data-theme="light"] #dash-content [style*="#1C0F2B"],
+[data-theme="light"] #dash-content [style*="#1E1030"] {
   background: #F3F0FB !important;
   border-color: rgba(124,58,237,0.14) !important;
   box-shadow: 0 2px 14px rgba(80,40,160,0.07) !important;
@@ -44,7 +44,7 @@ function ensureCardFix() {
 
 function apply(t: AppTheme) {
   document.documentElement.setAttribute('data-theme', t)
-  document.body.style.background = t === 'dark' ? '#0D0829' : '#D4CCFF'
+  document.body.style.background = t === 'dark' ? '#1C0F2B' : '#D4CCFF'
   ensureCardFix()
 }
 

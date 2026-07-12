@@ -7,7 +7,7 @@ import { notifyTokensSpent } from '@/lib/tokens-client'
    Renders the strict-JSON responses into result cards.
 ════════════════════════════════════════════════════════════ */
 
-const PURPLE = '#9850FF'
+const PURPLE = '#B030F5'
 const GOLD = '#FFD700'
 
 type AgentState = { loading: boolean; error: string | null; data: unknown }
@@ -40,7 +40,7 @@ async function callAgent(path: string, payload: unknown): Promise<{ ok: true; da
 
 /* ── Shared bits ──────────────────────────────────────────── */
 const card: React.CSSProperties = {
-  background: 'rgba(13,10,31,0.7)', border: '1px solid rgba(139,92,246,0.18)',
+  background: 'rgba(13,10,31,0.7)', border: '1px solid rgba(176,48,245,0.18)',
   borderRadius: 18, padding: 22, display: 'flex', flexDirection: 'column', gap: 14,
 }
 const labelS: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)' }
@@ -53,7 +53,7 @@ function RunButton({ loading, onClick, cost }: { loading: boolean; onClick: () =
   return (
     <button onClick={onClick} disabled={loading} style={{
       marginTop: 4, padding: '10px 16px', borderRadius: 999, border: 'none',
-      background: loading ? 'rgba(152,80,255,0.4)' : `linear-gradient(135deg, ${PURPLE}, #6D28D9)`,
+      background: loading ? 'rgba(176,48,245,0.4)' : `linear-gradient(135deg, ${PURPLE}, #6D28D9)`,
       color: '#fff', fontWeight: 800, fontSize: 13, cursor: loading ? 'wait' : 'pointer',
       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
     }}>

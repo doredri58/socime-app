@@ -5,9 +5,9 @@ import Link from 'next/link'
 /* ══════════════════════════════════════════════════════════════════════
    DESIGN TOKENS
 ══════════════════════════════════════════════════════════════════════ */
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 const GREEN   = '#34D399'
 const RED     = '#F87171'
 const YELLOW  = '#FBBF24'
@@ -141,7 +141,7 @@ const PLATFORM_META: Record<Platform, { icon: string; color: string; label: stri
 const SENTIMENT_META: Record<Sentiment, { label: string; color: string; bg: string; border: string; icon: string }> = {
   complaint:  { label: 'תלונה',        color: RED,    bg: 'rgba(248,113,113,0.12)',  border: 'rgba(248,113,113,0.28)',  icon: 'ti-alert-circle'   },
   lead:       { label: 'ליד פוטנציאלי', color: GREEN,  bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.28)',   icon: 'ti-star'           },
-  question:   { label: 'שאלה',         color: BLUE,   bg: 'rgba(59,130,239,0.12)',   border: 'rgba(59,130,239,0.28)',   icon: 'ti-help-circle'    },
+  question:   { label: 'שאלה',         color: BLUE,   bg: 'rgba(247,45,147,0.12)',   border: 'rgba(247,45,147,0.28)',   icon: 'ti-help-circle'    },
   ai_handled: { label: 'טופל (AI)',     color: 'rgba(255,255,255,0.4)', bg: 'rgba(255,255,255,0.06)', border: 'rgba(255,255,255,0.12)', icon: 'ti-robot' },
   positive:   { label: 'חיובי ❤️',     color: YELLOW, bg: 'rgba(251,191,36,0.12)',  border: 'rgba(251,191,36,0.28)',   icon: 'ti-heart'          },
   spam:       { label: 'ספאם',         color: ORANGE, bg: 'rgba(251,146,60,0.12)',  border: 'rgba(251,146,60,0.28)',   icon: 'ti-ban'            },
@@ -157,7 +157,7 @@ function PlatformBadge({ platform }: { platform: Platform }) {
   return (
     <div style={{ position: 'absolute', bottom: -2, right: -2, width: 16, height: 16,
       borderRadius: '50%', background: m.color, display: 'flex', alignItems: 'center',
-      justifyContent: 'center', border: '1.5px solid rgba(13,8,41,0.9)', flexShrink: 0 }}>
+      justifyContent: 'center', border: '1.5px solid rgba(28,15,43,0.9)', flexShrink: 0 }}>
       <i className={`ti ${m.icon}`} style={{ fontSize: 8, color: '#fff' }} />
     </div>
   )
@@ -227,21 +227,21 @@ function MessageBubble({ msg }: { msg: Message }) {
   if (isAI) return (
     <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
       <div style={{ maxWidth: '68%' }}>
-        <div style={{ fontSize: 10, color: 'rgba(152,80,255,0.7)', marginBottom: 4, fontWeight: 700,
+        <div style={{ fontSize: 10, color: 'rgba(176,48,245,0.7)', marginBottom: 4, fontWeight: 700,
           textAlign: 'left', display: 'flex', alignItems: 'center', gap: 5, justifyContent: 'flex-end' }}>
           <i className="ti ti-robot" style={{ fontSize: 11 }} /> סוכן AI · {msg.time}
         </div>
         <div style={{ padding: '10px 14px', borderRadius: '16px 4px 16px 16px',
-          background: 'linear-gradient(135deg, rgba(152,80,255,0.14), rgba(190,86,255,0.08))',
-          border: '1px solid rgba(152,80,255,0.25)',
+          background: 'linear-gradient(135deg, rgba(176,48,245,0.14), rgba(206,123,255,0.08))',
+          border: '1px solid rgba(176,48,245,0.25)',
           fontSize: 13, color: 'rgba(255,255,255,0.88)', lineHeight: 1.65, direction: 'rtl' }}>
           {msg.text}
         </div>
       </div>
       {/* bot avatar */}
       <div style={{ width: 30, height: 30, borderRadius: '50%', flexShrink: 0,
-        background: 'linear-gradient(135deg, rgba(152,80,255,0.3), rgba(190,86,255,0.2))',
-        border: '1.5px solid rgba(152,80,255,0.4)',
+        background: 'linear-gradient(135deg, rgba(176,48,245,0.3), rgba(206,123,255,0.2))',
+        border: '1.5px solid rgba(176,48,245,0.4)',
         display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <i className="ti ti-robot" style={{ fontSize: 14, color: PURPLE2 }} />
       </div>
@@ -315,7 +315,7 @@ function NotConnectedBanner({ expired }: { expired?: boolean }) {
           padding: '10px 22px', borderRadius: 12, fontSize: 13, fontWeight: 800,
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           color: '#fff', textDecoration: 'none',
-          boxShadow: '0 4px 20px rgba(152,80,255,0.4)',
+          boxShadow: '0 4px 20px rgba(176,48,245,0.4)',
         }}>
           <i className="ti ti-plug" style={{ fontSize: 15 }} />
           {expired ? 'חדש חיבור' : 'חבר עכשיו'}
@@ -511,7 +511,7 @@ export default function CommunityInbox() {
       <aside style={{
         width: 220, flexShrink: 0, display: 'flex', flexDirection: 'column',
         borderLeft: '1px solid rgba(255,255,255,0.07)',
-        background: 'rgba(13,8,41,0.6)', backdropFilter: 'blur(20px)',
+        background: 'rgba(28,15,43,0.6)', backdropFilter: 'blur(20px)',
         overflowY: 'auto',
       }}>
         {/* title */}
@@ -544,8 +544,8 @@ export default function CommunityInbox() {
               <button key={f.id} onClick={() => setFolder(f.id)} style={{
                 width: '100%', display: 'flex', alignItems: 'center', gap: 9,
                 padding: '8px 10px', borderRadius: 10, marginBottom: 2, cursor: 'pointer',
-                background: active ? 'rgba(152,80,255,0.12)' : 'transparent',
-                border: `1px solid ${active ? 'rgba(152,80,255,0.28)' : 'transparent'}`,
+                background: active ? 'rgba(176,48,245,0.12)' : 'transparent',
+                border: `1px solid ${active ? 'rgba(176,48,245,0.28)' : 'transparent'}`,
                 textAlign: 'right', transition: 'all 0.15s',
               }}>
                 <i className={`ti ${f.icon}`} style={{ fontSize: 15, flexShrink: 0,
@@ -604,9 +604,9 @@ export default function CommunityInbox() {
                 {/* custom toggle pill */}
                 <div style={{ width: 32, height: 17, borderRadius: 999, position: 'relative',
                   background: active ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(255,255,255,0.10)',
-                  border: `1px solid ${active ? 'rgba(152,80,255,0.4)' : 'rgba(255,255,255,0.12)'}`,
+                  border: `1px solid ${active ? 'rgba(176,48,245,0.4)' : 'rgba(255,255,255,0.12)'}`,
                   flexShrink: 0, transition: 'all 0.2s',
-                  boxShadow: active ? '0 0 8px rgba(152,80,255,0.3)' : 'none' }}>
+                  boxShadow: active ? '0 0 8px rgba(176,48,245,0.3)' : 'none' }}>
                   <div style={{ position: 'absolute', top: 2, width: 11, height: 11, borderRadius: '50%',
                     background: '#fff', transition: 'left 0.2s, right 0.2s', boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
                     ...(active ? { right: 2 } : { left: 2 }) }} />
@@ -676,7 +676,7 @@ export default function CommunityInbox() {
                     width: '100%', textAlign: 'right', cursor: 'pointer', padding: '12px 14px',
                     borderBottom: '1px solid rgba(255,255,255,0.05)',
                     background: active
-                      ? 'linear-gradient(135deg, rgba(152,80,255,0.12), rgba(190,86,255,0.06))'
+                      ? 'linear-gradient(135deg, rgba(176,48,245,0.12), rgba(206,123,255,0.06))'
                       : thread.unread ? 'rgba(255,255,255,0.03)' : 'transparent',
                     borderRight: active ? `3px solid ${PURPLE}` : '3px solid transparent',
                     transition: 'all 0.15s',
@@ -787,7 +787,7 @@ export default function CommunityInbox() {
 
                 {/* ── reply box ── */}
                 <div style={{ padding: '12px 16px 16px', borderTop: '1px solid rgba(255,255,255,0.07)',
-                  background: 'rgba(13,8,41,0.5)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
+                  background: 'rgba(28,15,43,0.5)', backdropFilter: 'blur(12px)', flexShrink: 0 }}>
 
                   {/* AI draft pills */}
                   {activeThread.aiDrafts.length > 0 && (
@@ -802,8 +802,8 @@ export default function CommunityInbox() {
                         {activeThread.aiDrafts.map((draft, i) => (
                           <button key={i} onClick={() => applyDraft(draft)} style={{
                             padding: '6px 12px', borderRadius: 999, cursor: 'pointer', fontSize: 11, fontWeight: 600,
-                            background: 'linear-gradient(135deg, rgba(152,80,255,0.12), rgba(190,86,255,0.08))',
-                            border: '1px solid rgba(152,80,255,0.25)', color: PURPLE2,
+                            background: 'linear-gradient(135deg, rgba(176,48,245,0.12), rgba(206,123,255,0.08))',
+                            border: '1px solid rgba(176,48,245,0.25)', color: PURPLE2,
                             display: 'flex', alignItems: 'center', gap: 6, textAlign: 'right',
                             maxWidth: 280, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
                             transition: 'all 0.15s',
@@ -852,7 +852,7 @@ export default function CommunityInbox() {
                       border: 'none', color: replyText.trim() ? '#fff' : 'rgba(255,255,255,0.2)',
                       fontSize: 12, fontWeight: 800, flexShrink: 0,
                       display: 'flex', alignItems: 'center', gap: 7, height: 62,
-                      boxShadow: replyText.trim() ? '0 4px 16px rgba(152,80,255,0.35)' : 'none',
+                      boxShadow: replyText.trim() ? '0 4px 16px rgba(176,48,245,0.35)' : 'none',
                       transition: 'all 0.2s', opacity: sending ? 0.7 : 1,
                     }}>
                       {sending
@@ -882,7 +882,7 @@ export default function CommunityInbox() {
                   </div>
                   {/* post thumbnail placeholder */}
                   <div style={{ width: '100%', aspectRatio: '1', borderRadius: 12, marginBottom: 10, overflow: 'hidden',
-                    background: `linear-gradient(135deg, rgba(152,80,255,0.15), rgba(59,130,239,0.15))`,
+                    background: `linear-gradient(135deg, rgba(176,48,245,0.15), rgba(247,45,147,0.15))`,
                     border: '1px solid rgba(255,255,255,0.08)',
                     display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
                     <i className={`ti ${activeThread.postContext.type === 'reel' ? 'ti-brand-instagram' : 'ti-photo'}`}

@@ -2,8 +2,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
 const GREEN   = '#34D399'
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     icon: 'ti-eye',
-    color: '#A78BFA',
+    color: '#CE7BFF',
     title: 'איך אנו משתמשים במידע',
     items: [
       { label: 'שיפור תוצאות AI', desc: 'התאמת הצעות התוכן לעסק שלכם' },
@@ -114,7 +114,7 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
         {SECTIONS.map((sec, i) => (
           <div key={i} style={{
             ...GLASS, overflow: 'hidden',
-            border: openSection === i ? '1px solid rgba(152,80,255,0.25)' : '1px solid rgba(255,255,255,0.09)',
+            border: openSection === i ? '1px solid rgba(176,48,245,0.25)' : '1px solid rgba(255,255,255,0.09)',
             transition: 'border-color 0.2s',
           }}>
             <button
@@ -226,7 +226,7 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
           padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           color: '#fff', textDecoration: 'none', flexShrink: 0,
-          boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
+          boxShadow: '0 4px 14px rgba(176,48,245,0.35)',
         }}>
           privacy@socime.co.il
         </a>

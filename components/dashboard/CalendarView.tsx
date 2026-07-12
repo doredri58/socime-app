@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 // ─── constants ────────────────────────────────────────────────────────────────
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.06)',
@@ -29,7 +29,7 @@ const STATUS_META: Record<string, { label: string; color: string; bg: string; do
   draft:            { label: 'טיוטה',        color: '#94A3B8', bg: 'rgba(148,163,184,0.15)', dot: '#94A3B8' },
   scheduled:        { label: 'מתוזמן',       color: '#34D399', bg: 'rgba(52,211,153,0.15)',  dot: '#34D399' },
   pending_approval: { label: 'ממתין',        color: '#FBBF24', bg: 'rgba(251,191,36,0.15)',  dot: '#FBBF24' },
-  queued:           { label: 'בתור',         color: PURPLE2,   bg: 'rgba(190,86,255,0.15)',  dot: PURPLE2  },
+  queued:           { label: 'בתור',         color: PURPLE2,   bg: 'rgba(206,123,255,0.15)',  dot: PURPLE2  },
   published:        { label: 'פורסם',        color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',  dot: '#60A5FA' },
   failed:           { label: 'נכשל',         color: '#F87171', bg: 'rgba(248,113,113,0.15)', dot: '#F87171' },
   paused:           { label: 'מושהה',        color: '#94A3B8', bg: 'rgba(148,163,184,0.12)', dot: '#94A3B8' },
@@ -308,7 +308,7 @@ function PostDetail({ post, onClose, onStatusChange, onSaveContent, onPublishNow
                   background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                   border: 'none', color: '#fff', fontSize: 12, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                  boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
+                  boxShadow: '0 4px 14px rgba(176,48,245,0.35)',
                   opacity: publishing ? 0.7 : 1,
                 }}>
                   <i className={`ti ${publishing ? 'ti-loader-2' : 'ti-send'}`} style={{ fontSize: 14 }} />
@@ -430,15 +430,15 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
         {/* smart schedule Pro button */}
         <button onClick={() => setShowUpgrade(true)} style={{
           width: '100%', marginBottom: 10, padding: '11px 16px', borderRadius: 14, cursor: 'pointer',
-          background: 'linear-gradient(135deg, rgba(190,86,255,0.12), rgba(59,130,239,0.12))',
-          border: '1px solid rgba(190,86,255,0.3)',
+          background: 'linear-gradient(135deg, rgba(206,123,255,0.12), rgba(247,45,147,0.12))',
+          border: '1px solid rgba(206,123,255,0.3)',
           color: PURPLE2, fontSize: 13, fontWeight: 700,
           display: 'flex', alignItems: 'center', gap: 8,
         }}>
           <i className="ti ti-brain" style={{ fontSize: 16 }} />
           תזמון חכם ב-AI
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', marginRight: 2 }}>מזהה שעות שיא</span>
-          <span style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 999, background: 'rgba(152,80,255,0.2)', border: '1px solid rgba(152,80,255,0.35)', color: PURPLE2, fontSize: 10, fontWeight: 800 }}>
+          <span style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: 4, padding: '2px 8px', borderRadius: 999, background: 'rgba(176,48,245,0.2)', border: '1px solid rgba(176,48,245,0.35)', color: PURPLE2, fontSize: 10, fontWeight: 800 }}>
             <i className="ti ti-lock" style={{ fontSize: 10 }} /> Pro
           </span>
         </button>
@@ -453,9 +453,9 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
           }}>ביטול</button>
           <button onClick={save} disabled={saving || !text.trim() || !platform.length} style={{
             flex: 2, padding: '11px', borderRadius: 12, cursor: 'pointer',
-            background: text.trim() ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(152,80,255,0.2)',
+            background: text.trim() ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(176,48,245,0.2)',
             border: 'none', color: '#fff', fontSize: 13, fontWeight: 800,
-            boxShadow: text.trim() ? '0 4px 18px rgba(152,80,255,0.4)' : 'none',
+            boxShadow: text.trim() ? '0 4px 18px rgba(176,48,245,0.4)' : 'none',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
             opacity: !text.trim() ? 0.5 : 1,
           }}>
@@ -513,8 +513,8 @@ function MonthGrid({ year, month, postsByDay, onDayClick, onPostClick, today }: 
               onClick={() => onDayClick(cellDate)}
               style={{
                 minHeight: 110, borderRadius: 14, padding: '8px 8px 6px',
-                background: isToday ? 'rgba(152,80,255,0.1)' : 'rgba(255,255,255,0.03)',
-                border: isToday ? `1px solid rgba(152,80,255,0.35)` : '1px solid rgba(255,255,255,0.05)',
+                background: isToday ? 'rgba(176,48,245,0.1)' : 'rgba(255,255,255,0.03)',
+                border: isToday ? `1px solid rgba(176,48,245,0.35)` : '1px solid rgba(255,255,255,0.05)',
                 cursor: 'pointer', transition: 'all 0.15s', position: 'relative',
                 opacity: isPast ? 0.55 : 1,
               }}
@@ -559,7 +559,7 @@ function MonthGrid({ year, month, postsByDay, onDayClick, onPostClick, today }: 
                 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%',
-                    background: 'rgba(152,80,255,0.2)', border: '1px dashed rgba(152,80,255,0.4)',
+                    background: 'rgba(176,48,245,0.2)', border: '1px dashed rgba(176,48,245,0.4)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: PURPLE2, fontSize: 16,
                   }}>+</div>
@@ -602,7 +602,7 @@ function WeekGrid({ weekStart, postsByDay, onDayClick, onPostClick, today }: {
                 color: isToday ? PURPLE2 : 'rgba(255,255,255,0.75)',
                 display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
                 width: 36, height: 36, borderRadius: '50%',
-                background: isToday ? 'rgba(152,80,255,0.15)' : 'transparent',
+                background: isToday ? 'rgba(176,48,245,0.15)' : 'transparent',
               }}>{d.getDate()}</div>
             </div>
 
@@ -621,9 +621,9 @@ function WeekGrid({ weekStart, postsByDay, onDayClick, onPostClick, today }: {
                   color: 'rgba(255,255,255,0.2)', fontSize: 13, transition: 'all 0.15s',
                 }}
                 onMouseEnter={e => {
-                  (e.currentTarget as HTMLButtonElement).style.borderColor = `rgba(152,80,255,0.35)`
+                  (e.currentTarget as HTMLButtonElement).style.borderColor = `rgba(176,48,245,0.35)`
                   ;(e.currentTarget as HTMLButtonElement).style.color = PURPLE2
-                  ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(152,80,255,0.06)'
+                  ;(e.currentTarget as HTMLButtonElement).style.background = 'rgba(176,48,245,0.06)'
                 }}
                 onMouseLeave={e => {
                   (e.currentTarget as HTMLButtonElement).style.borderColor = 'rgba(255,255,255,0.1)'
@@ -904,7 +904,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
                 padding: '6px 16px', borderRadius: 9, fontSize: 12, fontWeight: 700, cursor: 'pointer',
                 background: view === v ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'transparent',
                 border: 'none', color: view === v ? '#fff' : 'rgba(255,255,255,0.4)',
-                boxShadow: view === v ? '0 2px 8px rgba(152,80,255,0.3)' : 'none',
+                boxShadow: view === v ? '0 2px 8px rgba(176,48,245,0.3)' : 'none',
                 transition: 'all 0.2s',
               }}>
                 {v === 'month' ? 'תצוגה חודשית' : 'תצוגה שבועית'}
@@ -917,7 +917,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
             padding: '9px 20px', borderRadius: 14, cursor: 'pointer',
             background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
             border: 'none', color: '#fff', fontSize: 13, fontWeight: 800,
-            boxShadow: '0 4px 18px rgba(152,80,255,0.4)',
+            boxShadow: '0 4px 18px rgba(176,48,245,0.4)',
             display: 'flex', alignItems: 'center', gap: 7,
           }}>
             <i className="ti ti-plus" style={{ fontSize: 15 }} />

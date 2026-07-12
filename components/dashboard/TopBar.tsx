@@ -41,7 +41,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
 
   const max = MAX_TOKENS[tier] ?? 100
   const pct = Math.min(Math.round((balance / max) * 100), 100)
-  const tokenColor = pct > 50 ? '#A78BFA' : pct > 20 ? '#FCD34D' : '#F87171'
+  const tokenColor = pct > 50 ? '#CE7BFF' : pct > 20 ? '#FCD34D' : '#F87171'
 
   return (
     <header style={{
@@ -85,11 +85,11 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
           }} />
         </div>
         <Link href="/dashboard/profile" style={{
-          fontSize: 10, fontWeight: 700, color: '#9850FF',
+          fontSize: 10, fontWeight: 700, color: '#B030F5',
           textDecoration: 'none',
           padding: '3px 10px', borderRadius: 999,
-          background: 'rgba(152,80,255,0.15)',
-          border: '1px solid rgba(152,80,255,0.3)',
+          background: 'rgba(176,48,245,0.15)',
+          border: '1px solid rgba(176,48,245,0.3)',
           whiteSpace: 'nowrap',
         }}>
           שדרוג

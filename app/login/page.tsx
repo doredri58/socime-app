@@ -4,17 +4,17 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase-browser'
 
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 
 const inputStyle = (focused: boolean): React.CSSProperties => ({
   width: '100%', padding: '12px 44px 12px 16px', borderRadius: 12,
   border: `1.5px solid ${focused ? PURPLE : '#E5E7EB'}`,
   background: focused ? '#FAFBFF' : '#F9FAFB',
   color: '#111827', fontSize: 14, outline: 'none',
-  fontFamily: 'var(--font-space), sans-serif',
-  boxShadow: focused ? `0 0 0 3px rgba(152,80,255,0.12)` : 'none',
+  fontFamily: 'var(--font-rubik), sans-serif',
+  boxShadow: focused ? `0 0 0 3px rgba(176,48,245,0.12)` : 'none',
   transition: 'all .2s',
   direction: 'rtl',
 })
@@ -95,22 +95,22 @@ function LoginInner() {
   return (
     <div style={{
       minHeight: '100vh', display: 'flex',
-      fontFamily: 'var(--font-space), sans-serif',
+      fontFamily: 'var(--font-rubik), sans-serif',
       direction: 'rtl',
     }}>
       {/* ══ LEFT — Visual ══ */}
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         padding: '48px 56px',
-        background: `radial-gradient(ellipse at 20% 10%, rgba(190,86,255,.45) 0%, transparent 55%),
-                     radial-gradient(ellipse at 80% 90%, rgba(59,130,239,.3) 0%, transparent 50%),
-                     linear-gradient(160deg, #0D0829 0%, #160C3D 50%, #0F1654 100%)`,
+        background: `radial-gradient(ellipse at 20% 10%, rgba(206,123,255,.45) 0%, transparent 55%),
+                     radial-gradient(ellipse at 80% 90%, rgba(247,45,147,.3) 0%, transparent 50%),
+                     linear-gradient(160deg, #1C0F2B 0%, #20112F 50%, #261141 100%)`,
         position: 'relative', overflow: 'hidden',
       }} className="hidden md:flex">
 
         {/* Glow blobs */}
-        <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, rgba(152,80,255,.2) 0%, transparent 70%)`, top: -100, right: -100, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: `radial-gradient(circle, rgba(59,130,239,.15) 0%, transparent 70%)`, bottom: -80, left: -80, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, rgba(176,48,245,.2) 0%, transparent 70%)`, top: -100, right: -100, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: `radial-gradient(circle, rgba(247,45,147,.15) 0%, transparent 70%)`, bottom: -80, left: -80, pointerEvents: 'none' }} />
 
         {/* Logo */}
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', zIndex: 1 }}>
@@ -219,7 +219,7 @@ function LoginInner() {
               background: mode === m ? '#fff' : 'transparent',
               color: mode === m ? '#111827' : '#9CA3AF',
               boxShadow: mode === m ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
-              transition: 'all .2s', fontFamily: 'var(--font-space), sans-serif',
+              transition: 'all .2s', fontFamily: 'var(--font-rubik), sans-serif',
             }}>
               {m === 'register' ? 'הרשמה' : 'התחברות'}
             </button>
@@ -245,7 +245,7 @@ function LoginInner() {
           borderRadius: 12, border: '1.5px solid #E5E7EB', background: '#fff',
           cursor: 'pointer', fontSize: 14, fontWeight: 600, color: '#374151',
           boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
-          transition: 'all .2s', fontFamily: 'var(--font-space), sans-serif',
+          transition: 'all .2s', fontFamily: 'var(--font-rubik), sans-serif',
           marginBottom: 20,
         }}
         onMouseEnter={e => (e.currentTarget.style.borderColor = '#D1D5DB')}
@@ -332,8 +332,8 @@ function LoginInner() {
             width: '100%', padding: '13px', borderRadius: 12, border: 'none',
             background: loading ? '#9CA3AF' : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
             color: '#fff', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
-            boxShadow: loading ? 'none' : `0 4px 20px rgba(152,80,255,0.4)`,
-            transition: 'all .2s', fontFamily: 'var(--font-space), sans-serif',
+            boxShadow: loading ? 'none' : `0 4px 20px rgba(176,48,245,0.4)`,
+            transition: 'all .2s', fontFamily: 'var(--font-rubik), sans-serif',
             marginTop: 4,
           }}>
             {loading ? '...' : mode === 'register' ? 'יצירת חשבון' : 'כניסה למערכת'}
@@ -344,7 +344,7 @@ function LoginInner() {
         <p style={{ textAlign: 'center', fontSize: 13, color: '#9CA3AF', marginTop: 24, marginBottom: 0 }}>
           {mode === 'register' ? 'כבר יש לכם חשבון? ' : 'עדיין אין לכם חשבון? '}
           <button onClick={() => { setMode(mode === 'register' ? 'login' : 'register'); setError(''); setSuccess('') }}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', color: PURPLE, fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-space), sans-serif' }}>
+            style={{ background: 'none', border: 'none', cursor: 'pointer', color: PURPLE, fontWeight: 700, fontSize: 13, fontFamily: 'var(--font-rubik), sans-serif' }}>
             {mode === 'register' ? 'התחברו כאן' : 'הירשמו בחינם'}
           </button>
         </p>

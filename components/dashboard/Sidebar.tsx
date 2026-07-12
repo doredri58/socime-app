@@ -75,8 +75,8 @@ interface SidebarProps {
 
 const TIER_BADGE: Record<string, { label: string; color: string; bg: string }> = {
   free:  { label: 'חינמי', color: 'var(--dash-sidebar-text)', bg: 'var(--dash-sidebar-active-bg)' },
-  basic: { label: 'Basic', color: '#A78BFA',                bg: 'rgba(167,139,250,0.12)' },
-  pro:   { label: 'Pro ✦', color: '#BE56FF',                bg: 'rgba(190,86,255,0.15)'  },
+  basic: { label: 'Basic', color: '#CE7BFF',                bg: 'rgba(206,123,255,0.12)' },
+  pro:   { label: 'Pro ✦', color: '#CE7BFF',                bg: 'rgba(206,123,255,0.15)'  },
 }
 
 /* ── Sub-components ────────────────────────────────────────── */
@@ -115,14 +115,14 @@ function NavItem({
     }}>
       <i className={`ti ${icon}`} style={{
         fontSize: small ? 14 : 15, flexShrink: 0,
-        color: active ? '#BE56FF' : 'var(--dash-sidebar-label)',
+        color: active ? '#CE7BFF' : 'var(--dash-sidebar-label)',
       }} aria-hidden="true" />
       <span style={{ flex: 1 }}>{label}</span>
       {active && (
         <span style={{
           width: 5, height: 5, borderRadius: '50%',
-          background: '#9850FF', flexShrink: 0,
-          boxShadow: '0 0 6px rgba(152,80,255,0.8)',
+          background: '#B030F5', flexShrink: 0,
+          boxShadow: '0 0 6px rgba(176,48,245,0.8)',
         }} />
       )}
     </Link>
@@ -166,8 +166,8 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
       }}>
         <div style={{
           width: 36, height: 36, borderRadius: 10, flexShrink: 0, overflow: 'hidden',
-          background: 'linear-gradient(135deg, #9850FF, #5B21B6)',
-          boxShadow: '0 4px 14px rgba(152,80,255,0.45)',
+          background: 'linear-gradient(135deg, #B030F5, #7A1E6B)',
+          boxShadow: '0 4px 14px rgba(176,48,245,0.45)',
         }}>
           <Image src="/logo.png" alt="SociMe" width={36} height={36}
             style={{ objectFit: 'cover' }} onError={() => {}} />
@@ -233,10 +233,10 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
         }}>
           <div style={{
             width: 32, height: 32, borderRadius: '50%', flexShrink: 0,
-            background: 'linear-gradient(135deg, #9850FF, #5B21B6)',
+            background: 'linear-gradient(135deg, #B030F5, #7A1E6B)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 13, fontWeight: 800, color: '#fff',
-            boxShadow: '0 2px 8px rgba(152,80,255,0.4)',
+            boxShadow: '0 2px 8px rgba(176,48,245,0.4)',
           }}>
             {userName.charAt(0).toUpperCase()}
           </div>
@@ -298,8 +298,8 @@ export default function Sidebar({ userName, tier, isAdmin }: SidebarProps) {
       <button onClick={() => setOpen(!open)}
         className="md:hidden fixed top-3 right-3 z-50 w-10 h-10 rounded-xl flex items-center justify-center"
         style={{
-          background: 'linear-gradient(135deg, #9850FF, #5B21B6)',
-          boxShadow: '0 4px 14px rgba(152,80,255,0.45)',
+          background: 'linear-gradient(135deg, #B030F5, #7A1E6B)',
+          boxShadow: '0 4px 14px rgba(176,48,245,0.45)',
           border: 'none', cursor: 'pointer',
         }}>
         <i className={`ti ${open ? 'ti-x' : 'ti-menu-2'}`}

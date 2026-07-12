@@ -5,9 +5,9 @@ import UpgradeModal from '@/components/dashboard/UpgradeModal'
 import Teleprompter from '@/components/dashboard/Teleprompter'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
-const BLUE    = '#3B82EF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
+const BLUE    = '#F72D93'
 const GREEN   = '#34D399'
 const YELLOW  = '#FBBF24'
 
@@ -186,12 +186,12 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
     <div className="neon-card" style={{
       ...GLASS, padding: '22px', display: 'flex', flexDirection: 'column', gap: 14,
       position: 'relative', overflow: 'hidden', height: '100%', boxSizing: 'border-box',
-      border: personalized ? '1px solid rgba(152,80,255,0.28)' : '1px solid rgba(255,255,255,0.09)',
-      background: personalized ? 'rgba(152,80,255,0.07)' : 'rgba(255,255,255,0.05)',
+      border: personalized ? '1px solid rgba(176,48,245,0.28)' : '1px solid rgba(255,255,255,0.09)',
+      background: personalized ? 'rgba(176,48,245,0.07)' : 'rgba(255,255,255,0.05)',
     }}>
       {personalized && (
         <div style={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100,
-          borderRadius: '50%', background: 'rgba(152,80,255,0.14)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+          borderRadius: '50%', background: 'rgba(176,48,245,0.14)', filter: 'blur(30px)', pointerEvents: 'none' }} />
       )}
 
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
@@ -202,11 +202,11 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.58)', margin: 0, lineHeight: 1.7 }}>{idea.description}</p>
 
       {/* why it works pill */}
-      <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(59,130,239,0.08)',
-        border: '1px solid rgba(59,130,239,0.16)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
+      <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(247,45,147,0.08)',
+        border: '1px solid rgba(247,45,147,0.16)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
         <i className="ti ti-brain" style={{ fontSize: 14, color: BLUE, flexShrink: 0, marginTop: 2 }} />
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.48)', margin: 0, lineHeight: 1.65 }}>
-          <strong style={{ color: 'rgba(59,130,239,0.8)', fontWeight: 700 }}>למה זה עובד: </strong>
+          <strong style={{ color: 'rgba(247,45,147,0.8)', fontWeight: 700 }}>למה זה עובד: </strong>
           {idea.why}
         </p>
       </div>
@@ -217,10 +217,10 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           border: 'none', color: '#fff', fontSize: 12, fontWeight: 800,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
-          boxShadow: '0 4px 16px rgba(152,80,255,0.3)', transition: 'transform 0.15s, box-shadow 0.15s',
+          boxShadow: '0 4px 16px rgba(176,48,245,0.3)', transition: 'transform 0.15s, box-shadow 0.15s',
         }}
-        onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = 'translateY(-1px)'; b.style.boxShadow = '0 6px 22px rgba(152,80,255,0.45)' }}
-        onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = ''; b.style.boxShadow = '0 4px 16px rgba(152,80,255,0.3)' }}
+        onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = 'translateY(-1px)'; b.style.boxShadow = '0 6px 22px rgba(176,48,245,0.45)' }}
+        onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = ''; b.style.boxShadow = '0 4px 16px rgba(176,48,245,0.3)' }}
         >
           <i className="ti ti-sparkles" style={{ fontSize: 13 }} /> צור פוסט מזה
         </button>
@@ -290,9 +290,9 @@ function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
 
         {/* direction — blue */}
         <div style={{ borderRadius: 14, padding: '12px 14px',
-          background: 'rgba(59,130,239,0.07)', border: '1px solid rgba(59,130,239,0.14)' }}>
+          background: 'rgba(247,45,147,0.07)', border: '1px solid rgba(247,45,147,0.14)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(59,130,239,0.18)',
+            <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(247,45,147,0.18)',
               display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <i className="ti ti-camera" style={{ fontSize: 11, color: BLUE }} />
             </div>
@@ -449,7 +449,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
             background: tab === t.id ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'transparent',
             border: 'none', color: tab === t.id ? '#fff' : 'rgba(255,255,255,0.38)',
             display: 'flex', alignItems: 'center', gap: 8,
-            boxShadow: tab === t.id ? '0 4px 16px rgba(152,80,255,0.35)' : 'none',
+            boxShadow: tab === t.id ? '0 4px 16px rgba(176,48,245,0.35)' : 'none',
             transition: 'all 0.2s',
           }}>
             <i className={`ti ${t.icon}`} style={{ fontSize: 14 }} />{t.label}
@@ -471,10 +471,10 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
                   ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`
                   : blocked ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.06)',
                 border: active ? 'none'
-                  : blocked ? '1px solid rgba(152,80,255,0.2)' : '1px solid rgba(255,255,255,0.10)',
+                  : blocked ? '1px solid rgba(176,48,245,0.2)' : '1px solid rgba(255,255,255,0.10)',
                 color: active ? '#fff' : blocked ? PURPLE2 : 'rgba(255,255,255,0.55)',
                 display: 'flex', alignItems: 'center', gap: 6, transition: 'all 0.18s',
-                boxShadow: active ? '0 3px 12px rgba(152,80,255,0.3)' : 'none',
+                boxShadow: active ? '0 3px 12px rgba(176,48,245,0.3)' : 'none',
               }}>
               <i className={`ti ${cat.icon}`} style={{ fontSize: 12 }} />
               {cat.label}
@@ -490,7 +490,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
           {personalizedPosts.length > 0 && (
             <section style={{ marginBottom: 36 }}>
               <SectionHeader
-                icon="ti-sparkles" iconBg="rgba(152,80,255,0.15)" iconColor={PURPLE2}
+                icon="ti-sparkles" iconBg="rgba(176,48,245,0.15)" iconColor={PURPLE2}
                 title={`הותאם במיוחד בשבילך${firstName ? `, ${firstName}` : ''}`}
                 subtitle="על סמך פרופיל העסק שלך"
               />

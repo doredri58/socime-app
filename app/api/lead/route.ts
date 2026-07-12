@@ -30,16 +30,16 @@ async function sendPostEmail(to: string, post: string): Promise<boolean> {
   const from = process.env.LEAD_FROM_EMAIL ?? 'SociMe <hello@socime.co.il>'
 
   const html = `
-    <div dir="rtl" style="font-family:Arial,sans-serif;background:#0D0829;color:#fff;padding:32px;border-radius:16px;max-width:560px;margin:0 auto">
-      <h2 style="color:#BE56FF;margin:0 0 16px">הפוסט שלכם מוכן ✨</h2>
+    <div dir="rtl" style="font-family:Arial,sans-serif;background:#1C0F2B;color:#fff;padding:32px;border-radius:16px;max-width:560px;margin:0 auto">
+      <h2 style="color:#CE7BFF;margin:0 0 16px">הפוסט שלכם מוכן ✨</h2>
       <p style="color:rgba(255,255,255,0.7);font-size:14px;line-height:1.7;margin:0 0 20px">
         הנה הפוסט המלא ש-SociMe יצרה עבורכם. רוצים עוד כאלה על אוטומט?
       </p>
-      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(190,86,255,0.3);border-radius:12px;padding:20px;font-size:15px;line-height:1.8;white-space:pre-wrap">${
+      <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(206,123,255,0.3);border-radius:12px;padding:20px;font-size:15px;line-height:1.8;white-space:pre-wrap">${
         post.replace(/</g, '&lt;')
       }</div>
       <a href="${process.env.NEXT_PUBLIC_SITE_URL ?? 'https://socime.co.il'}/login?mode=register"
-         style="display:inline-block;margin-top:24px;background:linear-gradient(135deg,#9850FF,#BE56FF);color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:700">
+         style="display:inline-block;margin-top:24px;background:linear-gradient(135deg,#B030F5,#CE7BFF);color:#fff;text-decoration:none;padding:12px 28px;border-radius:999px;font-weight:700">
         התחילו בחינם ←
       </a>
     </div>`

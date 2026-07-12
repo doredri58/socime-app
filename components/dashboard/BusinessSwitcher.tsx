@@ -64,7 +64,7 @@ export default function BusinessSwitcher() {
           color: 'var(--dash-token-text)', cursor: 'pointer', fontSize: 12, fontWeight: 700, maxWidth: 200,
         }}
       >
-        <i className="ti ti-building-store" style={{ fontSize: 14, color: '#9850FF', flexShrink: 0 }} />
+        <i className="ti ti-building-store" style={{ fontSize: 14, color: '#B030F5', flexShrink: 0 }} />
         <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{active.name}</span>
         <i className={`ti ti-chevron-down`} style={{ fontSize: 13, flexShrink: 0, transition: 'transform .15s', transform: open ? 'rotate(180deg)' : 'none' }} />
       </button>
@@ -85,9 +85,9 @@ export default function BusinessSwitcher() {
               border: 'none', cursor: 'pointer', textAlign: 'start',
               color: 'var(--dash-sidebar-text-active)', fontSize: 13, fontWeight: b.id === activeId ? 700 : 500,
             }}>
-              <i className="ti ti-building-store" style={{ fontSize: 14, color: b.id === activeId ? '#9850FF' : 'var(--dash-sidebar-label)' }} />
+              <i className="ti ti-building-store" style={{ fontSize: 14, color: b.id === activeId ? '#B030F5' : 'var(--dash-sidebar-label)' }} />
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.name}</span>
-              {b.id === activeId && <i className="ti ti-check" style={{ fontSize: 14, color: '#9850FF' }} />}
+              {b.id === activeId && <i className="ti ti-check" style={{ fontSize: 14, color: '#B030F5' }} />}
             </button>
           ))}
           {canAdd && (
@@ -95,7 +95,7 @@ export default function BusinessSwitcher() {
               width: '100%', display: 'flex', alignItems: 'center', gap: 8, padding: '9px 10px', borderRadius: 9,
               marginTop: 4, borderTop: '1px solid var(--dash-sidebar-border)',
               background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'start',
-              color: '#9850FF', fontSize: 13, fontWeight: 700,
+              color: '#B030F5', fontSize: 13, fontWeight: 700,
             }}>
               <i className="ti ti-plus" style={{ fontSize: 14 }} />
               הוסף עסק

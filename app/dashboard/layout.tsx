@@ -25,7 +25,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <>
       <style>{`
         body {
-          background: var(--dash-body-bg, #0D0829) !important;
+          background: var(--dash-body-bg, #1C0F2B) !important;
         }
         body::before {
           content: '';

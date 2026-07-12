@@ -69,11 +69,11 @@ export default function TermsContent() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 12 }}>
           <div style={{
             width: 48, height: 48, borderRadius: 15, flexShrink: 0,
-            background: 'linear-gradient(135deg, rgba(152,80,255,0.2), rgba(190,86,255,0.08))',
-            border: '1px solid rgba(152,80,255,0.3)',
+            background: 'linear-gradient(135deg, rgba(176,48,245,0.2), rgba(206,123,255,0.08))',
+            border: '1px solid rgba(176,48,245,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <i className="ti ti-file-description" style={{ fontSize: 22, color: '#BE56FF' }} />
+            <i className="ti ti-file-description" style={{ fontSize: 22, color: '#CE7BFF' }} />
           </div>
           <div>
             <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 3px' }}>תנאי שימוש ומדיניות</h1>
@@ -103,7 +103,7 @@ export default function TermsContent() {
               fontSize: 12, color: 'rgba(255,255,255,0.5)', textDecoration: 'none',
               display: 'flex', alignItems: 'center', gap: 5,
             }}>
-              <span style={{ color: '#9850FF', fontWeight: 700 }}>{s.num}.</span>
+              <span style={{ color: '#B030F5', fontWeight: 700 }}>{s.num}.</span>
               {s.title}
             </a>
           ))}
@@ -116,8 +116,8 @@ export default function TermsContent() {
           <div key={s.num} id={`sec-${s.num}`} style={{ ...GLASS, padding: '20px 24px' }}>
             <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 10 }}>
               <span style={{
-                fontSize: 11, fontWeight: 900, color: '#9850FF',
-                background: 'rgba(152,80,255,0.15)', border: '1px solid rgba(152,80,255,0.3)',
+                fontSize: 11, fontWeight: 900, color: '#B030F5',
+                background: 'rgba(176,48,245,0.15)', border: '1px solid rgba(176,48,245,0.3)',
                 padding: '2px 8px', borderRadius: 6,
               }}>
                 סעיף {s.num}
@@ -149,10 +149,10 @@ export default function TermsContent() {
           </Link>
           <a href="mailto:legal@socime.co.il" style={{
             padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
-            background: 'linear-gradient(135deg, #9850FF, #BE56FF)',
+            background: 'linear-gradient(135deg, #B030F5, #CE7BFF)',
             color: '#fff', textDecoration: 'none',
             display: 'inline-flex', alignItems: 'center', gap: 6,
-            boxShadow: '0 4px 14px rgba(152,80,255,0.35)',
+            boxShadow: '0 4px 14px rgba(176,48,245,0.35)',
           }}>
             <i className="ti ti-mail" style={{ fontSize: 14 }} />
             legal@socime.co.il

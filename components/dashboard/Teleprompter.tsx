@@ -2,8 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
-const PURPLE  = '#9850FF'
-const PURPLE2 = '#BE56FF'
+const PURPLE  = '#B030F5'
+const PURPLE2 = '#CE7BFF'
 
 interface Props {
   text: string
@@ -90,7 +90,7 @@ export default function Teleprompter({ text, title, onClose }: Props) {
       </div>
 
       {/* center reading guide line */}
-      <div style={{ position: 'absolute', top: '50%', right: 0, left: 0, height: 1, background: 'rgba(152,80,255,0.35)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', top: '50%', right: 0, left: 0, height: 1, background: 'rgba(176,48,245,0.35)', pointerEvents: 'none' }} />
 
       {/* bottom controls */}
       <div style={{
@@ -111,7 +111,7 @@ export default function Teleprompter({ text, title, onClose }: Props) {
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           border: 'none', cursor: 'pointer', color: '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 20px rgba(152,80,255,0.5)',
+          boxShadow: '0 4px 20px rgba(176,48,245,0.5)',
         }}>
           <i className={`ti ${playing ? 'ti-player-pause-filled' : 'ti-player-play-filled'}`} style={{ fontSize: 22 }} />
         </button>
