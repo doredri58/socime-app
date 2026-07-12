@@ -139,11 +139,10 @@ function Toast({ msg, ok }: { msg: string; ok: boolean }) {
   )
 }
 
-/* ── dummy session data ──────────────────────────────────────────────── */
+/* ── session data ────────────────────────────────────────────────────── */
+// הסשן הנוכחי בלבד — איננו מבצעים מעקב מכשירים מרובה, אז לא מציגים מכשירים מזויפים.
 const SESSIONS = [
-  { device: 'MacBook Pro 16"', location: 'תל אביב, ישראל', icon: 'ti-device-laptop', current: true,  time: 'פעיל עכשיו'      },
-  { device: 'iPhone 15 Pro',  location: 'רמת גן, ישראל',  icon: 'ti-device-mobile',  current: false, time: 'לפני שעה'         },
-  { device: 'Chrome / Windows', location: 'חיפה, ישראל',  icon: 'ti-brand-chrome',   current: false, time: 'אתמול, 18:42'    },
+  { device: 'הדפדפן הנוכחי', location: '', icon: 'ti-device-desktop', current: true, time: 'פעיל עכשיו' },
 ]
 
 const TIMEZONES = [
@@ -437,14 +436,12 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
   const isPro = ['pro', 'agency'].includes(plan)
   const [inviteEmail, setInviteEmail] = useState('')
   const [role, setRole] = useState<'admin' | 'editor'>('editor')
-  const [members, setMembers] = useState([
-    { name: 'דוד לוי',   email: 'david@example.com',  role: 'admin',  avatar: 'ד' },
-    { name: 'שרה כהן',   email: 'sarah@example.com',  role: 'editor', avatar: 'ש' },
-  ])
+  const [members, setMembers] = useState<{ name: string; email: string; role: string; avatar: string }[]>([])
 
   function sendInvite() {
     if (!inviteEmail.trim()) return showToast('הזן כתובת אימייל', false)
-    showToast(`הזמנה נשלחה ל-${inviteEmail} ✓`, true)
+    // ניהול צוות רב-משתמשים עדיין לא ממומש בצד השרת — לא מזייפים "הזמנה נשלחה".
+    showToast('ניהול צוות רב-משתמשים יהיה זמין בקרוב', true)
     setInviteEmail('')
   }
 
@@ -538,6 +535,11 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
             </button>
           </div>
         ))}
+        {members.length === 0 && (
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '12px 0' }}>
+            עדיין לא הוזמנו חברי צוות
+          </div>
+        )}
       </div>
     </div>
   )

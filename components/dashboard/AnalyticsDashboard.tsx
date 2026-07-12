@@ -509,11 +509,11 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: 10, background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ti ti-trophy" style={{ fontSize: 17, color: '#FBBF24' }} />
+              <i className="ti ti-clock-hour-4" style={{ fontSize: 17, color: '#FBBF24' }} />
             </div>
             <div>
-              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 2px' }}>הפוסטים המנצחים של החודש</h3>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>לחץ "שכפל הצלחה" ו-AI יכתוב וריאציה חדשה</p>
+              <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 2px' }}>הפוסטים האחרונים שלך</h3>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>לחץ "שכפל" ו-AI יכתוב וריאציה חדשה</p>
             </div>
           </div>
           <button onClick={() => router.push('/dashboard/queue')} style={{
