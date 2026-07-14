@@ -73,8 +73,8 @@ export default function QuickCreate() {
             borderRadius: 16,
             background: prompt.trim()
               ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`
-              : 'rgba(255,255,255,0.07)',
-            color: prompt.trim() ? '#fff' : 'rgba(255,255,255,0.3)',
+              : 'rgba(120,90,200,0.10)',
+            color: prompt.trim() ? '#fff' : '#A79FC4',
             fontSize: 14, fontWeight: 700,
             border: 'none', cursor: prompt.trim() ? 'pointer' : 'default',
             boxShadow: prompt.trim() ? '0 4px 20px rgba(150,86,254,0.4)' : 'none',

@@ -15,10 +15,13 @@ const INK_LOW = '#857FA6'
 const NOISE   = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")"
 
 /* ─── Styles ─── */
+/* No backdrop-filter here on purpose: these cards sit on a smooth gradient,
+   so blurring it yields the same gradient — the frosted look comes from the
+   translucent white + border + shadow. Each blur costs a compositor layer and
+   janked the page. Blur is kept only where it actually reads: the hero's
+   overlapping product cards and the sticky top bar / sidebar. */
 const glass = (ex?: React.CSSProperties): React.CSSProperties => ({
   background: 'rgba(255,255,255,0.07)',
-  backdropFilter: 'blur(20px)',
-  WebkitBackdropFilter: 'blur(20px)',
   borderRadius: 24,
   border: '1px solid rgba(255,255,255,0.13)',
   ...ex,
@@ -437,7 +440,10 @@ function HomeInner() {
             <div className="hero-float-a" style={{
               position: 'absolute', top: 0, insetInlineStart: 0, width: 260,
               transform: 'rotate(-5deg)',
-              background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+              /* No backdrop-filter: these cards are animated, and blurring a
+                 backdrop re-runs the filter every frame. They sit on a smooth
+                 gradient / flat white, so the blur bought nothing anyway. */
+              background: 'rgba(255,255,255,0.82)',
               border: '1px solid rgba(255,255,255,0.9)', borderRadius: 20, padding: '16px 18px',
               boxShadow: '0 24px 50px rgba(84,60,150,0.18)',
             }}>
@@ -468,7 +474,7 @@ function HomeInner() {
             {/* Main card — AI generator */}
             <div className="hero-float-b" style={{
               position: 'absolute', top: 74, insetInlineEnd: 0, width: 340, maxWidth: '100%',
-              background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
+              background: 'rgba(255,255,255,0.9)',
               border: '1px solid rgba(255,255,255,0.95)', borderRadius: 22, padding: 20,
               boxShadow: '0 40px 80px rgba(84,60,150,0.22)',
             }}>
@@ -514,7 +520,7 @@ function HomeInner() {
             <div className="hero-float-c logo-float" style={{
               position: 'absolute', bottom: 16, insetInlineStart: 24, zIndex: 2,
               display: 'inline-flex', alignItems: 'center', gap: 10,
-              background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              background: 'rgba(255,255,255,0.94)',
               border: '1px solid rgba(255,255,255,0.95)', borderRadius: 14, padding: '11px 15px',
               boxShadow: '0 20px 44px rgba(84,60,150,0.20)',
             }}>

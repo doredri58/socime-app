@@ -210,14 +210,18 @@ export default async function DashboardHome() {
                     </span>
                   )}
                   {dayPosts.length === 0 && !isPast && (
-                    <Link href="/dashboard/create" style={{
+                    /* Explicit purple: a translucent-white affordance would be
+                       repainted white by the light-theme rules and vanish
+                       against the tile it sits on. */
+                    <Link href="/dashboard/create" aria-label={`הוספת פוסט ליום ${DAYS_HE[idx]}`} style={{
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      marginTop: 2,
-                      width: 20, height: 20, borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.05)',
-                      border: '1px dashed rgba(255,255,255,0.15)',
-                      color: 'rgba(255,255,255,0.3)',
-                      fontSize: 12, textDecoration: 'none',
+                      marginTop: 4,
+                      width: 26, height: 26, borderRadius: '50%',
+                      background: 'rgba(150,86,254,0.10)',
+                      border: '1px dashed rgba(150,86,254,0.45)',
+                      color: '#9656FE',
+                      fontSize: 15, fontWeight: 700, lineHeight: 1,
+                      textDecoration: 'none',
                       alignSelf: 'center',
                     }}>
                       +

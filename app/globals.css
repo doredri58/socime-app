@@ -254,6 +254,25 @@ body {
   color: #253A53 !important;
 }
 
+/* 1b — PRESERVE TEXT HIERARCHY. Rule 1 would flatten every translucent-white
+   text to the same solid slate, destroying muted/secondary/disabled states.
+   Map the alpha back onto the slate scale instead. Must stay before rule 5,
+   which re-whitens text on coloured buttons. */
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.2"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.2"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.3"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.3"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.4"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.4"] {
+  color: #857FA6 !important;   /* low emphasis */
+}
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.5"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.5"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.6"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.6"] {
+  color: #5B5878 !important;   /* mid emphasis */
+}
+
 /* 2 — glass-card white backgrounds → dirty white + definition.
    0.0x covers 0.03–0.09, 0.1 covers 0.10–0.12. Both spaced + compact rgba. */
 [data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.0"],
@@ -267,8 +286,9 @@ body {
   background: rgba(255, 255, 255, 0.55) !important;
   border-color: rgba(255, 255, 255, 0.72) !important;
   box-shadow: 0 8px 28px rgba(84, 60, 150, 0.10) !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
+  /* NOTE: deliberately no backdrop-filter here. Elements that should be
+     frosted already declare blur inline; forcing it on every match (chips,
+     tiles, pills) costs a compositor layer each and janks the page. */
 }
 
 /* 3 — white borders → soft purple hairline (spaced + compact) */
@@ -286,6 +306,23 @@ body {
   box-shadow: none !important;
 }
 
+/* 4b — DEPTH. The faintest white tints (0.02–0.04) are inner tiles — day
+   cells, stat tiles, list rows — sitting INSIDE a white card. Rule 2 would
+   paint them the same white as their parent, collapsing the card into one
+   flat mass. Recess them with a lavender well instead. */
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:rgba(255,255,255,0.02"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.02"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:rgba(255,255,255,0.03"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.03"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:rgba(255,255,255,0.04"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.04"] {
+  background: rgba(120, 90, 200, 0.07) !important;
+  border-color: rgba(120, 90, 200, 0.13) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* 5 — keep white text on COLORED buttons (gradient + known solid CTAs).
    Must come after rule 1 to win. */
 [data-theme="light"] :is(#dash-content, .light-page) [style*="linear-gradient(135deg"],
@@ -299,7 +336,19 @@ body {
 [data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150, 86, 254)"],
 [data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150, 86, 254)"] *,
 [data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150,86,254)"],
-[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150,86,254)"] * {
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150,86,254)"] *,
+/* React keeps hex literals verbatim in the style attribute, so the rgb()
+   selectors above never match a solid `background:#9656FE`. Scope these to
+   `background:` ONLY — a bare [style*="#9656FE"] would also match elements
+   using the purple as a TEXT colour and turn those labels white/invisible. */
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:#9656FE"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:#9656FE"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: #9656FE"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: #9656FE"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:#BE56FE"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:#BE56FE"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: #BE56FE"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: #BE56FE"] * {
   color: #ffffff !important;
 }
 /* colored buttons keep their own background (undo rule 2 if it ever matched) */
