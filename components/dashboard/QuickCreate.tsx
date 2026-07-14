@@ -2,8 +2,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const PURPLE = '#B030F5'
-const PURPLE2 = '#CE7BFF'
+const PURPLE = '#9656FE'
+const PURPLE2 = '#BE56FE'
 
 export default function QuickCreate() {
   const [prompt, setPrompt] = useState('')
@@ -40,7 +40,7 @@ export default function QuickCreate() {
           flex: 1, position: 'relative',
           borderRadius: 16,
           background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(176,48,245,0.25)',
+          border: '1px solid rgba(150,86,254,0.25)',
           display: 'flex', alignItems: 'center',
           padding: '0 16px',
           transition: 'border-color 0.2s',
@@ -77,7 +77,7 @@ export default function QuickCreate() {
             color: prompt.trim() ? '#fff' : 'rgba(255,255,255,0.3)',
             fontSize: 14, fontWeight: 700,
             border: 'none', cursor: prompt.trim() ? 'pointer' : 'default',
-            boxShadow: prompt.trim() ? '0 4px 20px rgba(176,48,245,0.4)' : 'none',
+            boxShadow: prompt.trim() ? '0 4px 20px rgba(150,86,254,0.4)' : 'none',
             transition: 'all 0.2s ease',
             whiteSpace: 'nowrap',
           }}>

@@ -8,9 +8,9 @@ interface OnboardingProps {
   onComplete: () => void
 }
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
 
 const LOADING_TEXTS = [
   'SociMe לומדת את העסק שלך...',
@@ -93,11 +93,11 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
   /* ── Loading Screen ── */
   if (loadingStage === 'loading' || loadingStage === 'done') {
     return (
-      <div style={{
+      <div className="light-page" style={{
         minHeight: '100vh', display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center', gap: 32,
-        background: `radial-gradient(ellipse at 30% 20%, rgba(206,123,255,.25) 0%, transparent 55%),
-                     linear-gradient(160deg, #1C0F2B 0%, #20112F 60%, #261141 100%)`,
+        background: `radial-gradient(ellipse at 30% 20%, rgba(190,86,254,.25) 0%, transparent 55%),
+                     linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 45%, #CCE0FF 100%)`,
         padding: 40,
       }}>
         {/* Animated ring + Logo */}
@@ -116,7 +116,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
           <div style={{
             position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <div style={{ width: 56, height: 56, borderRadius: 16, overflow: 'hidden', boxShadow: `0 0 24px rgba(176,48,245,0.4)` }}>
+            <div style={{ width: 56, height: 56, borderRadius: 16, overflow: 'hidden', boxShadow: `0 0 24px rgba(150,86,254,0.4)` }}>
               <Image src="/logo.png" alt="SociMe" width={56} height={56} style={{ objectFit: 'cover' }} />
             </div>
           </div>
@@ -151,10 +151,10 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
   }
 
   return (
-    <div style={{
+    <div className="light-page" style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: `radial-gradient(ellipse at 30% 20%, rgba(206,123,255,.2) 0%, transparent 50%),
-                   linear-gradient(160deg, #1C0F2B 0%, #20112F 60%, #261141 100%)`,
+      background: `radial-gradient(ellipse at 30% 20%, rgba(190,86,254,.2) 0%, transparent 50%),
+                   linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 45%, #CCE0FF 100%)`,
       padding: '40px 20px',
     }}>
       <div style={{
@@ -178,7 +178,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                   background: step >= s ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : '#F3F4F6',
                   color: step >= s ? '#fff' : '#9CA3AF',
                   transition: 'all .3s',
-                  boxShadow: step === s ? `0 4px 14px rgba(176,48,245,0.4)` : 'none',
+                  boxShadow: step === s ? `0 4px 14px rgba(150,86,254,0.4)` : 'none',
                 }}>
                   {step > s ? '✓' : s}
                 </div>
@@ -219,7 +219,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                 onChange={e => setBusinessName(e.target.value)}
                 placeholder="למשל: קפה ירושלים, סטודיו לעיצוב..."
                 style={inputCls}
-                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(176,48,245,0.12)` }}
+                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(150,86,254,0.12)` }}
                 onBlur={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.boxShadow = 'none' }}
               />
             </Field>
@@ -231,7 +231,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                 placeholder="אל תחשבו על זה יותר מדי, פשוט תכתבו כאילו אתם מסבירים לחבר. לדוגמה: אנחנו חברת שיווק שעוזרת לעסקים קטנים להכפיל את המכירות בלי תקציבי ענק..."
                 rows={5}
                 style={{ ...inputCls, resize: 'none', lineHeight: 1.75 }}
-                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(176,48,245,0.12)` }}
+                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(150,86,254,0.12)` }}
                 onBlur={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.boxShadow = 'none' }}
               />
             </Field>
@@ -246,7 +246,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                   : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                 color: !businessName.trim() || !description.trim() ? '#9CA3AF' : '#fff',
                 fontSize: 15, fontWeight: 700, cursor: !businessName.trim() || !description.trim() ? 'not-allowed' : 'pointer',
-                boxShadow: !businessName.trim() || !description.trim() ? 'none' : `0 4px 20px rgba(176,48,245,0.4)`,
+                boxShadow: !businessName.trim() || !description.trim() ? 'none' : `0 4px 20px rgba(150,86,254,0.4)`,
                 transition: 'all .25s', fontFamily: 'var(--font-rubik), sans-serif',
                 marginTop: 4,
               }}>
@@ -279,11 +279,11 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                     style={{
                       padding: '18px 16px', borderRadius: 16, textAlign: 'right',
                       border: selected ? `2px solid ${PURPLE}` : '1.5px solid #E5E7EB',
-                      background: selected ? `rgba(176,48,245,0.07)` : disabled ? '#FAFAFA' : '#fff',
+                      background: selected ? `rgba(150,86,254,0.07)` : disabled ? '#FAFAFA' : '#fff',
                       cursor: disabled ? 'not-allowed' : 'pointer',
                       opacity: disabled ? 0.45 : 1,
                       transition: 'all .2s',
-                      boxShadow: selected ? `0 0 0 4px rgba(176,48,245,0.1)` : 'none',
+                      boxShadow: selected ? `0 0 0 4px rgba(150,86,254,0.1)` : 'none',
                       fontFamily: 'var(--font-rubik), sans-serif',
                     }}>
                     <div style={{ fontSize: 22, marginBottom: 6 }}>{t.emoji}</div>
@@ -294,7 +294,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                       <div style={{
                         display: 'inline-flex', alignItems: 'center', gap: 4,
                         marginTop: 6, padding: '2px 8px', borderRadius: 999,
-                        background: `rgba(176,48,245,0.12)`, color: PURPLE,
+                        background: `rgba(150,86,254,0.12)`, color: PURPLE,
                         fontSize: 11, fontWeight: 700,
                       }}>✓ נבחר</div>
                     )}
@@ -319,7 +319,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                   background: tones.length === 0 ? '#E5E7EB' : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                   color: tones.length === 0 ? '#9CA3AF' : '#fff',
                   fontSize: 15, fontWeight: 700, cursor: tones.length === 0 ? 'not-allowed' : 'pointer',
-                  boxShadow: tones.length === 0 ? 'none' : `0 4px 20px rgba(176,48,245,0.4)`,
+                  boxShadow: tones.length === 0 ? 'none' : `0 4px 20px rgba(150,86,254,0.4)`,
                   fontFamily: 'var(--font-rubik), sans-serif', transition: 'all .25s',
                 }}>
                 המשך ←
@@ -346,7 +346,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                 onChange={e => setAudience(e.target.value)}
                 placeholder='לדוגמה: מנכ"לים של חברות קטנות'
                 style={inputCls}
-                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(176,48,245,0.12)` }}
+                onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(150,86,254,0.12)` }}
                 onBlur={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.boxShadow = 'none' }}
               />
             </Field>
@@ -354,7 +354,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
             {/* Summary card */}
             <div style={{
               padding: '20px', borderRadius: 16,
-              background: 'rgba(176,48,245,0.05)', border: '1px solid rgba(176,48,245,0.15)',
+              background: 'rgba(150,86,254,0.05)', border: '1px solid rgba(150,86,254,0.15)',
             }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>סיכום</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -386,7 +386,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                   background: !audience.trim() ? '#E5E7EB' : `linear-gradient(135deg, ${BLUE}, #2563EB)`,
                   color: !audience.trim() ? '#9CA3AF' : '#fff',
                   fontSize: 15, fontWeight: 700, cursor: !audience.trim() ? 'not-allowed' : 'pointer',
-                  boxShadow: !audience.trim() ? 'none' : `0 4px 20px rgba(247,45,147,0.4)`,
+                  boxShadow: !audience.trim() ? 'none' : `0 4px 20px rgba(59,130,239,0.4)`,
                   fontFamily: 'var(--font-rubik), sans-serif', transition: 'all .25s',
                 }}>
                 🚀 הכינו לי את המערכת

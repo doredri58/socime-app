@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="he" dir="rtl" className={cn(rubik.variable)} suppressHydrationWarning>
+    <html lang="he" dir="rtl" data-theme="light" className={cn(rubik.variable)} suppressHydrationWarning>
       <head>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
       </head>

@@ -1,9 +1,9 @@
 'use client'
 import { useState } from 'react'
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
 
 const TRIGGER_COPY: Record<string, { title: string; subtitle: string }> = {
   image_limit:    { title: 'נגמרו ניסיונות יצירת התמונה',   subtitle: 'שדרג לPro וקבל יצירת תמונות ללא הגבלה' },
@@ -57,9 +57,9 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
         style={{
           width: '100%', maxWidth: 740, direction: 'rtl',
           background: 'rgba(16,9,44,0.98)',
-          border: '1px solid rgba(176,48,245,0.25)',
+          border: '1px solid rgba(150,86,254,0.25)',
           borderRadius: 28, overflow: 'hidden',
-          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(176,48,245,0.1), 0 0 60px rgba(176,48,245,0.12)',
+          boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(150,86,254,0.1), 0 0 60px rgba(150,86,254,0.12)',
           display: 'flex',
         }}
       >
@@ -67,10 +67,10 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
         <div style={{
           flex: 1, padding: '36px 32px',
           borderLeft: '1px solid rgba(255,255,255,0.07)',
-          background: 'linear-gradient(160deg, rgba(176,48,245,0.07) 0%, transparent 60%)',
+          background: 'linear-gradient(160deg, rgba(150,86,254,0.07) 0%, transparent 60%)',
         }}>
           {/* Pro badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginBottom: 18, padding: '5px 14px', borderRadius: 999, background: 'linear-gradient(135deg, rgba(176,48,245,0.2), rgba(247,45,147,0.15))', border: '1px solid rgba(176,48,245,0.35)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 7, marginBottom: 18, padding: '5px 14px', borderRadius: 999, background: 'linear-gradient(135deg, rgba(150,86,254,0.2), rgba(59,130,239,0.15))', border: '1px solid rgba(150,86,254,0.35)' }}>
             <i className="ti ti-crown" style={{ fontSize: 14, color: '#FBBF24' }} />
             <span style={{ fontSize: 12, fontWeight: 800, color: PURPLE2, letterSpacing: '0.04em' }}>SociMe Pro</span>
           </div>
@@ -88,7 +88,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
               <div key={f.text} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                 <div style={{
                   width: 32, height: 32, borderRadius: 10, flexShrink: 0,
-                  background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.2)',
+                  background: 'rgba(150,86,254,0.12)', border: '1px solid rgba(150,86,254,0.2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}>
                   <i className={`ti ${f.icon}`} style={{ fontSize: 15, color: PURPLE2 }} />
@@ -99,7 +99,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
           </div>
 
           {/* price */}
-          <div style={{ marginTop: 28, padding: '16px 20px', borderRadius: 16, background: 'rgba(176,48,245,0.08)', border: '1px solid rgba(176,48,245,0.18)' }}>
+          <div style={{ marginTop: 28, padding: '16px 20px', borderRadius: 16, background: 'rgba(150,86,254,0.08)', border: '1px solid rgba(150,86,254,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, marginBottom: 4 }}>
               <span style={{ fontSize: 32, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₪299</span>
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>/ לחודש</span>
@@ -148,7 +148,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
                 width: '100%', padding: '15px', borderRadius: 16, cursor: loading ? 'wait' : 'pointer',
                 background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                 border: 'none', color: '#fff', fontSize: 15, fontWeight: 900,
-                boxShadow: '0 6px 28px rgba(176,48,245,0.5)',
+                boxShadow: '0 6px 28px rgba(150,86,254,0.5)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 9,
                 transition: 'all 0.2s', marginBottom: 12, letterSpacing: '-0.2px',
                 opacity: loading ? 0.8 : 1,

@@ -4,9 +4,9 @@ import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
 const GREEN   = '#34D399'
 
 const GLASS: React.CSSProperties = {
@@ -22,8 +22,8 @@ const PLAN_META: Record<string, {
   color: string; bg: string; border: string; icon: string
 }> = {
   free:   { label: 'חינמי',   price: '₪0',    tokenLimit: 100,  color: '#94A3B8', bg: 'rgba(148,163,184,0.12)', border: 'rgba(148,163,184,0.25)', icon: 'ti-user'      },
-  basic:  { label: 'Basic',   price: '₪199',  tokenLimit: 500,  color: BLUE,      bg: 'rgba(247,45,147,0.12)',  border: 'rgba(247,45,147,0.28)',  icon: 'ti-rocket'    },
-  pro:    { label: 'Pro',     price: '₪299',  tokenLimit: 1000, color: PURPLE2,   bg: 'rgba(176,48,245,0.12)', border: 'rgba(176,48,245,0.28)', icon: 'ti-crown'     },
+  basic:  { label: 'Basic',   price: '₪199',  tokenLimit: 500,  color: BLUE,      bg: 'rgba(59,130,239,0.12)',  border: 'rgba(59,130,239,0.28)',  icon: 'ti-rocket'    },
+  pro:    { label: 'Pro',     price: '₪299',  tokenLimit: 1000, color: PURPLE2,   bg: 'rgba(150,86,254,0.12)', border: 'rgba(150,86,254,0.28)', icon: 'ti-crown'     },
   agency: { label: 'Agency',  price: '₪999',  tokenLimit: 2000, color: '#F59E0B', bg: 'rgba(245,158,11,0.12)', border: 'rgba(245,158,11,0.28)', icon: 'ti-building'  },
 }
 
@@ -64,9 +64,9 @@ function SectionCard({ icon, iconBg, iconColor, title, subtitle, action, childre
 }) {
   return (
     <div className="neon-card" style={{ ...GLASS, padding: '24px', position: 'relative', overflow: 'hidden',
-      ...(glow ? { borderColor: 'rgba(176,48,245,0.22)', background: 'rgba(176,48,245,0.04)' } : {}) }}>
+      ...(glow ? { borderColor: 'rgba(150,86,254,0.22)', background: 'rgba(150,86,254,0.04)' } : {}) }}>
       {glow && <div style={{ position: 'absolute', top: -40, right: -40, width: 130, height: 130,
-        borderRadius: '50%', background: 'rgba(176,48,245,0.10)', filter: 'blur(45px)', pointerEvents: 'none' }} />}
+        borderRadius: '50%', background: 'rgba(150,86,254,0.10)', filter: 'blur(45px)', pointerEvents: 'none' }} />}
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 36, height: 36, borderRadius: 11, background: iconBg,
@@ -217,7 +217,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                   : tokens < plan.tokenLimit * 0.5
                   ? 'linear-gradient(90deg, #FBBF24, #F59E0B)'
                   : `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})`,
-                boxShadow: `0 0 10px ${tokens < plan.tokenLimit * 0.2 ? 'rgba(248,113,113,0.4)' : 'rgba(176,48,245,0.4)'}`,
+                boxShadow: `0 0 10px ${tokens < plan.tokenLimit * 0.2 ? 'rgba(248,113,113,0.4)' : 'rgba(150,86,254,0.4)'}`,
               }} />
             </div>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.28)', marginTop: 5 }}>
@@ -241,7 +241,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                 flex: 1, padding: '10px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
                 background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                boxShadow: '0 4px 14px rgba(176,48,245,0.35)',
+                boxShadow: '0 4px 14px rgba(150,86,254,0.35)',
               }}>
                 <i className="ti ti-crown" style={{ fontSize: 13, color: '#FBBF24' }} /> שדרג מסלול
               </button>
@@ -258,7 +258,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
 
         {/* ── Card 2: Payment Method ── */}
         <SectionCard
-          icon="ti-credit-card" iconBg="rgba(247,45,147,0.12)" iconColor={BLUE}
+          icon="ti-credit-card" iconBg="rgba(59,130,239,0.12)" iconColor={BLUE}
           title="אמצעי תשלום"
           subtitle="כרטיס ברירת המחדל לחידוש המנוי"
         >
@@ -266,12 +266,12 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
           {profile.card_last4 ? (
             <div style={{
               borderRadius: 16, padding: '20px 22px', marginBottom: 16,
-              background: 'linear-gradient(135deg, rgba(247,45,147,0.18) 0%, rgba(176,48,245,0.15) 100%)',
-              border: '1px solid rgba(247,45,147,0.22)', position: 'relative', overflow: 'hidden',
+              background: 'linear-gradient(135deg, rgba(59,130,239,0.18) 0%, rgba(150,86,254,0.15) 100%)',
+              border: '1px solid rgba(59,130,239,0.22)', position: 'relative', overflow: 'hidden',
             }}>
               {/* card chip glow */}
               <div style={{ position: 'absolute', top: -20, left: -20, width: 80, height: 80,
-                borderRadius: '50%', background: 'rgba(247,45,147,0.15)', filter: 'blur(25px)', pointerEvents: 'none' }} />
+                borderRadius: '50%', background: 'rgba(59,130,239,0.15)', filter: 'blur(25px)', pointerEvents: 'none' }} />
 
               {/* top row — brand */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 18 }}>
@@ -354,7 +354,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
               background: editingBill ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(255,255,255,0.07)',
               border: editingBill ? 'none' : '1px solid rgba(255,255,255,0.12)',
               color: editingBill ? '#fff' : 'rgba(255,255,255,0.6)',
-              display: 'flex', alignItems: 'center', gap: 6, boxShadow: editingBill ? '0 3px 12px rgba(176,48,245,0.3)' : 'none',
+              display: 'flex', alignItems: 'center', gap: 6, boxShadow: editingBill ? '0 3px 12px rgba(150,86,254,0.3)' : 'none',
             }}>
               <i className={`ti ${editingBill ? 'ti-check' : 'ti-pencil'}`} style={{ fontSize: 12 }} />
               {editingBill ? 'סיים עריכה' : 'ערוך פרטי חיוב'}
@@ -385,7 +385,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                   padding: '10px 24px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 800,
                   background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
                   display: 'flex', alignItems: 'center', gap: 7, opacity: savingBill ? 0.7 : 1,
-                  boxShadow: '0 4px 14px rgba(176,48,245,0.3)',
+                  boxShadow: '0 4px 14px rgba(150,86,254,0.3)',
                 }}>
                   {savingBill
                     ? <div style={{ width: 13, height: 13, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
@@ -446,7 +446,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                     {/* description */}
                     <td style={{ padding: '14px 12px', borderBottom: '1px solid rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.75)', fontWeight: 600 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                        <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(176,48,245,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        <div style={{ width: 28, height: 28, borderRadius: 8, background: 'rgba(150,86,254,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                           <i className="ti ti-coins" style={{ fontSize: 13, color: PURPLE2 }} />
                         </div>
                         <div>
@@ -470,7 +470,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                         background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.10)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.18s',
                       }}
-                      onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(247,45,147,0.15)'; b.style.borderColor = 'rgba(247,45,147,0.35)' }}
+                      onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(59,130,239,0.15)'; b.style.borderColor = 'rgba(59,130,239,0.35)' }}
                       onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.background = 'rgba(255,255,255,0.05)'; b.style.borderColor = 'rgba(255,255,255,0.10)' }}
                       >
                         <i className="ti ti-file-download" style={{ fontSize: 14, color: BLUE }} />

@@ -4,8 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase-browser'
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
 
 export default function ForgotPasswordPage() {
   const [email, setEmail]     = useState('')
@@ -36,12 +36,12 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div style={{
+    <div className="light-page" style={{
       minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: 24, direction: 'rtl', fontFamily: 'var(--font-rubik), sans-serif',
-      background: `radial-gradient(ellipse at 20% 10%, rgba(206,123,255,.35) 0%, transparent 55%),
-                   radial-gradient(ellipse at 80% 90%, rgba(247,45,147,.25) 0%, transparent 50%),
-                   linear-gradient(160deg, #1C0F2B 0%, #20112F 50%, #261141 100%)`,
+      background: `radial-gradient(ellipse at 20% 10%, rgba(190,86,254,.30) 0%, transparent 55%),
+                   radial-gradient(ellipse at 80% 90%, rgba(59,130,239,.26) 0%, transparent 50%),
+                   linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 50%, #CCE0FF 100%)`,
     }}>
       <div style={{
         width: '100%', maxWidth: 420, borderRadius: 24, padding: '40px 36px',
@@ -95,7 +95,7 @@ export default function ForgotPasswordPage() {
                   border: `1.5px solid ${focused ? PURPLE : '#E5E7EB'}`,
                   background: focused ? '#FAFBFF' : '#F9FAFB',
                   color: '#111827', fontSize: 14, outline: 'none', textAlign: 'left',
-                  boxShadow: focused ? '0 0 0 3px rgba(176,48,245,0.12)' : 'none',
+                  boxShadow: focused ? '0 0 0 3px rgba(150,86,254,0.12)' : 'none',
                   transition: 'all .2s', marginBottom: 14,
                 }}
               />
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
                 background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
                 border: 'none', color: '#fff', fontSize: 14, fontWeight: 700,
                 opacity: loading || !email.trim() ? 0.7 : 1,
-                boxShadow: '0 6px 20px rgba(176,48,245,0.35)',
+                boxShadow: '0 6px 20px rgba(150,86,254,0.35)',
               }}>
                 {loading ? 'שולח...' : 'שלח קישור לאיפוס'}
               </button>

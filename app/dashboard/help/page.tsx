@@ -1,8 +1,8 @@
 'use client'
 import { useState } from 'react'
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
   backdropFilter: 'blur(20px)',
@@ -78,8 +78,8 @@ export default function HelpPage() {
       <div style={{ marginBottom: 32, textAlign: 'center' }}>
         <div style={{
           width: 56, height: 56, borderRadius: 18, margin: '0 auto 16px',
-          background: 'linear-gradient(135deg, rgba(176,48,245,0.2), rgba(206,123,255,0.1))',
-          border: '1px solid rgba(176,48,245,0.3)',
+          background: 'linear-gradient(135deg, rgba(150,86,254,0.2), rgba(190,86,254,0.1))',
+          border: '1px solid rgba(150,86,254,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <i className="ti ti-help-circle" style={{ fontSize: 26, color: PURPLE2 }} />
@@ -124,7 +124,7 @@ export default function HelpPage() {
               padding: '9px 18px', borderRadius: 999, fontSize: 13, fontWeight: 600,
               cursor: 'pointer', border: 'none', transition: 'all 0.2s',
               background: activeCategory === c.id
-                ? 'rgba(176,48,245,0.2)' : 'rgba(255,255,255,0.05)',
+                ? 'rgba(150,86,254,0.2)' : 'rgba(255,255,255,0.05)',
               color: activeCategory === c.id ? '#fff' : 'rgba(255,255,255,0.45)',
               boxShadow: activeCategory === c.id
                 ? `0 0 0 1px ${PURPLE}55` : '0 0 0 1px rgba(255,255,255,0.08)',
@@ -146,7 +146,7 @@ export default function HelpPage() {
         {filtered.map((faq, i) => (
           <div key={i} style={{
             ...GLASS, overflow: 'hidden',
-            border: openFaq === i ? `1px solid rgba(176,48,245,0.3)` : '1px solid rgba(255,255,255,0.09)',
+            border: openFaq === i ? `1px solid rgba(150,86,254,0.3)` : '1px solid rgba(255,255,255,0.09)',
             transition: 'border-color 0.2s',
           }}>
             <button
@@ -186,7 +186,7 @@ export default function HelpPage() {
           padding: '11px 26px', borderRadius: 12, fontSize: 13, fontWeight: 700,
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           color: '#fff', textDecoration: 'none',
-          boxShadow: '0 4px 18px rgba(176,48,245,0.4)',
+          boxShadow: '0 4px 18px rgba(150,86,254,0.4)',
         }}>
           <i className="ti ti-send" style={{ fontSize: 15 }} />
           שלחו לנו מייל

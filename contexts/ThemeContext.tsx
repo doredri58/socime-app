@@ -1,7 +1,11 @@
 'use client'
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react'
+import { createContext, useContext, useEffect, ReactNode } from 'react'
 
-export type AppTheme = 'dark' | 'light'
+/* SociMe runs a single, permanent light theme (the "airy glass" design).
+   The dark/light toggle was removed — `useTheme` is kept only so existing
+   consumers keep compiling; theme is always 'light' and toggle is a no-op. */
+
+export type AppTheme = 'light'
 
 interface ThemeCtx {
   theme: AppTheme
@@ -9,29 +13,27 @@ interface ThemeCtx {
   isDark: boolean
 }
 
-const Ctx = createContext<ThemeCtx>({ theme: 'dark', toggle: () => {}, isDark: true })
+const Ctx = createContext<ThemeCtx>({ theme: 'light', toggle: () => {}, isDark: false })
 
-const STORAGE_KEY = 'socime-theme'
-
-/* Dark obsidian cards → dirty white in light mode.
+/* Dark obsidian/glass card surfaces (inline dark-theme styles left in the
+   markup) → frosted white glass, so the whole app reads as the light design.
    Injected raw (not via globals.css) because Next.js' Lightning CSS does not
-   apply these [style*="rgba(13,…)"] overrides from the compiled stylesheet,
-   while a raw <style> works reliably. Gated by [data-theme="light"]. */
+   apply these [style*="rgba(…)"] overrides from the compiled stylesheet. */
 const LIGHT_CARD_FIX = `
-[data-theme="light"] #dash-content [style*="rgba(26,13,40"],
-[data-theme="light"] #dash-content [style*="rgba(26, 13, 40"],
-[data-theme="light"] #dash-content [style*="rgba(28,15,43"],
-[data-theme="light"] #dash-content [style*="rgba(28, 15, 43"],
-[data-theme="light"] #dash-content [style*="rgba(16,9,44"],
-[data-theme="light"] #dash-content [style*="rgba(22,12,61"],
-[data-theme="light"] #dash-content [style*="#20112F"],
-[data-theme="light"] #dash-content [style*="#1C0F2B"],
-[data-theme="light"] #dash-content [style*="#1E1030"] {
-  background: #F3F0FB !important;
-  border-color: rgba(124,58,237,0.14) !important;
-  box-shadow: 0 2px 14px rgba(80,40,160,0.07) !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(26,13,40"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(26, 13, 40"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(28,15,43"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(28, 15, 43"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(16,9,44"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgba(22,12,61"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="#20112F"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="#1C0F2B"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="#1E1030"] {
+  background: rgba(255,255,255,0.55) !important;
+  border-color: rgba(255,255,255,0.75) !important;
+  box-shadow: 0 10px 34px rgba(84,60,150,0.14) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }`
 
 function ensureCardFix() {
@@ -42,32 +44,13 @@ function ensureCardFix() {
   document.head.appendChild(el)
 }
 
-function apply(t: AppTheme) {
-  document.documentElement.setAttribute('data-theme', t)
-  document.body.style.background = t === 'dark' ? '#1C0F2B' : '#D4CCFF'
-  ensureCardFix()
-}
-
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<AppTheme>('dark')
-
   useEffect(() => {
-    const saved = (localStorage.getItem(STORAGE_KEY) as AppTheme | null)
-    const initial: AppTheme = saved === 'light' || saved === 'dark' ? saved : 'dark'
-    setTheme(initial)
-    apply(initial)
+    document.documentElement.setAttribute('data-theme', 'light')
+    ensureCardFix()
   }, [])
 
-  function toggle() {
-    setTheme(prev => {
-      const next: AppTheme = prev === 'dark' ? 'light' : 'dark'
-      localStorage.setItem(STORAGE_KEY, next)
-      apply(next)
-      return next
-    })
-  }
-
-  return <Ctx.Provider value={{ theme, toggle, isDark: theme === 'dark' }}>{children}</Ctx.Provider>
+  return <Ctx.Provider value={{ theme: 'light', toggle: () => {}, isDark: false }}>{children}</Ctx.Provider>
 }
 
 export const useTheme = () => useContext(Ctx)

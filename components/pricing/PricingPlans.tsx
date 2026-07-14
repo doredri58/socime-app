@@ -9,7 +9,7 @@ import { useState } from 'react'
 ════════════════════════════════════════════════════════════════ */
 
 /* ── Theme tokens ───────────────────────────────────────────── */
-const PURPLE = '#B030F5'
+const PURPLE = '#9656FE'
 const GOLD = '#FFD700'
 
 /* ── Token economy (shown as a small strip) ─────────────────── */
@@ -126,13 +126,13 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
     >
       <div
         onClick={e => e.stopPropagation()}
-        className="relative w-full max-w-md rounded-3xl border border-[#B030F5]/40 bg-[#14101D] p-8 text-right shadow-[0_0_60px_rgba(176,48,245,0.35)]"
+        className="relative w-full max-w-md rounded-3xl border border-[#9656FE]/40 bg-[#14101D] p-8 text-right shadow-[0_0_60px_rgba(150,86,254,0.35)]"
       >
         {/* Close */}
         <button
           onClick={onClose}
           aria-label="סגירה"
-          className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
+          className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full text-[#857FA6] transition hover:bg-white/10 hover:text-[#253A53]"
         >
           <i className="ti ti-x text-lg" />
         </button>
@@ -143,7 +143,7 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
         </div>
 
         <h3 className="mb-2 text-center text-2xl font-extrabold text-white">פיצ׳ר של Pro</h3>
-        <p className="mb-6 text-center text-sm leading-relaxed text-white/55">
+        <p className="mb-6 text-center text-sm leading-relaxed text-[#5B5878]">
           <span className="font-bold text-white">{feature}</span> זמין רק במסלול Pro.
           שדרגו עכשיו ותקבלו גישה מלאה לכל סוכני ה-AI המתקדמים.
         </p>
@@ -151,7 +151,7 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
         {/* Pro perks */}
         <ul className="mb-7 space-y-2.5">
           {proPerks.map(p => (
-            <li key={p} className="flex items-center gap-3 text-sm text-white/85">
+            <li key={p} className="flex items-center gap-3 text-sm text-[#5B5878]">
               <i className="ti ti-circle-check text-lg" style={{ color: PURPLE }} />
               {p}
             </li>
@@ -160,13 +160,13 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
 
         {/* CTA — wire to checkout / PayPlus */}
         <button
-          className="w-full rounded-full py-3.5 text-base font-extrabold text-white shadow-[0_8px_30px_rgba(176,48,245,0.5)] transition hover:brightness-110"
+          className="w-full rounded-full py-3.5 text-base font-extrabold text-white shadow-[0_8px_30px_rgba(150,86,254,0.5)] transition hover:brightness-110"
           style={{ background: `linear-gradient(135deg, ${PURPLE}, #6D28D9)` }}
           onClick={onClose}
         >
           שדרגו ל-Pro · 239 ₪/לחודש
         </button>
-        <p className="mt-3 text-center text-xs text-white/35">14 ימי ניסיון · ביטול בכל עת</p>
+        <p className="mt-3 text-center text-xs text-[#A79FC4]">14 ימי ניסיון · ביטול בכל עת</p>
       </div>
     </div>
   )
@@ -189,17 +189,17 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
     >
       <button
         onClick={() => onChange('annual')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-white/45 hover:text-white/70'
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-[#857FA6] hover:text-[#5B5878]'
           }`}
-        style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(176,48,245,0.45)' } : undefined}
+        style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(150,86,254,0.45)' } : undefined}
       >
         שנתי · חסכו 20%
       </button>
       <button
         onClick={() => onChange('monthly')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-white/45 hover:text-white/70'
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-[#857FA6] hover:text-[#5B5878]'
           }`}
-        style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(176,48,245,0.45)' } : undefined}
+        style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(150,86,254,0.45)' } : undefined}
       >
         חודשי
       </button>
@@ -216,10 +216,10 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
     return (
       <button
         onClick={() => onLockedClick(feature.label)}
-        className="group flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-right transition hover:bg-white/[0.04]"
+        className="group flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-right transition hover:bg-[rgba(120,90,200,0.06)]"
       >
         <i className="ti ti-crown shrink-0 text-base" style={{ color: GOLD }} />
-        <span className="flex-1 text-sm text-white/40 group-hover:text-white/60">{feature.label}</span>
+        <span className="flex-1 text-sm text-[#857FA6] group-hover:text-[#5B5878]">{feature.label}</span>
         <span className="shrink-0 text-[10px] font-bold" style={{ color: GOLD }}>PRO</span>
       </button>
     )
@@ -230,7 +230,7 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
     return (
       <div className="flex items-start gap-3 px-1 py-1.5">
         <i className="ti ti-sparkles mt-0.5 shrink-0 text-base" style={{ color: PURPLE }} />
-        <span className="flex-1 text-sm font-medium text-white">{feature.label}</span>
+        <span className="flex-1 text-sm font-medium text-[#253A53]">{feature.label}</span>
       </div>
     )
   }
@@ -239,7 +239,7 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
   return (
     <div className="flex items-start gap-3 px-1 py-1.5">
       <i className="ti ti-check mt-0.5 shrink-0 text-base" style={{ color: PURPLE }} />
-      <span className="flex-1 text-sm text-white/75">{feature.label}</span>
+      <span className="flex-1 text-sm text-[#5B5878]">{feature.label}</span>
     </div>
   )
 }
@@ -257,19 +257,19 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 
   return (
     <div
-      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${highlight ? 'shadow-[0_0_50px_rgba(176,48,245,0.25)] md:-mt-4 md:mb-4' : ''
+      className={`neon-card relative flex flex-col rounded-3xl p-7 transition ${highlight ? 'shadow-[0_0_50px_rgba(150,86,254,0.25)] md:-mt-4 md:mb-4' : ''
         }`}
       style={{
         background: 'rgba(255,255,255,0.07)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        border: highlight ? '1px solid rgba(176,48,245,0.6)' : '1px solid rgba(255,255,255,0.13)',
+        border: highlight ? '1px solid rgba(150,86,254,0.6)' : '1px solid rgba(255,255,255,0.13)',
       }}
     >
       {/* "Best value" ribbon */}
       {highlight && (
         <span
-          className="absolute right-1/2 top-0 -translate-y-1/2 translate-x-1/2 rounded-full px-4 py-1 text-xs font-extrabold text-white shadow-[0_4px_20px_rgba(176,48,245,0.6)]"
+          className="absolute right-1/2 top-0 -translate-y-1/2 translate-x-1/2 rounded-full px-4 py-1 text-xs font-extrabold text-white shadow-[0_4px_20px_rgba(150,86,254,0.6)]"
           style={{ background: PURPLE }}
         >
           הכי משתלם ✦
@@ -278,19 +278,19 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
 
       {/* Header */}
       <div className="mb-5">
-        <h3 className="text-xl font-extrabold text-white">{plan.name}</h3>
-        <p className="mt-0.5 text-xs text-white/40">{plan.tagline}</p>
+        <h3 className="text-xl font-extrabold text-[#253A53]">{plan.name}</h3>
+        <p className="mt-0.5 text-xs text-[#857FA6]">{plan.tagline}</p>
       </div>
 
       {/* Price (anchoring) */}
       <div className="mb-1 flex items-end gap-1.5">
-        <span className="text-5xl font-black leading-none text-white">{ils(price)} ₪</span>
-        <span className="mb-1 text-sm text-white/45">/לחודש</span>
+        <span className="text-5xl font-black leading-none text-[#253A53]">{ils(price)} ₪</span>
+        <span className="mb-1 text-sm text-[#857FA6]">/לחודש</span>
       </div>
       {billing === 'annual' ? (
-        <p className="mb-5 text-xs text-white/40">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
+        <p className="mb-5 text-xs text-[#857FA6]">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
       ) : (
-        <p className="mb-5 text-xs text-white/40">חיוב חודשי · ללא התחייבות</p>
+        <p className="mb-5 text-xs text-[#857FA6]">חיוב חודשי · ללא התחייבות</p>
       )}
 
       {/* Tokens pill */}
@@ -299,14 +299,14 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
         style={{ background: `${PURPLE}1A`, border: `1px solid ${PURPLE}40` }}
       >
         <i className="ti ti-coins text-sm" style={{ color: '#C4B5FD' }} />
-        <span className="text-xs font-bold text-white">{plan.tokens} טוקנים בחודש</span>
+        <span className="text-xs font-bold text-[#253A53]">{plan.tokens} טוקנים בחודש</span>
       </div>
 
       {/* CTA */}
       <button
         onClick={() => onSelect(plan.id)}
         disabled={busy}
-        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${highlight ? 'text-white shadow-[0_8px_30px_rgba(176,48,245,0.5)]' : 'text-white'
+        className={`mb-6 w-full rounded-full py-3 text-sm font-extrabold transition hover:brightness-110 disabled:opacity-60 ${highlight ? 'text-white shadow-[0_8px_30px_rgba(150,86,254,0.5)]' : 'text-[#253A53]'
           }`}
         style={
           highlight
@@ -318,7 +318,7 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
       </button>
 
       {/* Features */}
-      <div className="space-y-0.5 border-t border-white/8 pt-5">
+      <div className="space-y-0.5 border-t border-[rgba(120,90,200,0.14)] pt-5">
         {plan.features.map(f => (
           <FeatureRow key={f.label} feature={f} onLockedClick={onLockedClick} />
         ))}
@@ -350,21 +350,21 @@ function RefundPolicy() {
           <i className="ti ti-shield-check text-base" style={{ color: PURPLE }} />
           מדיניות החזרים וביטולים
         </span>
-        <i className={`ti ti-chevron-down text-white/50 transition ${open ? 'rotate-180' : ''}`} />
+        <i className={`ti ti-chevron-down text-[#857FA6] transition ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
-        <div className="space-y-4 border-t border-white/8 px-5 py-5 text-sm leading-relaxed text-white/65">
+        <div className="space-y-4 border-t border-[rgba(120,90,200,0.14)] px-5 py-5 text-sm leading-relaxed text-[#5B5878]">
           <p>
-            <span className="font-bold text-white">אחריות 14 ימים — </span>
+            <span className="font-bold text-[#253A53]">אחריות 14 ימים — </span>
             במהלך 14 הימים הראשונים ממועד הרכישה ניתן לקבל החזר כספי מלא, ללא צורך בנימוק.
           </p>
           <p>
-            <span className="font-bold text-white">ללא החזר יחסי — </span>
+            <span className="font-bold text-[#253A53]">ללא החזר יחסי — </span>
             לאחר תום 14 הימים הראשונים, מנויים שנתיים אינם ניתנים להחזר כספי ואינם מחושבים באופן יחסי (pro-rata).
             ניתן לבטל את חידוש המנוי בכל עת, והחשבון יישאר פעיל ויעניק גישה מלאה עד לתום תקופת החיוב הנוכחית ששולמה.
           </p>
-          <p className="text-xs text-white/35">
+          <p className="text-xs text-[#A79FC4]">
             הרכישה כפופה לתנאי השימוש ולמדיניות הפרטיות של SociMe. החיובים מבוצעים בשקלים חדשים (₪).
           </p>
         </div>
@@ -414,7 +414,8 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
   return (
     <section
       dir="rtl"
-      className={`text-white ${variant === 'page' ? 'min-h-screen bg-[#0B0913] px-5 py-16' : 'px-5 py-16'}`}
+      className={`text-[#253A53] ${variant === 'page' ? 'light-page min-h-screen px-5 py-16' : 'px-5 py-16'}`}
+      style={variant === 'page' ? { background: 'radial-gradient(ellipse at 20% 0%, rgba(190,86,254,.22) 0%, transparent 55%), linear-gradient(152deg,#E9DEFB 0%,#DCD6F7 45%,#CCE0FF 100%)' } : undefined}
     >
       <div className="mx-auto max-w-6xl">
 
@@ -422,12 +423,12 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
         <div className="mb-10 text-center">
           <div
             className="mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold"
-            style={{ background: `${PURPLE}26`, color: '#C4B5FD', border: `1px solid ${PURPLE}4D` }}
+            style={{ background: `${PURPLE}1F`, color: '#7C3FD6', border: `1px solid ${PURPLE}4D` }}
           >
             מחירים
           </div>
           <h2 className="text-3xl font-black tracking-tight md:text-4xl">בחרו את הקצב שלכם.</h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm text-white/45">
+          <p className="mx-auto mt-3 max-w-lg text-sm text-[#857FA6]">
             כל המסלולים כוללים את מנוע ה-AI המלא. שדרגו או בטלו מתי שתרצו.
           </p>
         </div>
@@ -453,9 +454,9 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
 
         {/* ── Token economy strip ── */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-          <span className="text-xs font-bold uppercase tracking-widest text-white/25">עלות בטוקנים</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#A79FC4]">עלות בטוקנים</span>
           {TOKEN_COSTS.map(t => (
-            <div key={t.label} className="flex items-center gap-2 text-sm text-white/55">
+            <div key={t.label} className="flex items-center gap-2 text-sm text-[#5B5878]">
               <i className={`ti ${t.icon} text-base`} style={{ color: PURPLE }} />
               {t.label}
               <span className="font-bold text-white">{t.cost}</span>

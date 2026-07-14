@@ -15,59 +15,62 @@
   --dash-text-mid: rgba(255,255,255,0.65);
   --dash-text-low: rgba(255,255,255,0.38);
   --dash-card-bg:      rgba(255,255,255,0.05);
-  --dash-card-border:  rgba(176,48,245,0.14);
+  --dash-card-border:  rgba(150,86,254,0.14);
   --dash-input-bg:     rgba(255,255,255,0.06);
   --dash-input-border: rgba(255,255,255,0.12);
 
   --dash-page-bg: linear-gradient(160deg, #1C0F2B 0%, #20112F 55%, #261141 100%);
   --dash-body-bg: #1C0F2B;
   --dash-topbar-bg: rgba(28,15,43,0.88);
-  --dash-topbar-border: rgba(176,48,245,0.18);
+  --dash-topbar-border: rgba(150,86,254,0.18);
   --dash-topbar-text: rgba(255,255,255,0.45);
   --dash-sidebar-bg: linear-gradient(180deg, #170B24 0%, #1C0D2C 40%, #221136 100%);
   --dash-sidebar-glass: rgba(255,255,255,0.07);
-  --dash-sidebar-border: rgba(176,48,245,0.15);
+  --dash-sidebar-border: rgba(150,86,254,0.15);
   --dash-sidebar-text: rgba(255,255,255,0.62);
   --dash-sidebar-text-active: #ffffff;
-  --dash-sidebar-active-bg: rgba(176,48,245,0.18);
-  --dash-sidebar-active-border: rgba(176,48,245,0.5);
+  --dash-sidebar-active-bg: rgba(150,86,254,0.18);
+  --dash-sidebar-active-border: rgba(150,86,254,0.5);
   --dash-sidebar-label: rgba(255,255,255,0.28);
-  --dash-token-bg: rgba(206,123,255,0.08);
-  --dash-token-border: rgba(206,123,255,0.22);
+  --dash-token-bg: rgba(190,86,254,0.08);
+  --dash-token-border: rgba(190,86,254,0.22);
   --dash-token-text: #ffffff;
-  --dash-avatar-bg: linear-gradient(135deg, #B030F5, #7A1E6B);
-  --dash-avatar-shadow: rgba(176,48,245,0.45);
+  --dash-avatar-bg: linear-gradient(135deg, #9656FE, #7C3AED);
+  --dash-avatar-shadow: rgba(150,86,254,0.45);
 }
 
 [data-theme="light"] {
-  /* ── Text — deep purple for high contrast ── */
-  --dash-text:     #2A1758;
-  --dash-text-mid: #4A3585;
-  --dash-text-low: #7C6BA8;
-  --dash-card-bg:      #F3F0FB;   /* dirty white — stands out on the gradient */
-  --dash-card-border:  rgba(124,58,237,0.14);
-  --dash-input-bg:     #FFFFFF;
-  --dash-input-border: rgba(124,58,237,0.20);
+  /* ── Text — dark slate #253A53 for high contrast on the airy gradient ── */
+  --dash-text:     #253A53;
+  --dash-text-mid: #5B5878;
+  --dash-text-low: #857FA6;
+  --dash-card-bg:      rgba(255,255,255,0.58);   /* frosted glass */
+  --dash-card-border:  rgba(255,255,255,0.75);
+  --dash-input-bg:     rgba(255,255,255,0.72);
+  --dash-input-border: rgba(120,90,200,0.20);
 
-  /* ── Background — light blue → purple blend (never plain white) ── */
-  --dash-page-bg: linear-gradient(150deg, #C9DBFF 0%, #D4CCFF 52%, #E2CFFF 100%);
-  --dash-body-bg: #D4CCFF;
-  --dash-topbar-bg: rgba(247,244,255,0.85);
-  --dash-topbar-border: rgba(124,58,237,0.14);
-  --dash-topbar-text: #4A3585;
-  --dash-sidebar-bg: linear-gradient(180deg, #F1ECFE 0%, #E8E2FB 100%);
+  /* ── Background — airy lavender → periwinkle → sky, never plain white ── */
+  --dash-page-bg:
+    radial-gradient(1150px 620px at 85% -12%, rgba(190,86,254,0.30), transparent 58%),
+    radial-gradient(1050px 600px at 2% 112%, rgba(59,130,239,0.26), transparent 60%),
+    linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 42%, #CCE0FF 100%);
+  --dash-body-bg: #DCD6F7;
+  --dash-topbar-bg: rgba(255,255,255,0.55);
+  --dash-topbar-border: rgba(255,255,255,0.75);
+  --dash-topbar-text: #5B5878;
+  --dash-sidebar-bg: rgba(255,255,255,0.55);
   --dash-sidebar-glass: rgba(255,255,255,0.6);
-  --dash-sidebar-border: rgba(124,58,237,0.18);
-  --dash-sidebar-text: #4A3585;
-  --dash-sidebar-text-active: #2A1758;
-  --dash-sidebar-active-bg: rgba(124,58,237,0.12);
-  --dash-sidebar-active-border: rgba(124,58,237,0.45);
-  --dash-sidebar-label: rgba(74,53,133,0.55);
-  --dash-token-bg: rgba(124,58,237,0.08);
-  --dash-token-border: rgba(124,58,237,0.22);
-  --dash-token-text: #2A1758;
-  --dash-avatar-bg: linear-gradient(135deg, #7C3AED, #4C1D95);
-  --dash-avatar-shadow: rgba(124,58,237,0.32);
+  --dash-sidebar-border: rgba(255,255,255,0.75);
+  --dash-sidebar-text: #5B5878;
+  --dash-sidebar-text-active: #3B82EF;
+  --dash-sidebar-active-bg: rgba(59,130,239,0.12);
+  --dash-sidebar-active-border: rgba(59,130,239,0.32);
+  --dash-sidebar-label: rgba(37,58,83,0.45);
+  --dash-token-bg: rgba(255,255,255,0.6);
+  --dash-token-border: rgba(150,86,254,0.22);
+  --dash-token-text: #253A53;
+  --dash-avatar-bg: linear-gradient(135deg, #9656FE, #BE56FE);
+  --dash-avatar-shadow: rgba(150,86,254,0.42);
 }
 
 /* ═══════════════════════════════════════
@@ -81,11 +84,11 @@
   --p-100: #EDE9FE;
   --p-200: #DDD6FE;
   --p-300: #C4B5FD;
-  --p-400: #CE7BFF;
-  --p-500: #B030F5;
+  --p-400: #BE56FE;
+  --p-500: #9656FE;
   --p-600: #7C3AED;
   --p-700: #6D28D9;
-  --p-800: #7A1E6B;
+  --p-800: #7C3AED;
   --p-900: #4C1D95;
 
   /* ── Semantic aliases ── */
@@ -103,8 +106,8 @@
   --obsidian-700: #24123A;
   --obsidian-600: #2C1548;
   --obsidian-500: #361B5C;
-  --obsidian-border: rgba(176,48,245,0.15);
-  --obsidian-border-bright: rgba(176,48,245,0.3);
+  --obsidian-border: rgba(150,86,254,0.15);
+  --obsidian-border-bright: rgba(150,86,254,0.3);
 
   /* ── Sidebar ── */
   --sidebar-bg: var(--obsidian-800);
@@ -113,8 +116,8 @@
     #1C0D2C 40%,
     #221136 100%
   );
-  --sidebar-active-bg: rgba(176,48,245,0.18);
-  --sidebar-active-border: rgba(176,48,245,0.5);
+  --sidebar-active-bg: rgba(150,86,254,0.18);
+  --sidebar-active-border: rgba(150,86,254,0.5);
   --sidebar-text: rgba(255,255,255,0.65);
   --sidebar-text-active: #ffffff;
 
@@ -194,6 +197,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 84px; /* anchor jumps clear the fixed nav */
   direction: rtl;
 }
 
@@ -201,6 +205,7 @@ body {
   font-family: var(--font-rubik), 'Rubik', sans-serif;
   background: var(--bg-base);
   color: var(--text-dark);
+  line-height: 1.55; /* calmer reading rhythm; inline styles still override where needed */
   overflow-x: hidden;
   direction: rtl;
   -webkit-font-smoothing: antialiased;
@@ -234,89 +239,91 @@ body {
 
 /* 1 — white / translucent-white body text → deep purple.
    Next.js serializes inline styles COMPACT (no spaces), so cover both forms. */
-[data-theme="light"] #dash-content [style*="color: rgba(255, 255, 255"],
-[data-theme="light"] #dash-content [style*="color:rgba(255,255,255"],
-[data-theme="light"] #dash-content [style*="color: rgb(255, 255, 255)"],
-[data-theme="light"] #dash-content [style*="color:rgb(255,255,255)"],
-[data-theme="light"] #dash-content [style*="color: #fff"],
-[data-theme="light"] #dash-content [style*="color:#fff"],
-[data-theme="light"] #dash-content [style*="color: #FFF"],
-[data-theme="light"] #dash-content [style*="color:#FFF"],
-[data-theme="light"] #dash-content [style*="color: #ffffff"],
-[data-theme="light"] #dash-content [style*="color:#ffffff"],
-[data-theme="light"] #dash-content [style*="color: white"],
-[data-theme="light"] #dash-content [style*="color:white"] {
-  color: #2A1758 !important;
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgb(255, 255, 255)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgb(255,255,255)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: #fff"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:#fff"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: #FFF"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:#FFF"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: #ffffff"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:#ffffff"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color: white"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="color:white"] {
+  color: #253A53 !important;
 }
 
 /* 2 — glass-card white backgrounds → dirty white + definition.
    0.0x covers 0.03–0.09, 0.1 covers 0.10–0.12. Both spaced + compact rgba. */
-[data-theme="light"] #dash-content [style*="background: rgba(255, 255, 255, 0.0"],
-[data-theme="light"] #dash-content [style*="background: rgba(255, 255, 255, 0.1"],
-[data-theme="light"] #dash-content [style*="background:rgba(255,255,255,0.0"],
-[data-theme="light"] #dash-content [style*="background:rgba(255,255,255,0.1"],
-[data-theme="light"] #dash-content [style*="background-color: rgba(255, 255, 255, 0.0"],
-[data-theme="light"] #dash-content [style*="background-color: rgba(255, 255, 255, 0.1"],
-[data-theme="light"] #dash-content [style*="background-color:rgba(255,255,255,0.0"],
-[data-theme="light"] #dash-content [style*="background-color:rgba(255,255,255,0.1"] {
-  background: #F3F0FB !important;
-  border-color: rgba(124, 58, 237, 0.14) !important;
-  box-shadow: 0 2px 14px rgba(80, 40, 160, 0.07) !important;
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.0"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background: rgba(255, 255, 255, 0.1"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:rgba(255,255,255,0.0"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background:rgba(255,255,255,0.1"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background-color: rgba(255, 255, 255, 0.0"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background-color: rgba(255, 255, 255, 0.1"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background-color:rgba(255,255,255,0.0"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="background-color:rgba(255,255,255,0.1"] {
+  background: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.72) !important;
+  box-shadow: 0 8px 28px rgba(84, 60, 150, 0.10) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
 }
 
 /* 3 — white borders → soft purple hairline (spaced + compact) */
-[data-theme="light"] #dash-content [style*="solid rgba(255, 255, 255"],
-[data-theme="light"] #dash-content [style*="solid rgba(255,255,255"],
-[data-theme="light"] #dash-content [style*="dashed rgba(255, 255, 255"],
-[data-theme="light"] #dash-content [style*="dashed rgba(255,255,255"] {
-  border-color: rgba(124, 58, 237, 0.18) !important;
+[data-theme="light"] :is(#dash-content, .light-page) [style*="solid rgba(255, 255, 255"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="solid rgba(255,255,255"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="dashed rgba(255, 255, 255"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="dashed rgba(255,255,255"] {
+  border-color: rgba(255, 255, 255, 0.72) !important;
 }
 
 /* 4 — thin dividers (1–2px) → purple line, not a card (overrides rule 2) */
-[data-theme="light"] #dash-content [style*="height: 1px"],
-[data-theme="light"] #dash-content [style*="height: 2px"] {
+[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 1px"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 2px"] {
   background: rgba(124, 58, 237, 0.16) !important;
   box-shadow: none !important;
 }
 
 /* 5 — keep white text on COLORED buttons (gradient + known solid CTAs).
    Must come after rule 1 to win. */
-[data-theme="light"] #dash-content [style*="linear-gradient(135deg"],
-[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] *,
-[data-theme="light"] #dash-content [style*="rgb(247, 45, 147)"],
-[data-theme="light"] #dash-content [style*="rgb(247, 45, 147)"] *,
-[data-theme="light"] #dash-content [style*="rgb(247,45,147)"],
-[data-theme="light"] #dash-content [style*="rgb(247,45,147)"] *,
-[data-theme="light"] #dash-content [style*="#F72D93"],
-[data-theme="light"] #dash-content [style*="#F72D93"] *,
-[data-theme="light"] #dash-content [style*="rgb(176, 48, 245)"],
-[data-theme="light"] #dash-content [style*="rgb(176, 48, 245)"] *,
-[data-theme="light"] #dash-content [style*="rgb(176,48,245)"],
-[data-theme="light"] #dash-content [style*="rgb(176,48,245)"] * {
+[data-theme="light"] :is(#dash-content, .light-page) [style*="linear-gradient(135deg"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="linear-gradient(135deg"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(59, 130, 239)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(59, 130, 239)"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(59,130,239)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(59,130,239)"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="#3B82EF"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="#3B82EF"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150, 86, 254)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150, 86, 254)"] *,
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150,86,254)"],
+[data-theme="light"] :is(#dash-content, .light-page) [style*="rgb(150,86,254)"] * {
   color: #ffffff !important;
 }
 /* colored buttons keep their own background (undo rule 2 if it ever matched) */
-[data-theme="light"] #dash-content [style*="linear-gradient(135deg"] {
+[data-theme="light"] :is(#dash-content, .light-page) [style*="linear-gradient(135deg"] {
   box-shadow: none !important;
 }
 
 /* 6 — gradient / clipped text stays transparent (shimmer, logo) */
-[data-theme="light"] #dash-content [style*="text-fill-color: transparent"],
-[data-theme="light"] #dash-content .shimmer-gradient {
+[data-theme="light"] :is(#dash-content, .light-page) [style*="text-fill-color: transparent"],
+[data-theme="light"] :is(#dash-content, .light-page) .shimmer-gradient {
   color: transparent !important;
   -webkit-text-fill-color: transparent !important;
 }
 
 /* 7 — inputs */
-[data-theme="light"] #dash-content input,
-[data-theme="light"] #dash-content textarea,
-[data-theme="light"] #dash-content select {
-  background: #ffffff !important;
-  border-color: rgba(124, 58, 237, 0.2) !important;
-  color: #2A1758 !important;
+[data-theme="light"] :is(#dash-content, .light-page) input,
+[data-theme="light"] :is(#dash-content, .light-page) textarea,
+[data-theme="light"] :is(#dash-content, .light-page) select {
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(120, 90, 200, 0.2) !important;
+  color: #253A53 !important;
 }
-[data-theme="light"] #dash-content input::placeholder,
-[data-theme="light"] #dash-content textarea::placeholder {
+[data-theme="light"] :is(#dash-content, .light-page) input::placeholder,
+[data-theme="light"] :is(#dash-content, .light-page) textarea::placeholder {
   color: #9B8BC4 !important;
 }
 
@@ -326,24 +333,22 @@ body {
    runtime as a raw <style> by ThemeProvider instead — see contexts/ThemeContext.tsx
    (LIGHT_CARD_FIX). Kept here only as documentation of the intent. */
 
-/* 9 — blue tints (bg/hover/border) → purple tints.
-   Keeps the design language purple, never a jarring blue in light mode. */
-[data-theme="light"] #dash-content [style*="rgba(247, 45, 147"],
-[data-theme="light"] #dash-content [style*="rgba(247,45,147"] {
-  background-color: rgba(124, 58, 237, 0.10) !important;
-  border-color: rgba(124, 58, 237, 0.28) !important;
-}
+/* 9 — (removed) blue is now a primary brand accent (#3B82EF) and is kept
+   as-is in light mode; no blue→purple conversion. */
 
-.sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(176,48,245,0.2) transparent; }
+.sidebar-scroll { scrollbar-width: thin; scrollbar-color: rgba(150,86,254,0.2) transparent; }
 .sidebar-scroll::-webkit-scrollbar { width: 3px; }
 .sidebar-scroll::-webkit-scrollbar-track { background: transparent; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(176,48,245,0.25); border-radius: 99px; }
+.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(150,86,254,0.25); border-radius: 99px; }
 
-/* Dashboard dark override */
+/* Dashboard wrapper — airy light gradient (single light theme) */
 .dash-root {
-  background: linear-gradient(160deg, #1C0F2B 0%, #20112F 55%, #261141 100%);
+  background:
+    radial-gradient(1150px 620px at 85% -12%, rgba(190,86,254,0.30), transparent 58%),
+    radial-gradient(1050px 600px at 2% 112%, rgba(59,130,239,0.26), transparent 60%),
+    linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 42%, #CCE0FF 100%);
   min-height: 100vh;
-  color: #ffffff;
+  color: #253A53;
 }
 .dash-root body,
 .dash-root * {
@@ -599,12 +604,65 @@ body {
   to   { opacity: 1; transform: scale(1); }
 }
 
+/* Soft elevation for the airy light design (was a dark-mode neon glow). */
 .neon-card {
-  box-shadow: 0 0 32px rgba(176,48,245,0.25), 0 16px 48px rgba(0,0,0,0.25);
+  box-shadow: 0 10px 34px rgba(84,60,150,0.14);
+  transition: transform 0.28s cubic-bezier(0.22,0.61,0.36,1),
+              box-shadow 0.28s cubic-bezier(0.22,0.61,0.36,1);
+  will-change: transform;
 }
 .neon-card:hover {
-  box-shadow: 0 0 0 1.5px rgba(176,48,245,0.5), 0 0 48px rgba(176,48,245,0.5), 0 0 96px rgba(206,123,255,0.25), 0 20px 60px rgba(0,0,0,0.3);
-  transform: translateY(-6px);
+  box-shadow: 0 0 0 1px rgba(150,86,254,0.28), 0 16px 44px rgba(84,60,150,0.20);
+  transform: translateY(-4px);
+}
+
+/* ═══════════════════════════════════════
+   MOTION & POLISH — smooth, flowing feel
+   (single light theme; palette unchanged)
+═══════════════════════════════════════ */
+:root {
+  --ease-out:    cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.30, 0.50, 1);
+  --dur-1: 140ms;
+  --dur-2: 220ms;
+  --dur-3: 340ms;
+}
+
+/* Tactile, consistent feedback on every control */
+button, [role="button"], a[href] {
+  transition: transform var(--dur-1) var(--ease-out),
+              box-shadow var(--dur-2) var(--ease-out),
+              background-color var(--dur-2) var(--ease-out),
+              color var(--dur-1) var(--ease-out),
+              opacity var(--dur-1) var(--ease-out),
+              filter var(--dur-1) var(--ease-out);
+}
+button:active, [role="button"]:active { transform: scale(0.97); }
+
+/* On-brand, always-visible keyboard focus */
+:focus-visible {
+  outline: 2px solid rgba(59, 130, 239, 0.65);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+::selection { background: rgba(150, 86, 254, 0.22); color: #253A53; }
+
+/* Gentle, flowing entrance for dashboard content on load */
+@keyframes flow-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+#dash-content { animation: flow-up 0.5s var(--ease-out) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  #dash-content, .reveal,
+  .hero-badge, .hero-h1, .hero-sub, .hero-ctas,
+  .logo-float, .ring-cw, .ring-ccw, .logo-glow-bg {
+    animation: none !important;
+  }
+  .neon-card:hover { transform: none; }
+  html { scroll-behavior: auto; }
 }
 
 /* ── Font utility — rebranded: unified on Rubik across the whole app
@@ -622,6 +680,22 @@ body {
 .hero-h1    { animation: fade-up 0.7s ease 0.2s both; }
 .hero-sub   { animation: fade-up 0.7s ease 0.35s both; }
 .hero-ctas  { animation: fade-up 0.7s ease 0.5s both; }
+
+/* Hero product showcase — enters, then floats gently */
+.hero-visual { animation: fade-up 0.8s cubic-bezier(0.22,0.61,0.36,1) 0.4s both; }
+@keyframes float-a { 0%,100% { transform: rotate(-5deg) translateY(0); } 50% { transform: rotate(-5deg) translateY(-9px); } }
+@keyframes float-b { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-13px); } }
+.hero-float-a { animation: float-a 6.5s ease-in-out 0.9s infinite; }
+.hero-float-b { animation: float-b 7.5s ease-in-out 1.1s infinite; }
+
+@media (max-width: 860px) {
+  .hero-grid   { grid-template-columns: 1fr !important; }
+  .hero-visual { min-height: 430px !important; margin-top: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-visual, .hero-float-a, .hero-float-b { animation: none !important; }
+  .hero-float-a { transform: rotate(-5deg); }
+}
 
 .animate-fade-in  { animation: fade-in  0.4s ease both; }
 .animate-scale-in { animation: scale-in 0.35s ease both; }

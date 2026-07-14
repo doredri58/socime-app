@@ -31,20 +31,20 @@ export function QuickActionList({ actions }: { actions: QuickAction[] }) {
             display: 'flex', alignItems: 'center', gap: 12,
             padding: '12px 14px', borderRadius: 16,
             background: 'rgba(13,10,31,0.7)',
-            border: '1px solid rgba(176,48,245,0.12)',
+            border: '1px solid rgba(150,86,254,0.12)',
             backdropFilter: 'blur(8px)',
             transition: 'all 0.18s ease',
             cursor: 'pointer',
           }}
           onMouseEnter={e => {
             const el = e.currentTarget as HTMLElement
-            el.style.borderColor = 'rgba(176,48,245,0.35)'
+            el.style.borderColor = 'rgba(150,86,254,0.35)'
             el.style.transform = 'translateX(-3px)'
             el.style.boxShadow = '0 4px 24px rgba(109,40,217,0.15)'
           }}
           onMouseLeave={e => {
             const el = e.currentTarget as HTMLElement
-            el.style.borderColor = 'rgba(176,48,245,0.12)'
+            el.style.borderColor = 'rgba(150,86,254,0.12)'
             el.style.transform = ''
             el.style.boxShadow = ''
           }}>
@@ -71,7 +71,7 @@ export function FeatureGrid({ items }: { items: FeatureCard[] }) {
           <div style={{
             borderRadius: 20, padding: '18px 20px',
             background: 'rgba(13,10,31,0.6)',
-            border: '1px solid rgba(176,48,245,0.1)',
+            border: '1px solid rgba(150,86,254,0.1)',
             backdropFilter: 'blur(10px)',
             height: '100%',
             transition: 'all 0.2s ease',
@@ -79,13 +79,13 @@ export function FeatureGrid({ items }: { items: FeatureCard[] }) {
           }}
           onMouseEnter={e => {
             const el = e.currentTarget as HTMLElement
-            el.style.borderColor = 'rgba(176,48,245,0.3)'
+            el.style.borderColor = 'rgba(150,86,254,0.3)'
             el.style.transform = 'translateY(-3px)'
             el.style.boxShadow = '0 8px 32px rgba(109,40,217,0.18)'
           }}
           onMouseLeave={e => {
             const el = e.currentTarget as HTMLElement
-            el.style.borderColor = 'rgba(176,48,245,0.1)'
+            el.style.borderColor = 'rgba(150,86,254,0.1)'
             el.style.transform = ''
             el.style.boxShadow = ''
           }}>

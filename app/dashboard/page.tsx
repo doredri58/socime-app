@@ -132,9 +132,9 @@ export default async function DashboardHome() {
           <Link href="/dashboard/queue" style={{
             display: 'inline-flex', alignItems: 'center', gap: 5,
             padding: '7px 16px', borderRadius: 999,
-            background: 'rgba(176,48,245,0.12)',
-            border: '1px solid rgba(176,48,245,0.25)',
-            color: '#CE7BFF', fontSize: 12, fontWeight: 600,
+            background: 'rgba(150,86,254,0.12)',
+            border: '1px solid rgba(150,86,254,0.25)',
+            color: '#BE56FE', fontSize: 12, fontWeight: 600,
             textDecoration: 'none',
           }}>
             <i className="ti ti-calendar-event" style={{ fontSize: 13 }} />
@@ -154,10 +154,10 @@ export default async function DashboardHome() {
                 borderRadius: 16,
                 padding: '12px 8px',
                 background: isToday
-                  ? 'linear-gradient(160deg, rgba(176,48,245,0.2), rgba(206,123,255,0.1))'
+                  ? 'linear-gradient(160deg, rgba(150,86,254,0.2), rgba(190,86,254,0.1))'
                   : 'rgba(255,255,255,0.03)',
                 border: isToday
-                  ? '1px solid rgba(176,48,245,0.4)'
+                  ? '1px solid rgba(150,86,254,0.4)'
                   : '1px solid rgba(255,255,255,0.07)',
                 display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
                 opacity: isPast ? 0.5 : 1,
@@ -166,7 +166,7 @@ export default async function DashboardHome() {
                 {/* Day name */}
                 <span style={{
                   fontSize: 10, fontWeight: 700,
-                  color: isToday ? '#CE7BFF' : 'rgba(255,255,255,0.45)',
+                  color: isToday ? '#BE56FE' : 'rgba(255,255,255,0.45)',
                   letterSpacing: '0.5px',
                 }}>
                   {DAYS_HE[idx]}
@@ -175,11 +175,11 @@ export default async function DashboardHome() {
                 {/* Date number */}
                 <div style={{
                   width: 28, height: 28, borderRadius: '50%',
-                  background: isToday ? '#B030F5' : 'transparent',
+                  background: isToday ? '#9656FE' : 'transparent',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 13, fontWeight: isToday ? 800 : 500,
                   color: isToday ? '#fff' : 'rgba(255,255,255,0.7)',
-                  boxShadow: isToday ? '0 2px 10px rgba(176,48,245,0.5)' : 'none',
+                  boxShadow: isToday ? '0 2px 10px rgba(150,86,254,0.5)' : 'none',
                 }}>
                   {day.getDate()}
                 </div>
@@ -190,12 +190,12 @@ export default async function DashboardHome() {
                     <div key={p.id} style={{
                       borderRadius: 6,
                       padding: '3px 6px',
-                      background: `${PLATFORM_COLOR[p.platform] ?? '#CE7BFF'}18`,
-                      border: `1px solid ${PLATFORM_COLOR[p.platform] ?? '#CE7BFF'}30`,
+                      background: `${PLATFORM_COLOR[p.platform] ?? '#BE56FE'}18`,
+                      border: `1px solid ${PLATFORM_COLOR[p.platform] ?? '#BE56FE'}30`,
                       display: 'flex', alignItems: 'center', gap: 4,
                     }}>
                       <i className={`ti ${PLATFORM_ICON[p.platform] ?? 'ti-brand-instagram'}`}
-                        style={{ fontSize: 9, color: PLATFORM_COLOR[p.platform] ?? '#CE7BFF', flexShrink: 0 }} />
+                        style={{ fontSize: 9, color: PLATFORM_COLOR[p.platform] ?? '#BE56FE', flexShrink: 0 }} />
                       <span style={{
                         fontSize: 9, color: 'rgba(255,255,255,0.65)',
                         overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -283,9 +283,9 @@ export default async function DashboardHome() {
                   </div>
                   <Link href="/dashboard/social" style={{
                     padding: '5px 14px', borderRadius: 999,
-                    background: connected ? 'rgba(52,211,153,0.12)' : 'rgba(176,48,245,0.15)',
-                    border: `1px solid ${connected ? 'rgba(52,211,153,0.25)' : 'rgba(176,48,245,0.3)'}`,
-                    color: connected ? '#34D399' : '#CE7BFF',
+                    background: connected ? 'rgba(52,211,153,0.12)' : 'rgba(150,86,254,0.15)',
+                    border: `1px solid ${connected ? 'rgba(52,211,153,0.25)' : 'rgba(150,86,254,0.3)'}`,
+                    color: connected ? '#34D399' : '#BE56FE',
                     fontSize: 11, fontWeight: 600, textDecoration: 'none',
                     whiteSpace: 'nowrap',
                   }}>
@@ -315,7 +315,7 @@ export default async function DashboardHome() {
           {/* Stats grid */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
             {[
-              { label: 'פוסטים בתור',    value: queueCount ?? 0, icon: 'ti-calendar-event', color: '#CE7BFF', suffix: '' },
+              { label: 'פוסטים בתור',    value: queueCount ?? 0, icon: 'ti-calendar-event', color: '#BE56FE', suffix: '' },
               { label: 'טוקנים נותרו',   value: tokens,          icon: 'ti-coins',          color: '#FCD34D', suffix: '' },
               { label: 'פוסטים השבוע',   value: posts.length,    icon: 'ti-chart-bar',      color: '#34D399', suffix: '' },
               { label: 'רשתות מחוברות',  value: connectedPlatforms.length, icon: 'ti-brand-instagram', color: '#60A5FA', suffix: '/3' },
@@ -359,12 +359,12 @@ export default async function DashboardHome() {
                       width: '100%', borderRadius: 4,
                       height: `${heightPct}%`,
                       background: isToday
-                        ? 'linear-gradient(180deg, #B030F5, #CE7BFF)'
-                        : count > 0 ? 'rgba(176,48,245,0.35)' : 'rgba(255,255,255,0.06)',
+                        ? 'linear-gradient(180deg, #9656FE, #BE56FE)'
+                        : count > 0 ? 'rgba(150,86,254,0.35)' : 'rgba(255,255,255,0.06)',
                       transition: 'height 0.3s ease',
                       minHeight: 3,
                     }} />
-                    <span style={{ fontSize: 8, color: isToday ? '#CE7BFF' : 'rgba(255,255,255,0.25)' }}>
+                    <span style={{ fontSize: 8, color: isToday ? '#BE56FE' : 'rgba(255,255,255,0.25)' }}>
                       {DAYS_HE[idx].charAt(0)}
                     </span>
                   </div>

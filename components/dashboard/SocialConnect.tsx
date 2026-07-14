@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
 
 interface ConnectedPlatform {
   platform: string
@@ -150,7 +150,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
             }}>
               {/* Pro badge — only when actually locked for this user */}
               {locked && (
-                <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 999, background: 'rgba(176,48,245,0.2)', border: '1px solid rgba(176,48,245,0.3)' }}>
+                <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 999, background: 'rgba(150,86,254,0.2)', border: '1px solid rgba(150,86,254,0.3)' }}>
                   <i className="ti ti-lock" style={{ fontSize: 10, color: PURPLE2 }} />
                   <span style={{ fontSize: 9, fontWeight: 800, color: PURPLE2 }}>Pro</span>
                 </div>
@@ -197,7 +197,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
               {locked && !active ? (
                 <button onClick={() => setShowUpgrade(true)} style={{
                   width: '100%', padding: '9px', borderRadius: 12, cursor: 'pointer',
-                  background: 'rgba(176,48,245,0.12)', border: '1px solid rgba(176,48,245,0.25)',
+                  background: 'rgba(150,86,254,0.12)', border: '1px solid rgba(150,86,254,0.25)',
                   color: PURPLE2, fontSize: 12, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}>

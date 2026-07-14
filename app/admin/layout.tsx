@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const admin = await requireAdmin()
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', direction: 'rtl', background: BG_PAGE, fontFamily: 'Space Grotesk, sans-serif' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', direction: 'rtl', background: BG_PAGE, fontFamily: 'var(--font-rubik), Rubik, sans-serif' }}>
 
       {/* ── SIDEBAR ── */}
       <aside style={{

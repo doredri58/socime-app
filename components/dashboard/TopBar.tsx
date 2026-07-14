@@ -14,7 +14,7 @@ interface TopBarProps {
 const MAX_TOKENS: Record<string, number> = { free: 100, basic: 500, pro: 1000, agency: 2000 }
 
 export default function TopBar({ userName, tokens, tier }: TopBarProps) {
-  const { theme, toggle, isDark } = useTheme()
+  const { isDark } = useTheme()
   // Seed from the server prop, then live-refresh whenever tokens are spent.
   const [balance, setBalance] = useState(tokens)
 
@@ -41,7 +41,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
 
   const max = MAX_TOKENS[tier] ?? 100
   const pct = Math.min(Math.round((balance / max) * 100), 100)
-  const tokenColor = pct > 50 ? '#CE7BFF' : pct > 20 ? '#FCD34D' : '#F87171'
+  const tokenColor = pct > 50 ? '#BE56FE' : pct > 20 ? '#FCD34D' : '#F87171'
 
   return (
     <header style={{
@@ -85,36 +85,19 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
           }} />
         </div>
         <Link href="/dashboard/profile" style={{
-          fontSize: 10, fontWeight: 700, color: '#B030F5',
+          fontSize: 10, fontWeight: 700, color: '#9656FE',
           textDecoration: 'none',
           padding: '3px 10px', borderRadius: 999,
-          background: 'rgba(176,48,245,0.15)',
-          border: '1px solid rgba(176,48,245,0.3)',
+          background: 'rgba(150,86,254,0.15)',
+          border: '1px solid rgba(150,86,254,0.3)',
           whiteSpace: 'nowrap',
         }}>
           שדרוג
         </Link>
       </div>
 
-      {/* Left: Theme toggle + Notification + Avatar */}
+      {/* Left: Notification + Avatar */}
       <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 10 }}>
-
-        <button
-          onClick={toggle}
-          aria-label={isDark ? 'מעבר למצב בהיר' : 'מעבר למצב כהה'}
-          title={isDark ? 'מצב בהיר' : 'מצב כהה'}
-          style={{
-            width: 34, height: 34, borderRadius: 10,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'var(--dash-token-bg)',
-            border: '1px solid var(--dash-token-border)',
-            color: 'var(--dash-token-text)',
-            cursor: 'pointer',
-            transition: 'all 0.15s',
-          }}
-        >
-          <i className={`ti ${isDark ? 'ti-sun' : 'ti-moon-stars'}`} style={{ fontSize: 16 }} />
-        </button>
 
         <NotificationBell />
 

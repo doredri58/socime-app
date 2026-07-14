@@ -18,7 +18,7 @@ export default function AdminSearchBar() {
           width: '100%', padding: '8px 36px 8px 12px', borderRadius: 10, fontSize: 12,
           background: '#F1F3F4', border: '1px solid transparent',
           color: TEXT, outline: 'none', direction: 'rtl', boxSizing: 'border-box',
-          fontFamily: 'Space Grotesk, sans-serif',
+          fontFamily: 'var(--font-rubik), Rubik, sans-serif',
         }}
         onFocus={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.background = '#fff' }}
         onBlur={e => { e.currentTarget.style.borderColor = 'transparent'; e.currentTarget.style.background = '#F1F3F4' }}

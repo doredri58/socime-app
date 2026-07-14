@@ -6,9 +6,13 @@ import Onboarding from '@/components/Onboarding'
 import PricingPlans from '@/components/pricing/PricingPlans'
 
 /* ─── Tokens ─── */
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
+const INK     = '#253A53'   // slate — primary text on the light design
+const INK_MID = '#5B5878'
+const INK_LOW = '#857FA6'
+const NOISE   = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")"
 
 /* ─── Styles ─── */
 const glass = (ex?: React.CSSProperties): React.CSSProperties => ({
@@ -27,7 +31,7 @@ const btn = (ex?: React.CSSProperties): React.CSSProperties => ({
   fontWeight: 700, fontSize: 15,
   border: 'none', cursor: 'pointer',
   fontFamily: 'var(--font-rubik),sans-serif',
-  boxShadow: '0 4px 20px rgba(247,45,147,0.45)',
+  boxShadow: '0 4px 20px rgba(59,130,239,0.45)',
   transition: 'all .2s', textDecoration: 'none',
   ...ex,
 })
@@ -56,7 +60,7 @@ function NCard({ children, style, delay = 0 }: {
         animationDelay: `${delay}s`,
         transform: h ? 'translateY(-5px)' : 'none',
         transition: 'transform .28s ease, box-shadow .28s ease',
-        boxShadow: h ? '0 0 0 1.5px rgba(176,48,245,.5),0 0 48px rgba(176,48,245,.45),0 20px 60px rgba(0,0,0,.3)' : undefined,
+        boxShadow: h ? '0 0 0 1.5px rgba(150,86,254,.5),0 0 48px rgba(150,86,254,.45),0 20px 60px rgba(0,0,0,.3)' : undefined,
         ...style,
       }}
       onMouseEnter={() => setH(true)}
@@ -131,8 +135,8 @@ function BaitSection() {
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '5px 16px', borderRadius: 999,
-          background: 'rgba(247,45,147,0.15)', color: '#60A5FA',
-          fontSize: 11, fontWeight: 700, border: '1px solid rgba(247,45,147,0.3)',
+          background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
+          fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)',
           marginBottom: 24,
         }}>הדגמה חיה</div>
 
@@ -164,7 +168,7 @@ function BaitSection() {
               textAlign: 'right', boxSizing: 'border-box',
               transition: 'border-color .2s, box-shadow .2s',
             }}
-            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(206,123,255,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(176,48,245,0.15)' }}
+            onFocus={e => { e.currentTarget.style.borderColor = 'rgba(190,86,254,0.5)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(150,86,254,0.15)' }}
             onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'; e.currentTarget.style.boxShadow = 'none' }}
           />
           <button onClick={handleBait} disabled={stage === 'loading'} style={btn({ fontSize: 15, padding: '14px 40px', opacity: stage === 'loading' ? 0.7 : 1 })}>
@@ -207,8 +211,8 @@ function BaitSection() {
                       width: '100%', maxWidth: 440,
                       background: 'rgba(28,15,43,0.9)', backdropFilter: 'blur(8px)',
                       borderRadius: 18, padding: '22px 24px', textAlign: 'center',
-                      border: '1px solid rgba(206,123,255,0.4)',
-                      boxShadow: '0 0 44px rgba(176,48,245,0.28)',
+                      border: '1px solid rgba(190,86,254,0.4)',
+                      boxShadow: '0 0 44px rgba(150,86,254,0.28)',
                     }}>
                       {emailStage === 'sent' ? (
                         <>
@@ -248,7 +252,7 @@ function BaitSection() {
                                 color: '#fff', fontSize: 14, outline: 'none', textAlign: 'left',
                                 fontFamily: 'var(--font-rubik),sans-serif', boxSizing: 'border-box',
                               }}
-                              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(206,123,255,0.5)' }}
+                              onFocus={e => { e.currentTarget.style.borderColor = 'rgba(190,86,254,0.5)' }}
                               onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)' }}
                             />
                             <button
@@ -303,18 +307,18 @@ function HomeInner() {
 
   if (needsOnboarding && oauthUid) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: '#1C0F2B' }}>
+      <div className="light-page" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, background: 'linear-gradient(152deg,#E9DEFB 0%,#DCD6F7 45%,#CCE0FF 100%)' }}>
         <Onboarding userId={oauthUid} onComplete={() => { window.location.href = '/dashboard' }} />
       </div>
     )
   }
 
   return (
-    <div style={{
+    <div className="light-page" style={{
       minHeight: '100vh',
-      background: `radial-gradient(ellipse at 20% 0%,rgba(206,123,255,.3) 0%,transparent 55%),
-                   radial-gradient(ellipse at 80% 100%,rgba(247,45,147,.2) 0%,transparent 50%),
-                   linear-gradient(160deg,#1C0F2B 0%,#20112F 45%,#261141 100%)`,
+      background: `radial-gradient(ellipse at 20% 0%,rgba(190,86,254,.30) 0%,transparent 55%),
+                   radial-gradient(ellipse at 80% 100%,rgba(59,130,239,.26) 0%,transparent 50%),
+                   linear-gradient(152deg,#E9DEFB 0%,#DCD6F7 45%,#CCE0FF 100%)`,
       fontFamily: 'var(--font-rubik),sans-serif',
     }}>
       {/* ══ NAV ══ */}
@@ -358,75 +362,194 @@ function HomeInner() {
         </div>
       </nav>
 
-      {/* ══ HERO — full width ══ */}
-      <section style={{ padding: '110px 40px 0', maxWidth: 1160, margin: '0 auto' }}>
-        <div style={{ padding: 'clamp(40px,6vw,72px) clamp(32px,6vw,72px)' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '4px 16px', borderRadius: 999,
-              background: 'rgba(255,255,255,0.1)', fontSize: 11, fontWeight: 700,
-              color: 'rgba(255,255,255,0.85)', marginBottom: 32,
+      {/* ══ HERO — asymmetric, product-forward ══ */}
+      <section style={{ position: 'relative', padding: 'clamp(104px,13vh,150px) 40px 44px', maxWidth: 1240, margin: '0 auto', overflow: 'hidden' }}>
+        {/* premium grain — kills the flat-gradient "AI" look */}
+        <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundImage: NOISE, opacity: 0.5, mixBlendMode: 'soft-light', pointerEvents: 'none' }} />
+        {/* soft directional glows behind the product stack */}
+        <div aria-hidden style={{ position: 'absolute', insetInlineStart: '-2%', top: '14%', width: 560, height: 560, borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,239,0.30), transparent 62%)', pointerEvents: 'none' }} />
+        <div aria-hidden style={{ position: 'absolute', insetInlineEnd: '12%', top: '2%', width: 440, height: 440, borderRadius: '50%', background: 'radial-gradient(circle, rgba(190,86,254,0.26), transparent 64%)', pointerEvents: 'none' }} />
+
+        <div className="hero-grid" style={{
+          position: 'relative', zIndex: 1,
+          display: 'grid', gridTemplateColumns: 'minmax(0,1.06fr) minmax(0,0.94fr)',
+          gap: 'clamp(28px,5vw,64px)', alignItems: 'center',
+        }}>
+          {/* ── TEXT (RTL start = right) ── */}
+          <div>
+            <div className="hero-badge" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '6px 15px', borderRadius: 999,
+              background: 'rgba(255,255,255,0.62)', border: '1px solid rgba(255,255,255,0.9)',
+              boxShadow: '0 8px 22px rgba(84,60,150,0.10)',
+              fontSize: 12.5, fontWeight: 700, color: INK_MID, marginBottom: 26,
             }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#A3E635', display: 'inline-block' }} className="pulse-dot" />
-              AI Social Manager לעסקים ישראלים
+              <span className="pulse-dot" style={{ width: 7, height: 7, borderRadius: '50%', background: '#16B999', display: 'inline-block' }} />
+              מנהלת סושיאל AI · לעסקים בישראל
             </div>
 
-            <h1 className="font-arimo" style={{
-              fontSize: 'clamp(2.4rem,6vw,4.8rem)', fontWeight: 700,
-              color: '#fff', lineHeight: 1.1, letterSpacing: '-2px', margin: '0 0 24px',
-              maxWidth: 820,
+            <h1 className="hero-h1" style={{
+              fontSize: 'clamp(2.5rem,5.4vw,4.5rem)', fontWeight: 800,
+              color: INK, lineHeight: 1.04, letterSpacing: '-2.5px', margin: '0 0 22px',
             }}>
-              מספיק לעבוד <span style={{ color: PURPLE2 }}>אצל הסושיאל שלכם.</span>
-              <br />הגיע הזמן שהוא יעבוד <span style={{ color: BLUE }}>בשבילכם.</span>
+              הסושיאל שלכם,<br />
+              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
+                על טייס אוטומטי.
+              </span>
             </h1>
 
-            <p style={{ fontSize: 17, color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, margin: '0 0 40px', maxWidth: 580 }}>
-              הכירו את SociMe — מנהלת הסושיאל הדיגיטלית שלכם. היא חוקרת, כותבת ומתזמנת תוכן ויראלי שעובד על אוטומט, כדי שאתם תוכלו לחזור לנהל את העסק.
+            <p className="hero-sub" style={{ fontSize: 'clamp(15px,1.35vw,18px)', color: INK_MID, lineHeight: 1.7, margin: '0 0 32px', maxWidth: 470 }}>
+              SociMe חוקרת את הקהל שלכם, כותבת פוסטים בעברית מושלמת, מעצבת ומתזמנת — ומפרסמת לפייסבוק, אינסטגרם וטיקטוק. אתם רק מאשרים.
             </p>
 
-            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 36 }}>
+            <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
+              <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '15px 32px' })}>
+                התחילו בחינם
+                <i className="ti ti-arrow-left" style={{ fontSize: 16 }} />
+              </a>
               <button
                 onClick={() => document.getElementById('bait')?.scrollIntoView({ behavior: 'smooth' })}
-                style={btn({ fontSize: 16, padding: '14px 36px' })}>
-                <i className="ti ti-sparkles" style={{ fontSize: 17 }} />
-                נסו עכשיו בחינם · ללא הרשמה
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 9,
+                  padding: '15px 26px', borderRadius: 999, cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.66)', border: '1px solid rgba(255,255,255,0.9)',
+                  color: INK, fontWeight: 700, fontSize: 15, fontFamily: 'var(--font-rubik),sans-serif',
+                  boxShadow: '0 8px 22px rgba(84,60,150,0.10)',
+                }}>
+                <i className="ti ti-player-play-filled" style={{ fontSize: 14, color: BLUE }} />
+                ראו איך זה עובד
               </button>
-              <a href="/login?mode=register" style={ghost({ fontSize: 15, padding: '14px 28px' })}>
-                כניסה / הרשמה
-              </a>
             </div>
 
-            <div style={{ display: 'flex', gap: 28, flexWrap: 'wrap', justifyContent: 'center', marginBottom: 52 }}>
-              {['ללא כרטיס אשראי','ביטול בכל עת','עברית מושלמת','פייסבוק · אינסטגרם · טיקטוק'].map(t => (
-                <span key={t} style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <span style={{ fontWeight: 900, color: '#A3E635' }}>✓</span>{t}
+            <div className="hero-ctas" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
+              {['ללא כרטיס אשראי', 'ביטול בכל עת', 'עברית מושלמת'].map(t => (
+                <span key={t} style={{ fontSize: 13, color: INK_LOW, display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <i className="ti ti-circle-check-filled" style={{ color: '#16B999', fontSize: 15 }} />{t}
                 </span>
               ))}
             </div>
+          </div>
 
-            {/* Stats strip inside hero */}
-            <div style={{
-              width: '100%', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
-              borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 36,
+          {/* ── PRODUCT SHOWCASE (RTL end = left) ── */}
+          <div className="hero-visual" style={{ position: 'relative', minHeight: 460 }}>
+
+            {/* Calendar card — peeking behind, tilted */}
+            <div className="hero-float-a" style={{
+              position: 'absolute', top: 0, insetInlineStart: 0, width: 260,
+              transform: 'rotate(-5deg)',
+              background: 'rgba(255,255,255,0.72)', backdropFilter: 'blur(18px)', WebkitBackdropFilter: 'blur(18px)',
+              border: '1px solid rgba(255,255,255,0.9)', borderRadius: 20, padding: '16px 18px',
+              boxShadow: '0 24px 50px rgba(84,60,150,0.18)',
             }}>
-              {[
-                { num: '30 שנ׳', label: 'מרעיון לפוסט מוכן',      icon: 'ti-bolt',           color: PURPLE2 },
-                { num: '3',       label: 'רשתות ממקום אחד',        icon: 'ti-share',          color: BLUE },
-                { num: '24/7',    label: 'עובד גם כשאתם ישנים',    icon: 'ti-clock',          color: '#10D4A8' },
-              ].map((s, i) => (
-                <div key={i} style={{
-                  padding: '4px 0', textAlign: 'center',
-                  borderRight: i < 2 ? '1px solid rgba(255,255,255,0.08)' : undefined,
-                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
-                }}>
-                  <i className={`ti ${s.icon}`} style={{ fontSize: 18, color: s.color, marginBottom: 4 }} />
-                  <div className="font-arimo" style={{ fontSize: 32, fontWeight: 700, color: '#fff', letterSpacing: '-1px', lineHeight: 1 }}>{s.num}</div>
-                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)' }}>{s.label}</div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: INK, marginBottom: 12 }}>השבוע שלכם</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7,1fr)', gap: 5 }}>
+                {['א','ב','ג','ד','ה','ו','ש'].map((d, i) => (
+                  <div key={i} style={{
+                    display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5,
+                    padding: '6px 0', borderRadius: 9,
+                    background: i === 2 ? `linear-gradient(160deg, rgba(150,86,254,0.16), rgba(59,130,239,0.10))` : 'transparent',
+                    border: i === 2 ? '1px solid rgba(150,86,254,0.30)' : '1px solid transparent',
+                  }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: i === 2 ? PURPLE : INK_LOW }}>{d}</span>
+                    <span style={{
+                      width: 18, height: 18, borderRadius: '50%', display: 'grid', placeItems: 'center',
+                      fontSize: 9, fontWeight: 800,
+                      background: i === 2 ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'transparent',
+                      color: i === 2 ? '#fff' : INK_MID,
+                    }}>{6 + i}</span>
+                    {(i === 1 || i === 2 || i === 4) && (
+                      <span style={{ width: 5, height: 5, borderRadius: '50%', background: i === 4 ? BLUE : PURPLE }} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Main card — AI generator */}
+            <div className="hero-float-b" style={{
+              position: 'absolute', top: 74, insetInlineEnd: 0, width: 340, maxWidth: '100%',
+              background: 'rgba(255,255,255,0.82)', backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
+              border: '1px solid rgba(255,255,255,0.95)', borderRadius: 22, padding: 20,
+              boxShadow: '0 40px 80px rgba(84,60,150,0.22)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 14 }}>
+                <div style={{ width: 30, height: 30, borderRadius: 9, background: `linear-gradient(135deg, ${PURPLE}, ${BLUE})`, display: 'grid', placeItems: 'center', boxShadow: '0 4px 12px rgba(150,86,254,0.4)' }}>
+                  <i className="ti ti-sparkles" style={{ fontSize: 15, color: '#fff' }} />
                 </div>
-              ))}
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: 12.5, fontWeight: 800, color: INK, lineHeight: 1 }}>יצירה מהירה</div>
+                  <div style={{ fontSize: 10, color: INK_LOW, marginTop: 2 }}>SociMe AI</div>
+                </div>
+                <span style={{ fontSize: 9, fontWeight: 700, color: '#16B999', background: 'rgba(22,185,153,0.12)', border: '1px solid rgba(22,185,153,0.28)', padding: '3px 8px', borderRadius: 999 }}>מוכן</span>
+              </div>
+
+              <div style={{ fontSize: 11, color: INK_LOW, marginBottom: 8 }}>הנחיה:</div>
+              <div style={{ fontSize: 12.5, color: INK_MID, background: 'rgba(120,90,200,0.06)', borderRadius: 10, padding: '9px 11px', marginBottom: 12 }}>
+                מבצע סוף עונה — 20% על כל הקולקציה 🔥
+              </div>
+
+              <div style={{ borderRadius: 12, border: '1px solid rgba(120,90,200,0.14)', padding: 12, marginBottom: 14 }}>
+                <div style={{ fontSize: 12.5, color: INK, lineHeight: 1.65, marginBottom: 8 }}>
+                  🌸 סוף עונה = התחלה חדשה לארון! כל הקולקציה ב-20% הנחה, רק לשבוע. רוצות להתחדש? קפצו לסטורי 👆
+                </div>
+                <div style={{ fontSize: 11, color: BLUE, fontWeight: 600 }}>#אופנה #מבצע #סוף_עונה</div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', gap: 7 }}>
+                  {[['ti-brand-instagram', '#E1306C'], ['ti-brand-facebook', '#1877F2'], ['ti-brand-tiktok', '#000']].map(([ic, c]) => (
+                    <span key={ic} style={{ width: 26, height: 26, borderRadius: 8, background: 'rgba(120,90,200,0.07)', display: 'grid', placeItems: 'center' }}>
+                      <i className={`ti ${ic}`} style={{ fontSize: 14, color: c as string }} />
+                    </span>
+                  ))}
+                </div>
+                <button style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 18px', borderRadius: 999, border: 'none', background: `linear-gradient(120deg, ${PURPLE}, ${BLUE})`, color: '#fff', fontSize: 12.5, fontWeight: 700, cursor: 'pointer', boxShadow: '0 6px 16px rgba(150,86,254,0.4)', fontFamily: 'var(--font-rubik),sans-serif' }}>
+                  <i className="ti ti-send" style={{ fontSize: 13 }} />
+                  תזמון
+                </button>
+              </div>
+            </div>
+
+            {/* Floating "published" notification */}
+            <div className="hero-float-c logo-float" style={{
+              position: 'absolute', bottom: 16, insetInlineStart: 24, zIndex: 2,
+              display: 'inline-flex', alignItems: 'center', gap: 10,
+              background: 'rgba(255,255,255,0.9)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)',
+              border: '1px solid rgba(255,255,255,0.95)', borderRadius: 14, padding: '11px 15px',
+              boxShadow: '0 20px 44px rgba(84,60,150,0.20)',
+            }}>
+              <span style={{ width: 30, height: 30, borderRadius: 9, background: 'rgba(22,185,153,0.14)', border: '1px solid rgba(22,185,153,0.3)', display: 'grid', placeItems: 'center' }}>
+                <i className="ti ti-check" style={{ fontSize: 16, color: '#16B999' }} />
+              </span>
+              <div>
+                <div style={{ fontSize: 12, fontWeight: 800, color: INK, lineHeight: 1 }}>הפוסט פורסם ✓</div>
+                <div style={{ fontSize: 10.5, color: INK_LOW, marginTop: 3 }}>12 לייקים · 3 תגובות · עכשיו</div>
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Stats strip */}
+        <div className="hero-ctas" style={{
+          position: 'relative', zIndex: 1, marginTop: 'clamp(40px,6vw,72px)',
+          display: 'grid', gridTemplateColumns: 'repeat(3,1fr)',
+          borderTop: '1px solid rgba(120,90,200,0.16)', paddingTop: 28,
+        }}>
+          {[
+            { num: '30 שנ׳', label: 'מרעיון לפוסט מוכן', icon: 'ti-bolt', color: PURPLE },
+            { num: '3', label: 'רשתות ממקום אחד', icon: 'ti-share', color: BLUE },
+            { num: '24/7', label: 'עובד גם כשאתם ישנים', icon: 'ti-clock', color: '#16B999' },
+          ].map((s, i) => (
+            <div key={i} style={{
+              padding: '4px 0', textAlign: 'center',
+              borderInlineStart: i > 0 ? '1px solid rgba(120,90,200,0.12)' : undefined,
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+            }}>
+              <i className={`ti ${s.icon}`} style={{ fontSize: 18, color: s.color, marginBottom: 4 }} />
+              <div style={{ fontSize: 'clamp(24px,3vw,32px)', fontWeight: 800, color: INK, letterSpacing: '-1px', lineHeight: 1 }}>{s.num}</div>
+              <div style={{ fontSize: 12, color: INK_LOW }}>{s.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -463,52 +586,60 @@ function HomeInner() {
       </section>
 
       {/* ══ HOW IT WORKS — 3 צעדים ══ */}
-      <section className="reveal" style={{ padding: '0 40px 64px', maxWidth: 1160, margin: '0 auto' }}>
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+      <section className="reveal" style={{ padding: '8px 40px 72px', maxWidth: 1160, margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: 44 }}>
           <div style={{
-            display: 'inline-flex', gap: 6, padding: '4px 14px', borderRadius: 999,
-            background: 'rgba(247,45,147,0.15)', color: '#60A5FA',
-            fontSize: 11, fontWeight: 700, border: '1px solid rgba(247,45,147,0.3)', marginBottom: 14,
+            display: 'inline-flex', gap: 6, padding: '5px 15px', borderRadius: 999,
+            background: 'rgba(59,130,239,0.12)', color: '#2E6FD6',
+            fontSize: 12, fontWeight: 700, border: '1px solid rgba(59,130,239,0.26)', marginBottom: 16,
           }}>איך זה עובד</div>
-          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.6rem,3vw,2.2rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 8px' }}>
+          <h2 style={{ fontSize: 'clamp(1.8rem,3.4vw,2.6rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
             שלושה צעדים. ואז אתם חופשיים.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.35)', margin: 0 }}>הגדרה חד-פעמית של 2 דקות — ו-SociMe עובדת בשבילכם מכאן</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>הגדרה חד-פעמית של 2 דקות — ו-SociMe עובדת בשבילכם מכאן</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 0, position: 'relative' }}>
-          {/* connector line */}
-          <div style={{ position: 'absolute', top: 36, right: '16.5%', left: '16.5%', height: 1, background: 'rgba(255,255,255,0.08)', zIndex: 0 }} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }} className="steps-grid">
           {[
             {
-              num: '01', icon: 'ti-building-store', color: PURPLE2,
+              num: '01', icon: 'ti-building-store', color: PURPLE, grad: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
               title: 'ספרו לנו על העסק',
               desc: 'בריף קצר — תחום, קהל יעד, טון הדיבור. פעם אחת. SociMe זוכרת הכל ומשתמשת בזה בכל פוסט.',
             },
             {
-              num: '02', icon: 'ti-sparkles', color: BLUE,
+              num: '02', icon: 'ti-sparkles', color: BLUE, grad: `linear-gradient(135deg, ${BLUE}, #6AA0FF)`,
               title: 'AI כותב, אתם מאשרים',
               desc: 'פוסטים, תמונות, סרטונים — מוכנים בשניות. עברו, ערכו אם רוצים, ואשרו בלחיצה.',
             },
             {
-              num: '03', icon: 'ti-send', color: '#10D4A8',
+              num: '03', icon: 'ti-send', color: '#16B999', grad: 'linear-gradient(135deg, #16B999, #3BD1A6)',
               title: 'SociMe מפרסמת לבד',
               desc: 'בזמן הנכון, בפלטפורמה הנכונה — אוטומטית. אתם מקבלים אישור ומרוויחים שעות בחזרה.',
             },
           ].map((step, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+            <div key={i} style={{
+              position: 'relative', overflow: 'hidden',
+              background: 'rgba(255,255,255,0.55)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.75)', borderRadius: 22, padding: '30px 26px',
+              boxShadow: '0 10px 34px rgba(84,60,150,0.12)',
+            }}>
+              {/* ghost numeral */}
+              <span aria-hidden style={{
+                position: 'absolute', top: -18, insetInlineEnd: 6,
+                fontSize: 118, fontWeight: 800, lineHeight: 1,
+                background: step.grad, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent',
+                opacity: 0.12, pointerEvents: 'none', letterSpacing: '-4px',
+              }}>{step.num}</span>
+
               <div style={{
-                width: 72, height: 72, borderRadius: '50%', marginBottom: 22,
-                background: `radial-gradient(circle, ${step.color}22 0%, transparent 70%)`,
-                border: `1.5px solid ${step.color}40`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
+                width: 52, height: 52, borderRadius: 15, marginBottom: 18,
+                background: step.grad, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: `0 8px 20px ${step.color}44`,
               }}>
-                <i className={`ti ${step.icon}`} style={{ fontSize: 28, color: step.color }} />
+                <i className={`ti ${step.icon}`} style={{ fontSize: 24, color: '#fff' }} />
               </div>
-              <div style={{ fontSize: 10, fontWeight: 900, color: step.color, letterSpacing: '2px', marginBottom: 8, opacity: 0.6 }}>{step.num}</div>
-              <div className="font-arimo" style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75 }}>{step.desc}</div>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: INK, margin: '0 0 10px', lineHeight: 1.3 }}>{step.title}</h3>
+              <p style={{ fontSize: 13.5, color: INK_MID, lineHeight: 1.75, margin: 0 }}>{step.desc}</p>
             </div>
           ))}
         </div>
@@ -517,10 +648,10 @@ function HomeInner() {
       {/* ══ FEATURES — 4 value pillars ══ */}
       <section id="features" className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1060, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
-          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.6rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            כל מה שצוות שיווק עושה — SociMe עושה לבד.
+          <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.7rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
+            כל מה שצוות שיווק עושה — <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>SociMe עושה לבד.</span>
           </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.4)', margin: 0 }}>ארבעה תחומים, פלטפורמה אחת. בלי לקפוץ בין כלים.</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>ארבעה תחומים, פלטפורמה אחת. בלי לקפוץ בין כלים.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
@@ -555,9 +686,9 @@ function HomeInner() {
                 <div style={{ width: 48, height: 48, borderRadius: 14, background: `${feat.color}1A`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <i className={`ti ${feat.icon}`} style={{ fontSize: 24, color: feat.color }} />
                 </div>
-                <div className="font-arimo" style={{ fontSize: 18, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{feat.title}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: INK, lineHeight: 1.3 }}>{feat.title}</div>
               </div>
-              <div style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.8, flex: 1, marginBottom: 18 }}>{feat.desc}</div>
+              <div style={{ fontSize: 14, color: INK_MID, lineHeight: 1.8, flex: 1, marginBottom: 18 }}>{feat.desc}</div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {feat.tools.map(t => (
                   <span key={t} style={{
@@ -586,9 +717,9 @@ function HomeInner() {
         <div style={{ display: 'grid', gridTemplateColumns: '5fr 4fr', gap: 16 }}>
           <NCard style={{ padding: '52px 52px' }}>
             <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE2, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: 16 }}>EDRI GROUP</div>
-            <h2 className="font-arimo" style={{ fontSize: 'clamp(1.5rem,2.8vw,2.1rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1px', margin: '0 0 20px', lineHeight: 1.25 }}>
+            <h2 style={{ fontSize: 'clamp(1.6rem,2.8vw,2.2rem)', fontWeight: 800, color: INK, letterSpacing: '-1px', margin: '0 0 20px', lineHeight: 1.25 }}>
               לא בנינו עוד כלי.<br />
-              <span style={{ color: PURPLE2 }}>בנינו את הפתרון שרצינו שיהיה קיים.</span>
+              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>בנינו את הפתרון שרצינו שיהיה קיים.</span>
             </h2>
             <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.85, margin: '0 0 14px' }}>
               כשבעלי עסקים קטנים שואלים &quot;מאיפה לכם זמן לסושיאל?&quot; — התשובה הכנה היא שלא היה לנו. עד שבנינו כלי שעושה את זה עבורנו.
@@ -598,7 +729,7 @@ function HomeInner() {
             </p>
             <div style={{
               padding: '16px 20px', borderRadius: 14,
-              background: 'rgba(176,48,245,0.1)', border: '1px solid rgba(206,123,255,0.2)',
+              background: 'rgba(150,86,254,0.1)', border: '1px solid rgba(190,86,254,0.2)',
               fontSize: 13, color: 'rgba(255,255,255,0.68)', lineHeight: 1.7,
             }}>
               <strong style={{ color: PURPLE2 }}>המשימה שלנו:</strong> לתת לכל עסק קטן בישראל את הכלים שהיו עד עכשיו שמורים רק לתאגידים עם תקציבי שיווק ענקיים.
@@ -612,7 +743,7 @@ function HomeInner() {
                   width: 64, height: 64, borderRadius: 20, flexShrink: 0,
                   background: `linear-gradient(135deg,${PURPLE},${PURPLE2})`,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', boxShadow: `0 8px 28px rgba(176,48,245,0.4)`,
+                  color: '#fff', boxShadow: `0 8px 28px rgba(150,86,254,0.4)`,
                 }}>
                   <i className="ti ti-code" style={{ fontSize: 28 }} />
                 </div>
@@ -652,25 +783,36 @@ function HomeInner() {
 
       {/* ══ CTA BANNER ══ */}
       <section className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1160, margin: '0 auto' }}>
-        <NCard style={{ padding: '72px 40px', textAlign: 'center' }}>
-          <h2 className="font-arimo" style={{ fontSize: 'clamp(1.8rem,3.5vw,2.8rem)', fontWeight: 700, color: '#fff', letterSpacing: '-1.5px', margin: '0 0 14px' }}>
-            מוכנים להפסיק לרדוף אחרי הסושיאל?
-          </h2>
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.58)', margin: '0 0 36px', lineHeight: 1.7, maxWidth: 520, marginInline: 'auto' }}>
-            תנו ל-AI לנהל את הסושיאל שלכם — ותרוויחו שעות בחזרה כל שבוע, בלי לוותר על הנוכחות הדיגיטלית.
-          </p>
-          <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '16px 44px' })}>
-            <i className="ti ti-arrow-left" style={{ fontSize: 18 }} />
-            התחילו בחינם
-          </a>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.22)', marginTop: 18, marginBottom: 0 }}>
-            ללא כרטיס אשראי · הגדרה תוך 2 דקות · ביטול בכל עת
-          </p>
-        </NCard>
+        <div style={{
+          position: 'relative', overflow: 'hidden', borderRadius: 30, textAlign: 'center',
+          padding: 'clamp(52px,7vw,84px) 40px',
+          background: 'linear-gradient(140deg, rgba(150,86,254,0.16) 0%, rgba(255,255,255,0.5) 45%, rgba(59,130,239,0.16) 100%)',
+          backdropFilter: 'blur(22px)', WebkitBackdropFilter: 'blur(22px)',
+          border: '1px solid rgba(255,255,255,0.8)',
+          boxShadow: '0 30px 70px rgba(84,60,150,0.18)',
+        }}>
+          <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundImage: NOISE, opacity: 0.5, mixBlendMode: 'soft-light', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative' }}>
+            <h2 style={{ fontSize: 'clamp(1.9rem,3.6vw,3rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 16px' }}>
+              מוכנים להפסיק לרדוף<br />אחרי{' '}
+              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>הסושיאל?</span>
+            </h2>
+            <p style={{ fontSize: 16, color: INK_MID, margin: '0 auto 36px', lineHeight: 1.7, maxWidth: 520 }}>
+              תנו ל-AI לנהל את הסושיאל שלכם — ותרוויחו שעות בחזרה כל שבוע, בלי לוותר על הנוכחות הדיגיטלית.
+            </p>
+            <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '16px 44px' })}>
+              <i className="ti ti-arrow-left" style={{ fontSize: 18 }} />
+              התחילו בחינם
+            </a>
+            <p style={{ fontSize: 12.5, color: INK_LOW, marginTop: 18, marginBottom: 0 }}>
+              ללא כרטיס אשראי · הגדרה תוך 2 דקות · ביטול בכל עת
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* ══ FOOTER ══ */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '44px 40px', background: 'rgba(0,0,0,0.22)' }}>
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.7)', padding: '48px 40px', background: 'rgba(255,255,255,0.4)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
         <div style={{ maxWidth: 1160, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 18, textAlign: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 32, height: 32, borderRadius: 9, overflow: 'hidden' }}>

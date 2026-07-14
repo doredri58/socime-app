@@ -4,8 +4,8 @@ import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
 const GREEN   = '#34D399'
 const RED     = '#F87171'
 
@@ -50,7 +50,7 @@ function Field({ label, type = 'text', value, onChange, placeholder, readOnly }:
         onBlur={() => setFocused(false)}
         style={{
           ...INPUT, borderColor: focused ? `${PURPLE}80` : 'rgba(255,255,255,0.10)',
-          boxShadow: focused ? '0 0 0 3px rgba(176,48,245,0.10)' : 'none',
+          boxShadow: focused ? '0 0 0 3px rgba(150,86,254,0.10)' : 'none',
           opacity: readOnly ? 0.6 : 1, cursor: readOnly ? 'default' : 'text',
         }}
       />
@@ -64,9 +64,9 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
     <div onClick={onChange} style={{
       width: 44, height: 24, borderRadius: 999, cursor: 'pointer', flexShrink: 0,
       background: on ? `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})` : 'rgba(255,255,255,0.12)',
-      border: `1px solid ${on ? 'rgba(176,48,245,0.5)' : 'rgba(255,255,255,0.15)'}`,
+      border: `1px solid ${on ? 'rgba(150,86,254,0.5)' : 'rgba(255,255,255,0.15)'}`,
       position: 'relative', transition: 'all 0.25s',
-      boxShadow: on ? '0 0 12px rgba(176,48,245,0.35)' : 'none',
+      boxShadow: on ? '0 0 12px rgba(150,86,254,0.35)' : 'none',
     }}>
       <div style={{
         position: 'absolute', top: 3, width: 16, height: 16, borderRadius: '50%',
@@ -107,7 +107,7 @@ function SaveBtn({ onClick, loading, label = 'שמור שינויים' }: { onCl
       padding: '11px 26px', borderRadius: 13, cursor: loading ? 'wait' : 'pointer', fontSize: 13, fontWeight: 800,
       background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
       display: 'inline-flex', alignItems: 'center', gap: 8,
-      boxShadow: '0 4px 18px rgba(176,48,245,0.35)', opacity: loading ? 0.75 : 1, transition: 'all 0.2s',
+      boxShadow: '0 4px 18px rgba(150,86,254,0.35)', opacity: loading ? 0.75 : 1, transition: 'all 0.2s',
     }}>
       {loading
         ? <><Spinner />שומר...</>
@@ -193,8 +193,8 @@ function ProfileTab({ showToast }: { showToast: (m: string, ok: boolean) => void
           <div style={{ width: 72, height: 72, borderRadius: '50%', overflow: 'hidden',
             background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            border: '3px solid rgba(176,48,245,0.35)',
-            boxShadow: '0 0 20px rgba(176,48,245,0.3)',
+            border: '3px solid rgba(150,86,254,0.35)',
+            boxShadow: '0 0 20px rgba(150,86,254,0.3)',
           }}>
             {avatar
               ? <img src={avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -271,7 +271,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
       {/* password */}
       <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-          <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(176,48,245,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(150,86,254,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <i className="ti ti-lock" style={{ fontSize: 15, color: PURPLE2 }} />
           </div>
           <div>
@@ -286,7 +286,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
         </div>
         <button onClick={changePassword} disabled={loading} style={{
           padding: '10px 22px', borderRadius: 12, cursor: loading ? 'wait' : 'pointer', fontSize: 12, fontWeight: 700,
-          background: 'rgba(176,48,245,0.15)', border: '1px solid rgba(176,48,245,0.3)', color: PURPLE2,
+          background: 'rgba(150,86,254,0.15)', border: '1px solid rgba(150,86,254,0.3)', color: PURPLE2,
           display: 'inline-flex', alignItems: 'center', gap: 7, opacity: loading ? 0.7 : 1,
         }}>
           {loading ? <><Spinner />מעדכן...</> : <><i className="ti ti-refresh" style={{ fontSize: 13 }} />עדכן סיסמה</>}
@@ -334,7 +334,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
       <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(247,45,147,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(59,130,239,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <i className="ti ti-devices" style={{ fontSize: 15, color: '#60A5FA' }} />
             </div>
             <div>
@@ -405,13 +405,13 @@ function NotificationsTab() {
   return (
     <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
       <div style={{ marginBottom: 4 }}>
-        <ToggleRow icon="ti-send"          iconColor="#60A5FA"  iconBg="rgba(247,45,147,0.12)"
+        <ToggleRow icon="ti-send"          iconColor="#60A5FA"  iconBg="rgba(59,130,239,0.12)"
           label="התראות על פרסום פוסטים" sub="קבל התראה כשפוסט פורסם בהצלחה"
           on={notifs.publishing} onChange={() => toggle('publishing')} />
         <ToggleRow icon="ti-coins"         iconColor="#FBBF24"  iconBg="rgba(251,191,36,0.10)"
           label="התראות על סיום טוקנים"  sub="קבל התראה כשנותרו פחות מ-20 טוקנים"
           on={notifs.lowTokens} onChange={() => toggle('lowTokens')} />
-        <ToggleRow icon="ti-bell-ringing"  iconColor={PURPLE2}  iconBg="rgba(176,48,245,0.12)"
+        <ToggleRow icon="ti-bell-ringing"  iconColor={PURPLE2}  iconBg="rgba(150,86,254,0.12)"
           label="עדכוני מערכת מ-SociMe"   sub="חדשות, שיפורים ותחזוקות מתוכננות"
           on={notifs.sysUpdates} onChange={() => toggle('sysUpdates')} />
         <ToggleRow icon="ti-chart-bar"     iconColor={GREEN}    iconBg="rgba(52,211,153,0.10)"
@@ -452,8 +452,8 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
 
   if (!isPro) return (
     <div className="neon-card" style={{ ...GLASS, padding: '40px', textAlign: 'center' }}>
-      <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(176,48,245,0.15)',
-        border: '1px solid rgba(176,48,245,0.28)', display: 'flex', alignItems: 'center',
+      <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(150,86,254,0.15)',
+        border: '1px solid rgba(150,86,254,0.28)', display: 'flex', alignItems: 'center',
         justifyContent: 'center', margin: '0 auto 16px' }}>
         <i className="ti ti-lock" style={{ fontSize: 26, color: PURPLE2 }} />
       </div>
@@ -464,7 +464,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
       <button onClick={onUpgrade} style={{
         padding: '12px 28px', borderRadius: 14, cursor: 'pointer', fontSize: 13, fontWeight: 800,
         background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
-        display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 18px rgba(176,48,245,0.35)',
+        display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 18px rgba(150,86,254,0.35)',
       }}>
         <i className="ti ti-crown" style={{ fontSize: 15, color: '#FBBF24' }} /> שדרג לPro
       </button>
@@ -495,7 +495,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
             padding: '11px 20px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 800,
             background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
             whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 6,
-            boxShadow: '0 3px 12px rgba(176,48,245,0.3)',
+            boxShadow: '0 3px 12px rgba(150,86,254,0.3)',
           }}>
             <i className="ti ti-send" style={{ fontSize: 13 }} /> שלח הזמנה
           </button>
@@ -521,8 +521,8 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>{m.email}</div>
             </div>
             <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
-              background: m.role === 'admin' ? 'rgba(176,48,245,0.12)' : 'rgba(247,45,147,0.10)',
-              border: `1px solid ${m.role === 'admin' ? 'rgba(176,48,245,0.28)' : 'rgba(247,45,147,0.22)'}`,
+              background: m.role === 'admin' ? 'rgba(150,86,254,0.12)' : 'rgba(59,130,239,0.10)',
+              border: `1px solid ${m.role === 'admin' ? 'rgba(150,86,254,0.28)' : 'rgba(59,130,239,0.22)'}`,
               color: m.role === 'admin' ? PURPLE2 : '#60A5FA' }}>
               {m.role === 'admin' ? 'מנהל' : 'עורך'}
             </span>
@@ -571,7 +571,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
       {/* export data */}
-      <div style={{ ...GLASS, padding: '22px', borderRadius: 20, border: '1px solid rgba(247,45,147,0.18)' }}>
+      <div style={{ ...GLASS, padding: '22px', borderRadius: 20, border: '1px solid rgba(59,130,239,0.18)' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 }}>
@@ -584,7 +584,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
           </div>
           <button onClick={exportData} style={{
             padding: '10px 20px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
-            background: 'rgba(247,45,147,0.12)', border: '1px solid rgba(247,45,147,0.28)',
+            background: 'rgba(59,130,239,0.12)', border: '1px solid rgba(59,130,239,0.28)',
             color: '#60A5FA', display: 'inline-flex', alignItems: 'center', gap: 7, flexShrink: 0,
           }}>
             <i className="ti ti-file-download" style={{ fontSize: 14 }} /> הורד את הנתונים שלי
@@ -706,10 +706,10 @@ export default function SettingsPage() {
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} style={{
                 width: '100%', padding: '11px 14px', borderRadius: 13, cursor: 'pointer', textAlign: 'right',
                 background: active
-                  ? isDanger ? 'rgba(248,113,113,0.10)' : 'rgba(176,48,245,0.15)'
+                  ? isDanger ? 'rgba(248,113,113,0.10)' : 'rgba(150,86,254,0.15)'
                   : 'transparent',
                 border: active
-                  ? `1px solid ${isDanger ? 'rgba(248,113,113,0.25)' : 'rgba(176,48,245,0.3)'}`
+                  ? `1px solid ${isDanger ? 'rgba(248,113,113,0.25)' : 'rgba(150,86,254,0.3)'}`
                   : '1px solid transparent',
                 color: active
                   ? isDanger ? RED : '#fff'
@@ -734,8 +734,8 @@ export default function SettingsPage() {
 
           {/* divider + plan chip */}
           <div style={{ height: 1, background: 'rgba(255,255,255,0.07)', margin: '8px 4px' }} />
-          <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(176,48,245,0.08)',
-            border: '1px solid rgba(176,48,245,0.18)', display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(150,86,254,0.08)',
+            border: '1px solid rgba(150,86,254,0.18)', display: 'flex', alignItems: 'center', gap: 8 }}>
             <i className="ti ti-crown" style={{ fontSize: 14, color: '#FBBF24' }} />
             <div>
               <div style={{ fontSize: 11, fontWeight: 800, color: PURPLE2 }}>
@@ -755,8 +755,8 @@ export default function SettingsPage() {
           {/* content tab header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
             <div style={{ width: 34, height: 34, borderRadius: 10,
-              background: activeTab === 'privacy' ? 'rgba(248,113,113,0.12)' : 'rgba(176,48,245,0.15)',
-              border: `1px solid ${activeTab === 'privacy' ? 'rgba(248,113,113,0.25)' : 'rgba(176,48,245,0.28)'}`,
+              background: activeTab === 'privacy' ? 'rgba(248,113,113,0.12)' : 'rgba(150,86,254,0.15)',
+              border: `1px solid ${activeTab === 'privacy' ? 'rgba(248,113,113,0.25)' : 'rgba(150,86,254,0.28)'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <i className={`ti ${activeTabMeta.icon}`}
                 style={{ fontSize: 16, color: activeTab === 'privacy' ? RED : PURPLE2 }} />

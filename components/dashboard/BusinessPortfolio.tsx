@@ -3,9 +3,9 @@ import { useState, useRef, useEffect } from 'react'
 import { TONES, type ToneId } from '@/lib/tones'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
 const GREEN   = '#34D399'
 
 const GLASS: React.CSSProperties = {
@@ -80,7 +80,7 @@ function TextInput({ value, onChange, placeholder, icon, type = 'text' }: {
           ...INPUT_STYLE,
           paddingRight: icon ? 38 : 14,
           borderColor: focused ? `${PURPLE}80` : 'rgba(255,255,255,0.10)',
-          boxShadow: focused ? `0 0 0 3px rgba(176,48,245,0.10)` : 'none',
+          boxShadow: focused ? `0 0 0 3px rgba(150,86,254,0.10)` : 'none',
         }}
       />
     </div>
@@ -245,7 +245,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           border: 'none', color: '#fff', fontSize: 13, fontWeight: 800,
           display: 'flex', alignItems: 'center', gap: 8,
-          boxShadow: '0 4px 18px rgba(176,48,245,0.35)', opacity: loading ? 0.75 : 1,
+          boxShadow: '0 4px 18px rgba(150,86,254,0.35)', opacity: loading ? 0.75 : 1,
           transition: 'all 0.2s',
         }}>
           {loading
@@ -261,13 +261,13 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
             SECTION 1 — AI Business Summary
         ══════════════════════════════════════════════════════════ */}
         <SectionCard
-          icon="ti-brain" iconBg="rgba(176,48,245,0.15)" iconColor={PURPLE2}
+          icon="ti-brain" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
           title="איך SociMe מבינה אתכם"
           subtitle="סיכום AI של פרופיל העסק שלך — הבסיס לכל התוכן שנכתב"
           glow={PURPLE}
         >
           {/* ambient glow blobs */}
-          <div style={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(176,48,245,0.10)', filter: 'blur(50px)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: -40, right: -40, width: 140, height: 140, borderRadius: '50%', background: 'rgba(150,86,254,0.10)', filter: 'blur(50px)', pointerEvents: 'none' }} />
 
           {systemPrompt ? (
             <>
@@ -281,7 +281,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
               ) : (
                 <div style={{
                   padding: '16px 18px', borderRadius: 14, lineHeight: 1.85,
-                  background: 'rgba(176,48,245,0.07)', border: '1px solid rgba(176,48,245,0.18)',
+                  background: 'rgba(150,86,254,0.07)', border: '1px solid rgba(150,86,254,0.18)',
                   fontSize: 13, color: 'rgba(255,255,255,0.70)',
                 }}>
                   {systemPrompt}
@@ -306,7 +306,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
                   padding: '9px 18px', borderRadius: 12, cursor: regen ? 'wait' : 'pointer', fontSize: 12, fontWeight: 700,
                   background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
                   display: 'flex', alignItems: 'center', gap: 6, opacity: regen ? 0.7 : 1,
-                  boxShadow: '0 3px 12px rgba(176,48,245,0.3)', transition: 'all 0.18s',
+                  boxShadow: '0 3px 12px rgba(150,86,254,0.3)', transition: 'all 0.18s',
                 }}>
                   {regen
                     ? <div style={{ width: 12, height: 12, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
@@ -317,8 +317,8 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
               </div>
             </>
           ) : (
-            <div style={{ padding: '24px', textAlign: 'center', borderRadius: 14, background: 'rgba(176,48,245,0.06)', border: '1px dashed rgba(176,48,245,0.25)' }}>
-              <i className="ti ti-brain" style={{ fontSize: 28, color: 'rgba(176,48,245,0.4)', display: 'block', marginBottom: 8 }} />
+            <div style={{ padding: '24px', textAlign: 'center', borderRadius: 14, background: 'rgba(150,86,254,0.06)', border: '1px dashed rgba(150,86,254,0.25)' }}>
+              <i className="ti ti-brain" style={{ fontSize: 28, color: 'rgba(150,86,254,0.4)', display: 'block', marginBottom: 8 }} />
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', margin: '0 0 14px', lineHeight: 1.7 }}>
                 מלא את פרטי העסק בטפסים מטה ולחץ "שמור שינויים" — ה-AI יצור סיכום מותאם אישית
               </p>
@@ -330,7 +330,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
             SECTION 2 — Technical Details & Digital Assets
         ══════════════════════════════════════════════════════════ */}
         <SectionCard
-          icon="ti-building-store" iconBg="rgba(247,45,147,0.12)" iconColor={BLUE}
+          icon="ti-building-store" iconBg="rgba(59,130,239,0.12)" iconColor={BLUE}
           title="פרטים יבשים ונכסים דיגיטליים"
           subtitle="מידע בסיסי על העסק ולינקים לנוכחות הדיגיטלית"
         >
@@ -425,7 +425,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
                   onChange={e => setRawDescription(e.target.value)}
                   rows={4}
                   placeholder="מה אתם עושים? מי הלקוחות שלכם? מה הסיפור שלכם?"
-                  onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = `${PURPLE}80`; (e.target as HTMLTextAreaElement).style.boxShadow = '0 0 0 3px rgba(176,48,245,0.10)' }}
+                  onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = `${PURPLE}80`; (e.target as HTMLTextAreaElement).style.boxShadow = '0 0 0 3px rgba(150,86,254,0.10)' }}
                   onBlur={e => { (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(255,255,255,0.10)'; (e.target as HTMLTextAreaElement).style.boxShadow = 'none' }}
                   style={{ ...INPUT_STYLE, lineHeight: 1.8, resize: 'vertical', minHeight: 100 }}
                 />
@@ -444,7 +444,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
                 onChange={e => setUniqueValue(e.target.value)}
                 rows={3}
                 placeholder="מה מבדיל אתכם מהמתחרים? מה הלקוחות שלכם אומרים שהם לא מקבלים אצל אף אחד אחר?"
-                onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = `${PURPLE}80`; (e.target as HTMLTextAreaElement).style.boxShadow = '0 0 0 3px rgba(176,48,245,0.10)' }}
+                onFocus={e => { (e.target as HTMLTextAreaElement).style.borderColor = `${PURPLE}80`; (e.target as HTMLTextAreaElement).style.boxShadow = '0 0 0 3px rgba(150,86,254,0.10)' }}
                 onBlur={e => { (e.target as HTMLTextAreaElement).style.borderColor = 'rgba(255,255,255,0.10)'; (e.target as HTMLTextAreaElement).style.boxShadow = 'none' }}
                 style={{ ...INPUT_STYLE, lineHeight: 1.8, resize: 'vertical', minHeight: 84 }}
               />
@@ -471,11 +471,11 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
                     return (
                       <button key={tone.id} onClick={() => toggleTone(tone.id)} style={{
                         padding: '8px 16px', borderRadius: 999, cursor: 'pointer', fontSize: 12, fontWeight: 700,
-                        background: active ? 'rgba(176,48,245,0.18)' : 'rgba(255,255,255,0.05)',
-                        border: `1px solid ${active ? 'rgba(206,123,255,0.45)' : 'rgba(255,255,255,0.09)'}`,
+                        background: active ? 'rgba(150,86,254,0.18)' : 'rgba(255,255,255,0.05)',
+                        border: `1px solid ${active ? 'rgba(190,86,254,0.45)' : 'rgba(255,255,255,0.09)'}`,
                         color: active ? PURPLE2 : 'rgba(255,255,255,0.45)',
                         display: 'flex', alignItems: 'center', gap: 6,
-                        boxShadow: active ? '0 2px 10px rgba(176,48,245,0.18)' : 'none',
+                        boxShadow: active ? '0 2px 10px rgba(150,86,254,0.18)' : 'none',
                         transition: 'all 0.18s',
                       }}>
                         <span>{tone.emoji}</span>
@@ -488,7 +488,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
 
                 {/* selected summary */}
                 {selectedTones.length > 0 && (
-                  <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 12, background: 'rgba(176,48,245,0.07)', border: '1px solid rgba(176,48,245,0.15)', fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
+                  <div style={{ marginTop: 12, padding: '10px 14px', borderRadius: 12, background: 'rgba(150,86,254,0.07)', border: '1px solid rgba(150,86,254,0.15)', fontSize: 12, color: 'rgba(255,255,255,0.5)' }}>
                     <i className="ti ti-sparkles" style={{ color: PURPLE2, marginLeft: 5 }} />
                     ה-AI ישתמש בטון: <strong style={{ color: PURPLE2 }}>{selectedTones.map(id => TONES.find(t => t.id === id)?.label).join(' + ')}</strong>
                   </div>
@@ -505,7 +505,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
             background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
             border: 'none', color: '#fff', fontSize: 14, fontWeight: 800,
             display: 'flex', alignItems: 'center', gap: 9, opacity: loading ? 0.75 : 1,
-            boxShadow: '0 4px 22px rgba(176,48,245,0.4)', transition: 'all 0.2s',
+            boxShadow: '0 4px 22px rgba(150,86,254,0.4)', transition: 'all 0.2s',
           }}
           onMouseEnter={e => { if (!loading) (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)' }}
           onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}

@@ -4,9 +4,9 @@ import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { createClient } from '@/lib/supabase-browser'
 
-const PURPLE  = '#B030F5'
-const PURPLE2 = '#CE7BFF'
-const BLUE    = '#F72D93'
+const PURPLE  = '#9656FE'
+const PURPLE2 = '#BE56FE'
+const BLUE    = '#3B82EF'
 
 const inputStyle = (focused: boolean): React.CSSProperties => ({
   width: '100%', padding: '12px 44px 12px 16px', borderRadius: 12,
@@ -14,7 +14,7 @@ const inputStyle = (focused: boolean): React.CSSProperties => ({
   background: focused ? '#FAFBFF' : '#F9FAFB',
   color: '#111827', fontSize: 14, outline: 'none',
   fontFamily: 'var(--font-rubik), sans-serif',
-  boxShadow: focused ? `0 0 0 3px rgba(176,48,245,0.12)` : 'none',
+  boxShadow: focused ? `0 0 0 3px rgba(150,86,254,0.12)` : 'none',
   transition: 'all .2s',
   direction: 'rtl',
 })
@@ -102,15 +102,15 @@ function LoginInner() {
       <div style={{
         flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between',
         padding: '48px 56px',
-        background: `radial-gradient(ellipse at 20% 10%, rgba(206,123,255,.45) 0%, transparent 55%),
-                     radial-gradient(ellipse at 80% 90%, rgba(247,45,147,.3) 0%, transparent 50%),
-                     linear-gradient(160deg, #1C0F2B 0%, #20112F 50%, #261141 100%)`,
+        background: `radial-gradient(ellipse at 20% 10%, rgba(255,255,255,.28) 0%, transparent 55%),
+                     radial-gradient(ellipse at 80% 90%, rgba(59,130,239,.55) 0%, transparent 55%),
+                     linear-gradient(150deg, #9656FE 0%, #7C5CF0 45%, #3B82EF 100%)`,
         position: 'relative', overflow: 'hidden',
       }} className="hidden md:flex">
 
         {/* Glow blobs */}
-        <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, rgba(176,48,245,.2) 0%, transparent 70%)`, top: -100, right: -100, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: `radial-gradient(circle, rgba(247,45,147,.15) 0%, transparent 70%)`, bottom: -80, left: -80, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 400, height: 400, borderRadius: '50%', background: `radial-gradient(circle, rgba(150,86,254,.2) 0%, transparent 70%)`, top: -100, right: -100, pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', width: 300, height: 300, borderRadius: '50%', background: `radial-gradient(circle, rgba(59,130,239,.15) 0%, transparent 70%)`, bottom: -80, left: -80, pointerEvents: 'none' }} />
 
         {/* Logo */}
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none', zIndex: 1 }}>
@@ -332,7 +332,7 @@ function LoginInner() {
             width: '100%', padding: '13px', borderRadius: 12, border: 'none',
             background: loading ? '#9CA3AF' : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
             color: '#fff', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
-            boxShadow: loading ? 'none' : `0 4px 20px rgba(176,48,245,0.4)`,
+            boxShadow: loading ? 'none' : `0 4px 20px rgba(150,86,254,0.4)`,
             transition: 'all .2s', fontFamily: 'var(--font-rubik), sans-serif',
             marginTop: 4,
           }}>
