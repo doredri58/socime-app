@@ -1,25 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
-
-/* ── in-memory rate limiter: max 3 requests per IP per hour ── */
-const ipMap = new Map<string, { count: number; resetAt: number }>()
-const MAX_REQUESTS = 3
-const WINDOW_MS = 60 * 60 * 1000 // 1 hour
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = ipMap.get(ip)
-
-  if (!entry || now > entry.resetAt) {
-    ipMap.set(ip, { count: 1, resetAt: now + WINDOW_MS })
-    return true
-  }
-
-  if (entry.count >= MAX_REQUESTS) return false
-
-  entry.count++
-  return true
-}
+import { enforce, limiters, clientIp } from '@/lib/ratelimit'
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
@@ -31,16 +12,9 @@ const DEMO_PROMPT = `אתה מומחה שיווק דיגיטלי ישראלי.
 
 export async function POST(req: NextRequest) {
   try {
-    /* ── rate limit by IP ── */
-    const forwarded = req.headers.get('x-forwarded-for')
-    const ip = forwarded ? forwarded.split(',')[0].trim() : '127.0.0.1'
-
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json(
-        { error: 'הגעת למגבלת הניסיונות. נסה שוב בעוד שעה.' },
-        { status: 429 }
-      )
-    }
+    /* ── rate limit by IP — 3 לשעה (Upstash, מבוזר) ── */
+    const limited = await enforce(limiters.demo, clientIp(req), 'הגעת למגבלת הניסיונות. נסה שוב בעוד שעה.')
+    if (limited) return limited
 
     const { pain_point } = await req.json() as { pain_point?: string }
 

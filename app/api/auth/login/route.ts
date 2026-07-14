@@ -1,8 +1,13 @@
 ﻿import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/supabase'
+import { enforce, limiters, clientIp } from '@/lib/ratelimit'
 
 export async function POST(req: NextRequest) {
   try {
+    // 10 ניסיונות ל-15 דק' לכל IP — מונע brute force על סיסמאות
+    const limited = await enforce(limiters.login, clientIp(req), 'יותר מדי ניסיונות התחברות. נסו שוב בעוד כמה דקות.')
+    if (limited) return limited
+
     const { email, password } = await req.json()
     if (!email || !password) {
       return NextResponse.json({ error: 'שדות חסרים' }, { status: 400 })

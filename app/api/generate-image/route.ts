@@ -3,6 +3,7 @@ import { generateImage } from '@/lib/gemini'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
 import { getQuotaForTier } from '@/lib/image-quota'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
+import { enforce, limiters } from '@/lib/ratelimit'
 
 const BUCKET = 'generated-images'
 
@@ -15,6 +16,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'נדרשת התחברות' }, { status: 401 })
     }
     const userId = sessionUser.id
+
+    // 10 תמונות לדקה למשתמש — יצירת תמונה יקרה משמעותית
+    const limited = await enforce(limiters.aiImage, userId, 'יותר מדי בקשות תמונה. המתינו רגע ונסו שוב.')
+    if (limited) return limited
 
     const { prompt } = await req.json()
     if (!prompt || typeof prompt !== 'string' || prompt.trim().length < 3) {

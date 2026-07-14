@@ -1,21 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase'
+import { enforce, limiters, clientIp } from '@/lib/ratelimit'
 
 export const runtime = 'nodejs'
-
-/* ── in-memory rate limiter: max 5 leads per IP per hour ── */
-const ipMap = new Map<string, { count: number; resetAt: number }>()
-const MAX_PER_HOUR = 5
-const WINDOW_MS = 60 * 60 * 1000
-
-function allow(ip: string): boolean {
-  const now = Date.now()
-  const e = ipMap.get(ip)
-  if (!e || now > e.resetAt) { ipMap.set(ip, { count: 1, resetAt: now + WINDOW_MS }); return true }
-  if (e.count >= MAX_PER_HOUR) return false
-  e.count++
-  return true
-}
 
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
@@ -58,11 +45,9 @@ async function sendPostEmail(to: string, post: string): Promise<boolean> {
 
 export async function POST(req: NextRequest) {
   try {
-    const forwarded = req.headers.get('x-forwarded-for')
-    const ip = forwarded ? forwarded.split(',')[0].trim() : '127.0.0.1'
-    if (!allow(ip)) {
-      return NextResponse.json({ error: 'יותר מדי בקשות. נסו שוב מאוחר יותר.' }, { status: 429 })
-    }
+    // 5 לידים לשעה לכל IP — Upstash, מבוזר בין כל ה-instances (בניגוד ל-Map בזיכרון)
+    const limited = await enforce(limiters.lead, clientIp(req))
+    if (limited) return limited
 
     const { email, painPoint, post } = await req.json() as {
       email?: string; painPoint?: string; post?: string

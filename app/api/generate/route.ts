@@ -4,6 +4,7 @@ import { generatePost } from '@/lib/llm'
 import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 import { getActiveBusiness } from '@/lib/business'
 import { buildBusinessVars, businessFactsBlock } from '@/lib/prompt-vars'
+import { enforce, limiters } from '@/lib/ratelimit'
 
 export async function POST(req: NextRequest) {
   try {
@@ -11,6 +12,10 @@ export async function POST(req: NextRequest) {
     const supabase = await createServerSupabaseClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return NextResponse.json({ error: 'נדרשת התחברות' }, { status: 401 })
+
+    // 30 יצירות לדקה למשתמש — הגנה על עלויות Gemini (מעבר לניכוי הטוקנים)
+    const limited = await enforce(limiters.aiText, user.id, 'יותר מדי בקשות יצירה. המתינו רגע ונסו שוב.')
+    if (limited) return limited
 
     const { businessDesc } = await req.json()
 

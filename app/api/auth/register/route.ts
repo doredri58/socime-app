@@ -1,8 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
+import { enforce, limiters, clientIp } from '@/lib/ratelimit'
 
 export async function POST(req: NextRequest) {
   try {
+    // 5 הרשמות ל-15 דק' לכל IP — מונע יצירת חשבונות המונית
+    const limited = await enforce(limiters.register, clientIp(req), 'יותר מדי ניסיונות הרשמה. נסו שוב בעוד כמה דקות.')
+    if (limited) return limited
+
     const { email, password, name, draftPost } = await req.json()
 
     if (!email || !password || !name) {
