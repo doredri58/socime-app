@@ -37,6 +37,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
+  // משתמש מחובר שנכנס לדף הבית — ישר לדשבורד, בלי לעבור שוב דרך הנחיתה.
+  // מילוט: ?home=1 מאפשר לראות את דף הנחיתה גם כשמחוברים.
+  if (pathname === '/' && user && !request.nextUrl.searchParams.has('home')) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
+  }
+
   return response
 }
 
