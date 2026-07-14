@@ -146,9 +146,9 @@ function BaitSection() {
         <h2 className="font-arimo" style={{
           fontSize: 'clamp(1.7rem,3.2vw,2.4rem)', fontWeight: 700,
           color: '#fff', letterSpacing: '-1px', margin: '0 0 14px',
-        }}>ראו את זה עובד — עכשיו.</h2>
+        }}>אל תאמינו לאף מילה. תבחנו אותה.</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.48)', margin: '0 0 40px', lineHeight: 1.7 }}>
-          כתבו במשפט מה העסק שלכם מציע, וקבלו פוסט מוכן לפרסום תוך שניות.
+          משפט אחד על העסק שלכם. פוסט מוכן חוזר. בלי הרשמה, בלי כרטיס. אם העברית לא נשמעת כמו שלכם — סגרו את הטאב.
         </p>
 
         {/* Input row — full width, balanced */}
@@ -395,14 +395,14 @@ function HomeInner() {
               fontSize: 'clamp(2.5rem,5.4vw,4.5rem)', fontWeight: 800,
               color: INK, lineHeight: 1.04, letterSpacing: '-2.5px', margin: '0 0 22px',
             }}>
-              הסושיאל שלכם,<br />
+              מנהל סושיאל: ~3,000 ₪ לחודש.<br />
               <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
-                על טייס אוטומטי.
+                SociMe: 199 ₪.
               </span>
             </h1>
 
             <p className="hero-sub" style={{ fontSize: 'clamp(15px,1.35vw,18px)', color: INK_MID, lineHeight: 1.7, margin: '0 0 32px', maxWidth: 470 }}>
-              SociMe חוקרת את הקהל שלכם, כותבת פוסטים בעברית מושלמת, מעצבת ומתזמנת — ומפרסמת לפייסבוק, אינסטגרם וטיקטוק. אתם רק מאשרים.
+              לא כלי לכתיבת פוסטים — <strong style={{ color: INK }}>מנהלת סושיאל שלמה.</strong> חוקרת את הקהל, כותבת בעברית, מעצבת, עורכת וידאו, מתזמנת, מפרסמת לפייסבוק אינסטגרם וטיקטוק, עונה לתגובות ומנתחת מה עבד. אתם מאשרים בין לקוח ללקוח. לא התאים? <strong style={{ color: INK }}>14 יום להחזר מלא — בלי נימוק, בלי שיחת שימור.</strong>
             </p>
 
             <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
@@ -420,12 +420,12 @@ function HomeInner() {
                   boxShadow: '0 8px 22px rgba(84,60,150,0.10)',
                 }}>
                 <i className="ti ti-player-play-filled" style={{ fontSize: 14, color: BLUE }} />
-                ראו איך זה עובד
+                תבחנו אותה לפני שתשלמו
               </button>
             </div>
 
             <div className="hero-ctas" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-              {['ללא כרטיס אשראי', 'ביטול בכל עת', 'עברית מושלמת'].map(t => (
+              {['ללא כרטיס אשראי', '14 יום — החזר מלא', 'ביטול בכל עת'].map(t => (
                 <span key={t} style={{ fontSize: 13, color: INK_LOW, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <i className="ti ti-circle-check-filled" style={{ color: '#16B999', fontSize: 15 }} />{t}
                 </span>
@@ -542,9 +542,9 @@ function HomeInner() {
           borderTop: '1px solid rgba(120,90,200,0.16)', paddingTop: 28,
         }}>
           {[
-            { num: '30 שנ׳', label: 'מרעיון לפוסט מוכן', icon: 'ti-bolt', color: PURPLE },
-            { num: '3', label: 'רשתות ממקום אחד', icon: 'ti-share', color: BLUE },
-            { num: '24/7', label: 'עובד גם כשאתם ישנים', icon: 'ti-clock', color: '#16B999' },
+            { num: '₪199', label: 'במקום ~3,000 ₪ למנהל סושיאל', icon: 'ti-coin', color: PURPLE },
+            { num: '3', label: 'רשתות, מנוהלות לבד', icon: 'ti-share', color: BLUE },
+            { num: '14 יום', label: 'החזר מלא, בלי נימוק', icon: 'ti-shield-check', color: '#16B999' },
           ].map((s, i) => (
             <div key={i} style={{
               padding: '4px 0', textAlign: 'center',
@@ -602,7 +602,7 @@ function HomeInner() {
           <h2 style={{ fontSize: 'clamp(1.8rem,3.4vw,2.6rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
             שלושה צעדים. ואז אתם חופשיים.
           </h2>
-          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>הגדרה חד-פעמית של 2 דקות — ו-SociMe עובדת בשבילכם מכאן</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>בריף חד-פעמי — ו-SociMe עובדת בשבילכם מכאן</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }} className="steps-grid">
@@ -655,36 +655,48 @@ function HomeInner() {
       <section id="features" className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1060, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
           <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.7rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            כל מה שצוות שיווק עושה — <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>SociMe עושה לבד.</span>
+            זה לא כלי. <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>זה מנהל הסושיאל שלכם.</span>
           </h2>
-          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>ארבעה תחומים, פלטפורמה אחת. בלי לקפוץ בין כלים.</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>כל מה שהייתם משלמים עליו ~3,000 ₪ — ב-199.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
           {([
             {
               icon: 'ti-sparkles', color: PURPLE2,
-              title: 'יוצר תוכן שנראה מקצועי',
-              desc: 'ה-AI לומד את תיק העסק שלכם — טון הדיבור, הקהל והמותג — וכותב פוסטים בעברית עם תמונה והאשטאגים, עורך וידאו עם כתוביות אוטומטיות, ומספק בנק רעיונות שלא נגמר.',
+              title: 'כותב, מעצב ומצלם',
+              desc: 'פוסטים בעברית עם תמונה והאשטאגים. וידאו 1080p עם כתוביות אוטומטיות וסאונדים ויראליים לטיקטוק וריעלס. בנק רעיונות שלא נגמר.',
               tools: ['סטודיו יצירה', 'עורך וידאו', 'בנק רעיונות'],
             },
             {
+              icon: 'ti-binoculars', color: '#F59E0B',
+              title: 'מרגל אחרי המתחרים שלכם',
+              desc: 'סורק את פרופילי המתחרים, מפרק את מה שעובד להם — ובונה לכם אסטרטגיית נגד. הסוכן שאף פרילנסר לא ייתן לכם.',
+              tools: ['סוכן ניתוח מתחרים', 'Pro'],
+            },
+            {
               icon: 'ti-calendar-event', color: BLUE,
-              title: 'מתזמן ומפרסם לבד',
-              desc: 'תזמנו שבועות קדימה — SociMe מפרסמת אוטומטית בשעה החכמה לכל רשת, מנסה שוב אם נכשל, ומאפשרת להעלות עשרות פוסטים בבת אחת.',
-              tools: ['לוח תזמון', 'תזמון AI', 'העלאה מרוכזת'],
+              title: 'מפרסם לבד, גם ב-2 בלילה',
+              desc: 'מתזמן שבועות קדימה, בוחר את השעה החכמה לכל רשת, ומנסה שוב אם נכשל. 4 גרסאות מותאמות לארבע רשתות בו-זמנית.',
+              tools: ['לוח תזמון', 'תזמון AI', 'מתאם רב-פלטפורמות'],
             },
             {
               icon: 'ti-message-2-heart', color: '#EC4899',
-              title: 'מנהל את הקהילה',
-              desc: 'כל התגובות וההודעות מכל הרשתות ב-Inbox אחד מאוחד, עם התראות חכמות ברגע שקורה משהו שדורש את תשומת ליבכם.',
+              title: 'עונה ללקוחות שלכם',
+              desc: 'כל התגובות וההודעות מכל הרשתות ב-Inbox אחד מאוחד, עם התראה ברגע שמשהו דורש אתכם.',
               tools: ['Inbox מאוחד', 'התראות חכמות'],
             },
             {
               icon: 'ti-chart-bar', color: '#34D399',
-              title: 'מנתח ומשפר',
-              desc: 'דאשבורד שמראה מה באמת עובד — חשיפה, מעורבות ומגמות צמיחה — כדי שתקבלו החלטות לפי נתונים, לא לפי תחושות בטן.',
+              title: 'ומדווח מה עבד',
+              desc: 'חשיפה, מעורבות ומגמות צמיחה — החלטות לפי נתונים, לא לפי תחושת בטן.',
               tools: ['ניתוחים', 'מגמות צמיחה'],
+            },
+            {
+              icon: 'ti-coin', color: '#16B999',
+              title: 'ובונוס: כותב את המודעות הממומנות',
+              desc: 'סוכן קופירייטינג אגרסיבי למודעות פייסבוק וגוגל — קופי שנכתב כדי להמיר, לא כדי להישמע יפה.',
+              tools: ['סוכן קופי לממומן', 'Pro'],
             },
           ] as { icon: string; color: string; title: string; desc: string; tools: string[] }[]).map((feat, i) => (
             <NCard key={i} delay={i * 0.08} style={{ padding: '30px 28px', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -800,18 +812,18 @@ function HomeInner() {
           <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundImage: NOISE, opacity: 0.5, mixBlendMode: 'soft-light', pointerEvents: 'none' }} />
           <div style={{ position: 'relative' }}>
             <h2 style={{ fontSize: 'clamp(1.9rem,3.6vw,3rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 16px' }}>
-              מוכנים להפסיק לרדוף<br />אחרי{' '}
-              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>הסושיאל?</span>
+              המתחרה שלכם מפרסם היום.<br />
+              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>אתם?</span>
             </h2>
             <p style={{ fontSize: 16, color: INK_MID, margin: '0 auto 36px', lineHeight: 1.7, maxWidth: 520 }}>
-              תנו ל-AI לנהל את הסושיאל שלכם — ותרוויחו שעות בחזרה כל שבוע, בלי לוותר על הנוכחות הדיגיטלית.
+              מנהל סושיאל עולה כ-3,000 ₪ בחודש. SociMe עולה 199 — ולא לוקחת חופשה. אם תוך 14 יום זה לא עובד לכם, תקבלו כל שקל בחזרה בלי להסביר למה.
             </p>
             <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '16px 44px' })}>
               <i className="ti ti-arrow-left" style={{ fontSize: 18 }} />
               התחילו בחינם
             </a>
             <p style={{ fontSize: 12.5, color: INK_LOW, marginTop: 18, marginBottom: 0 }}>
-              ללא כרטיס אשראי · הגדרה תוך 2 דקות · ביטול בכל עת
+              ללא כרטיס אשראי · 14 יום החזר מלא · ביטול בכל עת
             </p>
           </div>
         </div>

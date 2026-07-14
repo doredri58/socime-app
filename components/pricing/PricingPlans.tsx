@@ -33,6 +33,9 @@ interface Plan {
   tokens: string
   highlight: boolean
   cta: string
+  // Reframes the price against the ~3,000 ₪/mo cost of a human social manager,
+  // so the card is read as a saving rather than an expense.
+  anchor: string
   features: Feature[]
 }
 
@@ -40,18 +43,19 @@ const PLANS: Plan[] = [
   {
     id: 'basic',
     name: 'Basic',
-    tagline: 'נקודת הכניסה',
+    tagline: 'במקום פרילנסר',
     monthly: 199,
     annual: 159,
     annualTotal: 1908,
     tokens: '500',
     highlight: false,
     cta: 'התחילו עם Basic',
+    anchor: '6% מהעלות של מנהל סושיאל',
     features: [
+      { label: '500 טוקנים בחודש — הדלק לכל מה שתייצרו', included: true },
       { label: 'ניהול עסק אחד', included: true },
-      { label: '500 טוקנים בחודש', included: true },
       { label: 'יצירת וידאו ב-720p', included: true },
-      { label: 'סוכני AI בסיסיים — יצירת תוכן וניהול קהילה', included: true },
+      { label: 'סוכני AI ליצירת תוכן וניהול קהילה', included: true },
       // Visible but locked (transparent paywall) →
       { label: 'וידאו 1080p + סאונדים ויראליים', included: false, locked: true },
       { label: 'סוכן ניתוח מתחרים', included: false, locked: true },
@@ -62,17 +66,18 @@ const PLANS: Plan[] = [
   {
     id: 'pro',
     name: 'Pro',
-    tagline: 'הבחירה המשתלמת',
+    tagline: 'כל הסוכנים פתוחים',
     monthly: 299,
     annual: 239,
     annualTotal: 2868,
     tokens: '1,000',
     highlight: true,
     cta: 'שדרגו ל-Pro',
+    anchor: '10% מהעלות של מנהל סושיאל — עם סוכנים שאין לו',
     features: [
+      { label: '1,000 טוקנים בחודש — פי 2 מ-Basic', included: true },
       { label: 'ניהול עסק אחד', included: true },
-      { label: '1,000 טוקנים בחודש', included: true },
-      { label: 'רינדור מהיר בעדיפות (Priority)', included: true },
+      { label: 'רינדור בעדיפות — אתם ראשונים בתור', included: true },
       { label: 'וידאו 1080p + סאונדים ויראליים (TikTok/Reels)', included: true },
       { label: 'סוכן ניתוח מתחרים — סורק פרופילי מתחרים ובונה אסטרטגיית נגד', included: true, pro: true },
       { label: 'סוכן קופירייטינג לממומן — קופי אגרסיבי וממיר למודעות פייסבוק/גוגל', included: true, pro: true },
@@ -82,19 +87,20 @@ const PLANS: Plan[] = [
   {
     id: 'agency',
     name: 'Agency',
-    tagline: 'עוצמה לסוכנויות',
+    tagline: '5 עסקים. בנק אחד.',
     monthly: 999,
     annual: 799,
     annualTotal: 9588,
     tokens: '2,000',
     highlight: false,
     cta: 'בחרו ב-Agency',
+    anchor: '200 ₪ לעסק. פרילנסר אחד עולה פי 15.',
     features: [
-      { label: 'כל מה שכלול ב-Pro', included: true },
-      { label: '2,000 טוקנים בבנק סוכנות מרכזי', included: true },
-      { label: 'ניהול עד 5 עסקים (פורטל לקוחות)', included: true },
-      { label: 'מעבר הקשר מיידי בין לקוחות מתפריט עליון', included: true },
-      { label: 'תוספת צמיחה: 79 ₪ לכל עסק נוסף (+100 טוקנים)', included: true },
+      { label: 'כל מה שכלול ב-Pro — לכל חמשת העסקים', included: true },
+      { label: '2,000 טוקנים בבנק סוכנות מרכזי אחד', included: true },
+      { label: 'ניהול עד 5 עסקים בפורטל לקוחות', included: true },
+      { label: 'מעבר בין לקוחות בלחיצה, מהתפריט העליון', included: true },
+      { label: 'צריכים שישי? 79 ₪ לעסק נוסף (+100 טוקנים)', included: true },
     ],
   },
 ]
@@ -164,9 +170,9 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
           style={{ background: `linear-gradient(135deg, ${PURPLE}, #6D28D9)` }}
           onClick={onClose}
         >
-          שדרגו ל-Pro · 239 ₪/לחודש
+          שדרגו ל-Pro · החל מ-239 ₪/לחודש
         </button>
-        <p className="mt-3 text-center text-xs text-[#A79FC4]">14 ימי ניסיון · ביטול בכל עת</p>
+        <p className="mt-3 text-center text-xs text-[#A79FC4]">239 ₪/לחודש בחיוב שנתי · 299 ₪ בחיוב חודשי · 14 יום אחריות להחזר מלא</p>
       </div>
     </div>
   )
@@ -288,10 +294,11 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
         <span className="mb-1 text-sm text-[#857FA6]">/לחודש</span>
       </div>
       {billing === 'annual' ? (
-        <p className="mb-5 text-xs text-[#857FA6]">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
+        <p className="text-xs text-[#857FA6]">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
       ) : (
-        <p className="mb-5 text-xs text-[#857FA6]">חיוב חודשי · ללא התחייבות</p>
+        <p className="text-xs text-[#857FA6]">חיוב חודשי · ללא התחייבות</p>
       )}
+      <p className="mb-5 mt-1.5 text-xs font-bold" style={{ color: PURPLE }}>{plan.anchor}</p>
 
       {/* Tokens pill */}
       <div
@@ -427,15 +434,36 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
           >
             מחירים
           </div>
-          <h2 className="text-3xl font-black tracking-tight md:text-4xl">בחרו את הקצב שלכם.</h2>
+          <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+            מנהל סושיאל: ~3,000 ₪ לחודש.
+            <br />
+            בחרו כמה מזה אתם רוצים להחזיר לכיס.
+          </h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-[#857FA6]">
-            כל המסלולים כוללים את מנוע ה-AI המלא. שדרגו או בטלו מתי שתרצו.
+            כל המסלולים כוללים את מנוע ה-AI המלא — לא גרסה מסורסת. 14 יום אחריות להחזר מלא בכל מסלול.
+            שדרגו, הורידו או בטלו מתי שתרצו.
           </p>
         </div>
 
         {/* ── Toggle ── */}
-        <div className="mb-12 flex justify-center">
+        <div className="mb-8 flex justify-center">
           <BillingToggle billing={billing} onChange={setBilling} />
+        </div>
+
+        {/* ── Guarantee banner ──
+           Sits above the cards on purpose: the buy/no-buy call happens before
+           anyone reads a feature list, so the risk has to be removed first. */}
+        <div
+          className="mx-auto mb-12 max-w-2xl rounded-2xl px-6 py-5 text-center"
+          style={{ background: 'rgba(22,185,153,0.10)', border: '1px solid rgba(22,185,153,0.32)' }}
+        >
+          <p className="text-base font-extrabold text-[#253A53]">
+            🛡️ 14 יום. החזר מלא. בלי נימוק.
+          </p>
+          <p className="mt-1.5 text-xs leading-relaxed text-[#5B5878]">
+            נסו הכל. אם זה לא עובד לכם — כתבו לנו מילה אחת ותקבלו כל שקל בחזרה.
+            בלי שיחת שימור, בלי &quot;רק תגידו לנו למה&quot;.
+          </p>
         </div>
 
         {/* ── Plan cards ── */}
@@ -454,7 +482,7 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
 
         {/* ── Token economy strip ── */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-          <span className="text-xs font-bold uppercase tracking-widest text-[#A79FC4]">עלות בטוקנים</span>
+          <span className="text-xs font-bold uppercase tracking-widest text-[#A79FC4]">כמה דלק כל פעולה שורפת</span>
           {TOKEN_COSTS.map(t => (
             <div key={t.label} className="flex items-center gap-2 text-sm text-[#5B5878]">
               <i className={`ti ${t.icon} text-base`} style={{ color: PURPLE }} />
