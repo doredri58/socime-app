@@ -395,7 +395,7 @@ function HomeInner() {
               fontSize: 'clamp(2.5rem,5.4vw,4.5rem)', fontWeight: 800,
               color: INK, lineHeight: 1.04, letterSpacing: '-2.5px', margin: '0 0 22px',
             }}>
-              מנהלת הסושיאל החדשה שלכם<br />מתחילה היום.<br />
+              מנהלת הסושיאל<br />מתחילה היום.<br />
               <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
                 משכורת: 199 ₪.
               </span>

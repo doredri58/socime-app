@@ -299,9 +299,12 @@ body {
   border-color: rgba(255, 255, 255, 0.72) !important;
 }
 
-/* 4 — thin dividers (1–2px) → purple line, not a card (overrides rule 2) */
-[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 1px"],
-[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 2px"] {
+/* 4 — thin dividers (1–2px) → purple line, not a card (overrides rule 2).
+   `data-keep-color` opts out: some 1–2px bars are meaningful marks, not
+   dividers (e.g. the "now" line on the week rail), and must keep their own
+   colour instead of being flattened to a faint hairline. */
+[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 1px"]:not([data-keep-color]),
+[data-theme="light"] :is(#dash-content, .light-page) [style*="height: 2px"]:not([data-keep-color]) {
   background: rgba(124, 58, 237, 0.16) !important;
   box-shadow: none !important;
 }
