@@ -141,14 +141,14 @@ function BaitSection() {
           background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
           fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)',
           marginBottom: 24,
-        }}>הדגמה חיה</div>
+        }}>ראיון עבודה · חי</div>
 
         <h2 className="font-arimo" style={{
           fontSize: 'clamp(1.7rem,3.2vw,2.4rem)', fontWeight: 700,
           color: '#fff', letterSpacing: '-1px', margin: '0 0 14px',
-        }}>אל תאמינו לאף מילה. תבחנו אותה.</h2>
+        }}>אל תקבלו אותה על סמך קורות חיים.</h2>
         <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.48)', margin: '0 0 40px', lineHeight: 1.7 }}>
-          משפט אחד על העסק שלכם. פוסט מוכן חוזר. בלי הרשמה, בלי כרטיס. אם העברית לא נשמעת כמו שלכם — סגרו את הטאב.
+          כתבו משפט אחד על העסק שלכם, ותראו מה היא מגישה. בלי הרשמה, בלי כרטיס. לא התרשמתם? אל תקבלו אותה.
         </p>
 
         {/* Input row — full width, balanced */}
@@ -177,7 +177,7 @@ function BaitSection() {
           <button onClick={handleBait} disabled={stage === 'loading'} style={btn({ fontSize: 15, padding: '14px 40px', opacity: stage === 'loading' ? 0.7 : 1 })}>
             {stage === 'loading'
               ? <><span className="typing-dot" /><span className="typing-dot" /><span className="typing-dot" /></>
-              : <><i className="ti ti-sparkles" style={{ fontSize: 15 }} /> כתבו לי פוסט עכשיו</>}
+              : <><i className="ti ti-sparkles" style={{ fontSize: 15 }} /> תנו לה מבחן קבלה</>}
           </button>
           {stage === 'error' && (
             <p style={{ fontSize: 13, color: '#F87171', margin: 0 }}>{errorMsg}</p>
@@ -395,19 +395,19 @@ function HomeInner() {
               fontSize: 'clamp(2.5rem,5.4vw,4.5rem)', fontWeight: 800,
               color: INK, lineHeight: 1.04, letterSpacing: '-2.5px', margin: '0 0 22px',
             }}>
-              מנהל סושיאל: ~3,000 ₪ לחודש.<br />
+              מנהלת הסושיאל החדשה שלכם<br />מתחילה היום.<br />
               <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>
-                SociMe: 199 ₪.
+                משכורת: 199 ₪.
               </span>
             </h1>
 
             <p className="hero-sub" style={{ fontSize: 'clamp(15px,1.35vw,18px)', color: INK_MID, lineHeight: 1.7, margin: '0 0 32px', maxWidth: 470 }}>
-              לא כלי לכתיבת פוסטים — <strong style={{ color: INK }}>מנהלת סושיאל שלמה.</strong> חוקרת את הקהל, כותבת בעברית, מעצבת, עורכת וידאו, מתזמנת, מפרסמת לפייסבוק אינסטגרם וטיקטוק, עונה לתגובות ומנתחת מה עבד. אתם מאשרים בין לקוח ללקוח. לא התאים? <strong style={{ color: INK }}>14 יום להחזר מלא — בלי נימוק, בלי שיחת שימור.</strong>
+              כותבת בעברית, מעצבת, עורכת וידאו, מתזמנת ומפרסמת לפייסבוק אינסטגרם וטיקטוק, ועונה לתגובות. <strong style={{ color: INK }}>לא ישנה, לא לוקחת חופש, ולא מבקשת העלאה.</strong> אתם רק מאשרים.
             </p>
 
             <div className="hero-ctas" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: 24 }}>
               <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '15px 32px' })}>
-                התחילו בחינם
+                קבלו אותה לעבודה
                 <i className="ti ti-arrow-left" style={{ fontSize: 16 }} />
               </a>
               <button
@@ -420,7 +420,7 @@ function HomeInner() {
                   boxShadow: '0 8px 22px rgba(84,60,150,0.10)',
                 }}>
                 <i className="ti ti-player-play-filled" style={{ fontSize: 14, color: BLUE }} />
-                תבחנו אותה לפני שתשלמו
+                קודם ראיון עבודה
               </button>
             </div>
 
@@ -542,9 +542,9 @@ function HomeInner() {
           borderTop: '1px solid rgba(120,90,200,0.16)', paddingTop: 28,
         }}>
           {[
-            { num: '₪199', label: 'במקום ~3,000 ₪ למנהל סושיאל', icon: 'ti-coin', color: PURPLE },
-            { num: '3', label: 'רשתות, מנוהלות לבד', icon: 'ti-share', color: BLUE },
-            { num: '14 יום', label: 'החזר מלא, בלי נימוק', icon: 'ti-shield-check', color: '#16B999' },
+            { num: '199 ₪', label: 'משכורת חודשית', icon: 'ti-coin', color: PURPLE },
+            { num: '0', label: 'ימי חופש, מחלה והבראה', icon: 'ti-beach-off', color: BLUE },
+            { num: '14 יום', label: 'לא התאימה? החזר מלא', icon: 'ti-shield-check', color: '#16B999' },
           ].map((s, i) => (
             <div key={i} style={{
               padding: '4px 0', textAlign: 'center',
@@ -598,29 +598,29 @@ function HomeInner() {
             display: 'inline-flex', gap: 6, padding: '5px 15px', borderRadius: 999,
             background: 'rgba(59,130,239,0.12)', color: '#2E6FD6',
             fontSize: 12, fontWeight: 700, border: '1px solid rgba(59,130,239,0.26)', marginBottom: 16,
-          }}>איך זה עובד</div>
+          }}>יום החפיפה</div>
           <h2 style={{ fontSize: 'clamp(1.8rem,3.4vw,2.6rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            שלושה צעדים. ואז אתם חופשיים.
+            חפיפה אחת. ואז היא עצמאית.
           </h2>
-          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>בריף חד-פעמי — ו-SociMe עובדת בשבילכם מכאן</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>בריף חד-פעמי — ומכאן היא עובדת בשבילכם</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }} className="steps-grid">
           {[
             {
               num: '01', icon: 'ti-building-store', color: PURPLE, grad: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
-              title: 'ספרו לנו על העסק',
-              desc: 'בריף קצר — תחום, קהל יעד, טון הדיבור. פעם אחת. SociMe זוכרת הכל ומשתמשת בזה בכל פוסט.',
+              title: 'ספרו לה על העסק',
+              desc: 'בריף קצר — תחום, קהל יעד, טון הדיבור. פעם אחת בחיים. היא זוכרת הכל ומשתמשת בזה בכל פוסט.',
             },
             {
               num: '02', icon: 'ti-sparkles', color: BLUE, grad: `linear-gradient(135deg, ${BLUE}, #6AA0FF)`,
-              title: 'AI כותב, אתם מאשרים',
+              title: 'היא כותבת, אתם מאשרים',
               desc: 'פוסטים, תמונות, סרטונים — מוכנים בשניות. עברו, ערכו אם רוצים, ואשרו בלחיצה.',
             },
             {
               num: '03', icon: 'ti-send', color: '#16B999', grad: 'linear-gradient(135deg, #16B999, #3BD1A6)',
-              title: 'SociMe מפרסמת לבד',
-              desc: 'בזמן הנכון, בפלטפורמה הנכונה — אוטומטית. אתם מקבלים אישור ומרוויחים שעות בחזרה.',
+              title: 'והיא מפרסמת לבד',
+              desc: 'בזמן הנכון, בפלטפורמה הנכונה — אוטומטית. אתם מגלים שזה קרה מהאישור בטלפון.',
             },
           ].map((step, i) => (
             <div key={i} style={{
@@ -655,47 +655,47 @@ function HomeInner() {
       <section id="features" className="reveal" style={{ padding: '0 40px 80px', maxWidth: 1060, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 44 }}>
           <h2 style={{ fontSize: 'clamp(1.9rem,3.5vw,2.7rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 10px' }}>
-            זה לא כלי. <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>זה מנהל הסושיאל שלכם.</span>
+            <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>קורות החיים שלה.</span>
           </h2>
-          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>כל מה שהייתם משלמים עליו ~3,000 ₪ — ב-199.</p>
+          <p style={{ fontSize: 15, color: INK_LOW, margin: 0 }}>שש התמחויות. עובדת אחת. בלי לקפוץ בין כלים.</p>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
           {([
             {
               icon: 'ti-sparkles', color: PURPLE2,
-              title: 'כותב, מעצב ומצלם',
-              desc: 'פוסטים בעברית עם תמונה והאשטאגים. וידאו 1080p עם כתוביות אוטומטיות וסאונדים ויראליים לטיקטוק וריעלס. בנק רעיונות שלא נגמר.',
+              title: 'כותבת, מעצבת ומצלמת',
+              desc: 'פוסטים בעברית עם תמונה והאשטאגים. וידאו 1080p עם כתוביות אוטומטיות וסאונדים ויראליים לטיקטוק ורילס. בנק רעיונות שלא נגמר.',
               tools: ['סטודיו יצירה', 'עורך וידאו', 'בנק רעיונות'],
             },
             {
               icon: 'ti-binoculars', color: '#F59E0B',
-              title: 'מרגל אחרי המתחרים שלכם',
-              desc: 'סורק את פרופילי המתחרים, מפרק את מה שעובד להם — ובונה לכם אסטרטגיית נגד. הסוכן שאף פרילנסר לא ייתן לכם.',
+              title: 'מרגלת אחרי המתחרים שלכם',
+              desc: 'סורקת את פרופילי המתחרים, מפרקת את מה שעובד להם — ובונה לכם אסטרטגיית נגד. בלי לבקש מכם לפתוח אינסטגרם אפילו פעם אחת.',
               tools: ['סוכן ניתוח מתחרים', 'Pro'],
             },
             {
               icon: 'ti-calendar-event', color: BLUE,
-              title: 'מפרסם לבד, גם ב-2 בלילה',
-              desc: 'מתזמן שבועות קדימה, בוחר את השעה החכמה לכל רשת, ומנסה שוב אם נכשל. 4 גרסאות מותאמות לארבע רשתות בו-זמנית.',
+              title: 'מפרסמת לבד, גם ב-2 בלילה',
+              desc: 'מתזמנת שבועות קדימה, בוחרת את השעה החכמה לכל רשת, ומנסה שוב אם נכשל. 4 גרסאות מותאמות לארבע רשתות בו-זמנית.',
               tools: ['לוח תזמון', 'תזמון AI', 'מתאם רב-פלטפורמות'],
             },
             {
               icon: 'ti-message-2-heart', color: '#EC4899',
               title: 'עונה ללקוחות שלכם',
-              desc: 'כל התגובות וההודעות מכל הרשתות ב-Inbox אחד מאוחד, עם התראה ברגע שמשהו דורש אתכם.',
+              desc: 'מרכזת את כל התגובות וההודעות מכל הרשתות ב-Inbox אחד, ומתריעה ברגע שמשהו דורש אתכם.',
               tools: ['Inbox מאוחד', 'התראות חכמות'],
             },
             {
               icon: 'ti-chart-bar', color: '#34D399',
-              title: 'ומדווח מה עבד',
-              desc: 'חשיפה, מעורבות ומגמות צמיחה — החלטות לפי נתונים, לא לפי תחושת בטן.',
+              title: 'ומדווחת מה עבד',
+              desc: 'חשיפה, מעורבות ומגמות צמיחה — כדי שתחליטו לפי נתונים, לא לפי תחושת בטן.',
               tools: ['ניתוחים', 'מגמות צמיחה'],
             },
             {
               icon: 'ti-coin', color: '#16B999',
-              title: 'ובונוס: כותב את המודעות הממומנות',
-              desc: 'סוכן קופירייטינג אגרסיבי למודעות פייסבוק וגוגל — קופי שנכתב כדי להמיר, לא כדי להישמע יפה.',
+              title: 'ובונוס: כותבת את המודעות הממומנות',
+              desc: 'קופי אגרסיבי למודעות פייסבוק וגוגל — נכתב כדי להמיר, לא כדי להישמע יפה.',
               tools: ['סוכן קופי לממומן', 'Pro'],
             },
           ] as { icon: string; color: string; title: string; desc: string; tools: string[] }[]).map((feat, i) => (
@@ -725,7 +725,7 @@ function HomeInner() {
             onClick={() => document.getElementById('bait')?.scrollIntoView({ behavior: 'smooth' })}
             style={btn({ fontSize: 15, padding: '14px 36px' })}>
             <i className="ti ti-sparkles" style={{ fontSize: 16 }} />
-            נסו בחינם · ללא הרשמה
+            תנו לה מבחן קבלה · בלי הרשמה
           </button>
         </div>
       </section>
@@ -812,15 +812,15 @@ function HomeInner() {
           <div aria-hidden style={{ position: 'absolute', inset: 0, backgroundImage: NOISE, opacity: 0.5, mixBlendMode: 'soft-light', pointerEvents: 'none' }} />
           <div style={{ position: 'relative' }}>
             <h2 style={{ fontSize: 'clamp(1.9rem,3.6vw,3rem)', fontWeight: 800, color: INK, letterSpacing: '-1.5px', margin: '0 0 16px' }}>
-              המתחרה שלכם מפרסם היום.<br />
-              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>אתם?</span>
+              המשרה<br />
+              <span style={{ background: `linear-gradient(100deg, ${PURPLE}, ${BLUE})`, WebkitBackgroundClip: 'text', backgroundClip: 'text', color: 'transparent' }}>עדיין פנויה.</span>
             </h2>
             <p style={{ fontSize: 16, color: INK_MID, margin: '0 auto 36px', lineHeight: 1.7, maxWidth: 520 }}>
-              מנהל סושיאל עולה כ-3,000 ₪ בחודש. SociMe עולה 199 — ולא לוקחת חופשה. אם תוך 14 יום זה לא עובד לכם, תקבלו כל שקל בחזרה בלי להסביר למה.
+              מנהלת הסושיאל שלכם מחכה להתחיל. 199 ₪ לחודש, בלי חופשות ובלי ימי מחלה — ואם היא לא מתאימה, 14 יום להחזר מלא בלי להסביר למה.
             </p>
             <a href="/login?mode=register" style={btn({ fontSize: 16, padding: '16px 44px' })}>
               <i className="ti ti-arrow-left" style={{ fontSize: 18 }} />
-              התחילו בחינם
+              קבלו אותה לעבודה
             </a>
             <p style={{ fontSize: 12.5, color: INK_LOW, marginTop: 18, marginBottom: 0 }}>
               ללא כרטיס אשראי · 14 יום החזר מלא · ביטול בכל עת

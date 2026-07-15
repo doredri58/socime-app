@@ -43,14 +43,14 @@ const PLANS: Plan[] = [
   {
     id: 'basic',
     name: 'Basic',
-    tagline: 'במקום פרילנסר',
+    tagline: 'משרה מלאה, עסק אחד',
     monthly: 199,
     annual: 159,
     annualTotal: 1908,
     tokens: '500',
     highlight: false,
     cta: 'התחילו עם Basic',
-    anchor: '6% מהעלות של מנהל סושיאל',
+    anchor: 'פחות מ-7% מהמשכורת של מנהל סושיאל',
     features: [
       { label: '500 טוקנים בחודש — הדלק לכל מה שתייצרו', included: true },
       { label: 'ניהול עסק אחד', included: true },
@@ -66,14 +66,14 @@ const PLANS: Plan[] = [
   {
     id: 'pro',
     name: 'Pro',
-    tagline: 'כל הסוכנים פתוחים',
+    tagline: 'עם כל ההתמחויות',
     monthly: 299,
     annual: 239,
     annualTotal: 2868,
     tokens: '1,000',
     highlight: true,
     cta: 'שדרגו ל-Pro',
-    anchor: '10% מהעלות של מנהל סושיאל — עם סוכנים שאין לו',
+    anchor: 'פחות מ-10% ממשכורת של מנהל סושיאל',
     features: [
       { label: '1,000 טוקנים בחודש — פי 2 מ-Basic', included: true },
       { label: 'ניהול עסק אחד', included: true },
@@ -87,20 +87,20 @@ const PLANS: Plan[] = [
   {
     id: 'agency',
     name: 'Agency',
-    tagline: '5 עסקים. בנק אחד.',
+    tagline: 'מנהלת ל-5 עסקים',
     monthly: 999,
     annual: 799,
     annualTotal: 9588,
     tokens: '2,000',
     highlight: false,
     cta: 'בחרו ב-Agency',
-    anchor: '200 ₪ לעסק. פרילנסר אחד עולה פי 15.',
+    anchor: '200 ₪ לעסק — במקום ~3,000 ₪ למנהל לכל אחד',
     features: [
       { label: 'כל מה שכלול ב-Pro — לכל חמשת העסקים', included: true },
       { label: '2,000 טוקנים בבנק סוכנות מרכזי אחד', included: true },
       { label: 'ניהול עד 5 עסקים בפורטל לקוחות', included: true },
       { label: 'מעבר בין לקוחות בלחיצה, מהתפריט העליון', included: true },
-      { label: 'צריכים שישי? 79 ₪ לעסק נוסף (+100 טוקנים)', included: true },
+      { label: 'צריכים עסק שישי? 79 ₪ לכל עסק נוסף (+100 טוקנים)', included: true },
     ],
   },
 ]
@@ -434,13 +434,10 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
           >
             מחירים
           </div>
-          <h2 className="text-3xl font-black tracking-tight md:text-4xl">
-            מנהל סושיאל: ~3,000 ₪ לחודש.
-            <br />
-            בחרו כמה מזה אתם רוצים להחזיר לכיס.
-          </h2>
+          <h2 className="text-3xl font-black tracking-tight md:text-4xl">בחרו את המשכורת שלה.</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-[#857FA6]">
-            כל המסלולים כוללים את מנוע ה-AI המלא — לא גרסה מסורסת. 14 יום אחריות להחזר מלא בכל מסלול.
+            מנהל סושיאל אנושי עולה כ-3,000 ₪ בחודש. היא מתחילה ב-199.
+            כל המסלולים כוללים את מנוע ה-AI המלא — לא גרסה מסורסת.
             שדרגו, הורידו או בטלו מתי שתרצו.
           </p>
         </div>
@@ -458,10 +455,10 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
           style={{ background: 'rgba(22,185,153,0.10)', border: '1px solid rgba(22,185,153,0.32)' }}
         >
           <p className="text-base font-extrabold text-[#253A53]">
-            🛡️ 14 יום. החזר מלא. בלי נימוק.
+            🛡️ 14 יום. לא התאימה? החזר מלא.
           </p>
           <p className="mt-1.5 text-xs leading-relaxed text-[#5B5878]">
-            נסו הכל. אם זה לא עובד לכם — כתבו לנו מילה אחת ותקבלו כל שקל בחזרה.
+            תנו לה לעבוד שבועיים. אם היא לא מוכיחה את עצמה — כתבו לנו מילה אחת ותקבלו כל שקל בחזרה.
             בלי שיחת שימור, בלי &quot;רק תגידו לנו למה&quot;.
           </p>
         </div>
