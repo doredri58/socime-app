@@ -128,11 +128,11 @@ function LoginInner() {
             fontSize: 'clamp(2rem,3.5vw,3rem)', fontWeight: 700,
             color: '#fff', lineHeight: 1.15, letterSpacing: '-1.5px', margin: '0 0 20px',
           }}>
-            הפיד שלכם<br />
-            <span style={{ color: PURPLE2 }}>עומד להשתנות.</span>
+            יום העבודה הראשון שלה<br />
+            <span style={{ color: PURPLE2 }}>מתחיל עכשיו.</span>
           </h1>
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.62)', lineHeight: 1.8, margin: '0 0 40px', maxWidth: 380 }}>
-            הצטרפו למערכת שמייצרת תוכן ויראלי על אוטומט, ותתחילו להפוך עוקבים ללקוחות.
+            ספרו לה על העסק — ומשם היא כותבת, מעצבת, מתזמנת ומפרסמת. אתם רק מאשרים.
           </p>
 
           {/* Trust elements */}
@@ -229,11 +229,11 @@ function LoginInner() {
         {/* Heading */}
         <div style={{ marginBottom: 28 }}>
           <h2 className="font-arimo" style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 6px', letterSpacing: '-0.5px' }}>
-            {mode === 'register' ? 'צרו חשבון חינמי' : 'ברוכים השבים 👋'}
+            {mode === 'register' ? 'בואו נקלוט אותה.' : 'ברוכים השבים 👋'}
           </h2>
           <p style={{ fontSize: 14, color: '#6B7280', margin: 0 }}>
             {mode === 'register'
-              ? 'הגדרה תוך 2 דקות — ללא כרטיס אשראי'
+              ? 'ללא כרטיס אשראי · ביטול בכל עת'
               : 'התחברו לחשבון SociMe שלכם'}
           </p>
         </div>

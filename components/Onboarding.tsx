@@ -206,10 +206,10 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div>
               <h2 className="font-arimo" style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
-                בואו נכיר את הבייבי שלכם. 👶
+                ספרו לה על העסק. 👋
               </h2>
               <p style={{ fontSize: 14, color: '#6B7280', margin: 0, lineHeight: 1.6 }}>
-                ככל שתספרו יותר — ה-AI יכתוב מדויק יותר
+                פעם אחת בחיים. ככל שתספרו יותר — היא תכתוב מדויק יותר
               </p>
             </div>
 
@@ -333,10 +333,10 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div>
               <h2 className="font-arimo" style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
-                למי אנחנו מוכרים? 🎯
+                למי היא מדברת? 🎯
               </h2>
               <p style={{ fontSize: 14, color: '#6B7280', margin: 0, lineHeight: 1.6 }}>
-                הגדרת קהל מדויקת = תוכן שמביא לידים
+                ככל שהקהל מוגדר יותר — היא קולעת מדויק יותר
               </p>
             </div>
 
