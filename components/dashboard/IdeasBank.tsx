@@ -8,7 +8,7 @@ import Teleprompter from '@/components/dashboard/Teleprompter'
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
-const GREEN   = '#34D399'
+const GREEN   = '#0A7159'
 const YELLOW  = '#FBBF24'
 
 const GLASS: React.CSSProperties = {
@@ -257,7 +257,7 @@ function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
         <div style={{ flex: 1 }}>
           <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 999,
             background: 'rgba(248,113,113,0.12)', border: '1px solid rgba(248,113,113,0.22)',
-            color: '#F87171', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 5 }}>
+            color: '#CC1F1F', display: 'inline-flex', alignItems: 'center', gap: 4, marginBottom: 5 }}>
             <i className="ti ti-video" style={{ fontSize: 10 }} />Reel / TikTok
           </span>
           <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.4 }}>{idea.title}</h3>
@@ -276,9 +276,9 @@ function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
             <div style={{ width: 20, height: 20, borderRadius: 6, background: 'rgba(248,113,113,0.2)',
               display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ti ti-bolt" style={{ fontSize: 11, color: '#F87171' }} />
+              <i className="ti ti-bolt" style={{ fontSize: 11, color: '#CC1F1F' }} />
             </div>
-            <span style={{ fontSize: 10, fontWeight: 800, color: '#F87171', letterSpacing: '0.06em' }}>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#CC1F1F', letterSpacing: '0.06em' }}>
               הוק • 0–3 שניות
             </span>
           </div>
@@ -328,7 +328,7 @@ function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
       <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
         <button onClick={onSend} style={{
           flex: 1, padding: '10px 16px', borderRadius: 12, cursor: 'pointer',
-          background: 'linear-gradient(135deg, #F87171, #EF4444)',
+          background: 'linear-gradient(135deg, #CC1F1F, #EF4444)',
           border: 'none', color: '#fff', fontSize: 12, fontWeight: 800,
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7,
           boxShadow: '0 4px 16px rgba(248,113,113,0.28)', transition: 'transform 0.15s',
@@ -531,7 +531,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
           {personalizedVideos.length > 0 && (
             <section style={{ marginBottom: 36 }}>
               <SectionHeader
-                icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#F87171"
+                icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#CC1F1F"
                 title={`תסריטים מותאמים${firstName ? ` לך, ${firstName}` : ''}`}
                 subtitle="כל תסריט מוכן להפקה — פשוט לחץ שלח לסטודיו"
               />

@@ -134,7 +134,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
                 { icon: 'ti-shield-check', text: 'PayPlus — מעבד תשלומים מורשה' },
               ].map(b => (
                 <div key={b.text} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 14px', borderRadius: 12, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
-                  <i className={`ti ${b.icon}`} style={{ fontSize: 14, color: '#34D399', flexShrink: 0 }} />
+                  <i className={`ti ${b.icon}`} style={{ fontSize: 14, color: '#0A7159', flexShrink: 0 }} />
                   <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.5)' }}>{b.text}</span>
                 </div>
               ))}

@@ -173,7 +173,7 @@ function LoginInner() {
                 background: 'rgba(52,211,153,0.14)', border: '1px solid rgba(52,211,153,0.3)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <i className="ti ti-shield-check" style={{ fontSize: 18, color: '#34D399' }} />
+                <i className="ti ti-shield-check" style={{ fontSize: 18, color: '#0A7159' }} />
               </div>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#fff' }}>ללא כרטיס אשראי</div>

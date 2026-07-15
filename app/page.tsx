@@ -138,7 +138,7 @@ function BaitSection() {
         <div style={{
           display: 'inline-flex', alignItems: 'center', gap: 6,
           padding: '5px 16px', borderRadius: 999,
-          background: 'rgba(59,130,239,0.15)', color: '#60A5FA',
+          background: 'rgba(59,130,239,0.15)', color: '#2563C9',
           fontSize: 11, fontWeight: 700, border: '1px solid rgba(59,130,239,0.3)',
           marginBottom: 24,
         }}>ראיון עבודה · חי</div>
@@ -180,7 +180,7 @@ function BaitSection() {
               : <><i className="ti ti-sparkles" style={{ fontSize: 15 }} /> תנו לה מבחן קבלה</>}
           </button>
           {stage === 'error' && (
-            <p style={{ fontSize: 13, color: '#F87171', margin: 0 }}>{errorMsg}</p>
+            <p style={{ fontSize: 13, color: '#CC1F1F', margin: 0 }}>{errorMsg}</p>
           )}
         </div>
 
@@ -224,7 +224,7 @@ function BaitSection() {
                             background: 'rgba(52,211,153,0.15)', border: '1px solid rgba(52,211,153,0.4)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                           }}>
-                            <i className="ti ti-mail-check" style={{ fontSize: 24, color: '#34D399' }} />
+                            <i className="ti ti-mail-check" style={{ fontSize: 24, color: '#0A7159' }} />
                           </div>
                           <p style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 6px' }}>
                             הפוסט המלא בדרך אליכם! 📬
@@ -569,7 +569,7 @@ function HomeInner() {
           gap: 28, flexWrap: 'wrap',
         }}>
           <div style={{ minWidth: 200 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#34D399', letterSpacing: '0.5px', marginBottom: 6 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#0A7159', letterSpacing: '0.5px', marginBottom: 6 }}>
               בהרצה עם עסקי הפיילוט הראשונים בישראל
             </div>
             <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6 }}>
@@ -687,7 +687,7 @@ function HomeInner() {
               tools: ['Inbox מאוחד', 'התראות חכמות'],
             },
             {
-              icon: 'ti-chart-bar', color: '#34D399',
+              icon: 'ti-chart-bar', color: '#0A7159',
               title: 'ומדווחת מה עבד',
               desc: 'חשיפה, מעורבות ומגמות צמיחה — כדי שתחליטו לפי נתונים, לא לפי תחושת בטן.',
               tools: ['ניתוחים', 'מגמות צמיחה'],

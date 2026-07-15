@@ -41,7 +41,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
 
   const max = MAX_TOKENS[tier] ?? 100
   const pct = Math.min(Math.round((balance / max) * 100), 100)
-  const tokenColor = pct > 50 ? '#BE56FE' : pct > 20 ? '#FCD34D' : '#F87171'
+  const tokenColor = pct > 50 ? '#BE56FE' : pct > 20 ? '#8A6207' : '#CC1F1F'
 
   return (
     <header style={{

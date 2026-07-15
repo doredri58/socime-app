@@ -305,7 +305,7 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
         className="mb-6 inline-flex w-fit items-center gap-2 rounded-full px-3.5 py-1.5"
         style={{ background: `${PURPLE}1A`, border: `1px solid ${PURPLE}40` }}
       >
-        <i className="ti ti-coins text-sm" style={{ color: '#C4B5FD' }} />
+        <i className="ti ti-coins text-sm" style={{ color: '#7C3FD6' }} />
         <span className="text-xs font-bold text-[#253A53]">{plan.tokens} טוקנים בחודש</span>
       </div>
 

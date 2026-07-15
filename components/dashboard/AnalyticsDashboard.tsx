@@ -7,7 +7,7 @@ import UpgradeModal from '@/components/dashboard/UpgradeModal'
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
-const GREEN   = '#34D399'
+const GREEN   = '#0A7159'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.06)',
@@ -145,7 +145,7 @@ function KPICard({ icon, label, value, sub, delta, deltaPositive, sparkData, acc
             <span style={{
               fontSize: 11, fontWeight: 700, padding: '2px 8px', borderRadius: 999,
               background: deltaPositive ? 'rgba(52,211,153,0.12)' : 'rgba(248,113,113,0.12)',
-              color: deltaPositive ? GREEN : '#F87171',
+              color: deltaPositive ? GREEN : '#CC1F1F',
               border: `1px solid ${deltaPositive ? 'rgba(52,211,153,0.25)' : 'rgba(248,113,113,0.25)'}`,
               display: 'flex', alignItems: 'center', gap: 3,
             }}>
@@ -375,7 +375,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
           label="טוקנים נותרו"
           value={tokenBalance.toLocaleString()}
           sub="ביתרה הנוכחית"
-          accentColor="#60A5FA"
+          accentColor="#2563C9"
         />
       </div>
 
@@ -461,7 +461,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
             {/* quick stats */}
             {[
               { label: 'פוסטים שפורסמו', val: publishedPosts.length, icon: 'ti-check', color: GREEN },
-              { label: 'פוסטים מתוזמנים', val: scheduledPosts.length, icon: 'ti-clock', color: '#60A5FA' },
+              { label: 'פוסטים מתוזמנים', val: scheduledPosts.length, icon: 'ti-clock', color: '#2563C9' },
               { label: 'טיוטות', val: posts.filter(p => p.status === 'draft').length, icon: 'ti-file', color: '#94A3B8' },
             ].map(s => (
               <div key={s.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
@@ -488,7 +488,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
               <div style={{
                 width: `${Math.min(100, (tokenBalance / 300) * 100)}%`,
                 height: '100%', borderRadius: 999,
-                background: tokenBalance > 100 ? `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})` : 'linear-gradient(90deg, #FBBF24, #F87171)',
+                background: tokenBalance > 100 ? `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})` : 'linear-gradient(90deg, #FBBF24, #CC1F1F)',
                 transition: 'width 0.6s',
               }} />
             </div>

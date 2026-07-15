@@ -101,7 +101,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
           <i className={`ti ${banner.ok ? 'ti-circle-check' : 'ti-alert-triangle'}`}
-            style={{ fontSize: 18, color: banner.ok ? '#34D399' : '#F87171', flexShrink: 0 }} />
+            style={{ fontSize: 18, color: banner.ok ? '#0A7159' : '#CC1F1F', flexShrink: 0 }} />
           <span style={{ fontSize: 13, fontWeight: 600, color: '#fff', flex: 1 }}>{banner.msg}</span>
           <button onClick={() => setBanner(null)} style={{
             background: 'none', border: 'none', cursor: 'pointer', color: 'rgba(255,255,255,0.4)', padding: 4,
@@ -119,7 +119,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
         display: 'flex', alignItems: 'center', gap: 10,
       }}>
         <i className={`ti ${connected.length > 0 ? 'ti-circle-check' : 'ti-alert-circle'}`}
-          style={{ fontSize: 18, color: connected.length > 0 ? '#34D399' : '#FBBF24', flexShrink: 0 }} />
+          style={{ fontSize: 18, color: connected.length > 0 ? '#0A7159' : '#FBBF24', flexShrink: 0 }} />
         <div>
           <div style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>
             {loading ? 'טוען...' : connected.length > 0
@@ -180,8 +180,8 @@ export default function SocialConnect({ tier = 'free' }: Props) {
                 {active ? (
                   <>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#34D399', boxShadow: '0 0 6px rgba(52,211,153,0.5)' }} />
-                      <span style={{ fontSize: 12, fontWeight: 700, color: '#34D399' }}>מחובר</span>
+                      <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#0A7159', boxShadow: '0 0 6px rgba(52,211,153,0.5)' }} />
+                      <span style={{ fontSize: 12, fontWeight: 700, color: '#0A7159' }}>מחובר</span>
                     </div>
                     <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>חובר ב-{since}</div>
                   </>
@@ -207,11 +207,11 @@ export default function SocialConnect({ tier = 'free' }: Props) {
                 <button onClick={() => disconnect(p.id)} disabled={busy} style={{
                   width: '100%', padding: '9px', borderRadius: 12, cursor: busy ? 'wait' : 'pointer',
                   background: 'transparent', border: '1px solid rgba(248,113,113,0.25)',
-                  color: '#F87171', fontSize: 12, fontWeight: 600,
+                  color: '#CC1F1F', fontSize: 12, fontWeight: 600,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, opacity: busy ? 0.6 : 1,
                 }}>
                   {busy
-                    ? <div style={{ width: 12, height: 12, border: '2px solid rgba(248,113,113,0.3)', borderTop: '2px solid #F87171', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
+                    ? <div style={{ width: 12, height: 12, border: '2px solid rgba(204,31,31,0.25)', borderTop: '2px solid #CC1F1F', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
                     : <i className="ti ti-unlink" style={{ fontSize: 13 }} />}
                   נתק
                 </button>

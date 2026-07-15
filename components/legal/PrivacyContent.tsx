@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
-const GREEN   = '#34D399'
+const GREEN   = '#0A7159'
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
   backdropFilter: 'blur(20px)',
@@ -15,7 +15,7 @@ const GLASS: React.CSSProperties = {
 const SECTIONS = [
   {
     icon: 'ti-database',
-    color: '#60A5FA',
+    color: '#2563C9',
     title: 'מה אנו אוספים',
     items: [
       { label: 'פרטי זיהוי', desc: 'שם, כתובת מייל, תמונת פרופיל (אופציונלי)' },
@@ -177,7 +177,7 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
           <h2 style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 14 }}>פעולות פרטיות</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 32 }}>
             <div style={{ ...GLASS, padding: '20px' }}>
-              <i className="ti ti-download" style={{ fontSize: 22, color: '#60A5FA', marginBottom: 10, display: 'block' }} />
+              <i className="ti ti-download" style={{ fontSize: 22, color: '#2563C9', marginBottom: 10, display: 'block' }} />
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 5 }}>ייצוא נתונים</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 14, lineHeight: 1.5 }}>
                 קבלו עותק מלא של כל הנתונים שלכם בפורמט JSON תוך 24 שעות למייל.
@@ -189,7 +189,7 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
                   padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
                   cursor: exportRequested ? 'default' : 'pointer',
                   background: exportRequested ? 'rgba(52,211,153,0.15)' : 'rgba(96,165,250,0.15)',
-                  color: exportRequested ? GREEN : '#60A5FA',
+                  color: exportRequested ? GREEN : '#2563C9',
                   border: exportRequested ? '1px solid rgba(52,211,153,0.3)' : '1px solid rgba(96,165,250,0.3)',
                   transition: 'all 0.2s',
                 }}
@@ -198,14 +198,14 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
               </button>
             </div>
             <div style={{ ...GLASS, padding: '20px' }}>
-              <i className="ti ti-trash" style={{ fontSize: 22, color: '#F87171', marginBottom: 10, display: 'block' }} />
+              <i className="ti ti-trash" style={{ fontSize: 22, color: '#CC1F1F', marginBottom: 10, display: 'block' }} />
               <div style={{ fontSize: 14, fontWeight: 700, color: '#fff', marginBottom: 5 }}>מחיקת חשבון</div>
               <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginBottom: 14, lineHeight: 1.5 }}>
                 מחיקה קבועה של החשבון וכל הנתונים תוך 30 יום. פעולה בלתי הפיכה.
               </div>
               <Link href="/dashboard/settings?tab=privacy" style={{
                 display: 'inline-block', padding: '9px 18px', borderRadius: 10, fontSize: 12, fontWeight: 700,
-                background: 'rgba(248,113,113,0.1)', color: '#F87171',
+                background: 'rgba(248,113,113,0.1)', color: '#CC1F1F',
                 border: '1px solid rgba(248,113,113,0.25)', textDecoration: 'none',
               }}>
                 עבור להגדרות

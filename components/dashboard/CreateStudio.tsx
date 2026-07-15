@@ -304,7 +304,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
   }
 
   const charPct = Math.min(100, (charCount / maxChars) * 100)
-  const charColor = charPct > 90 ? '#F87171' : charPct > 70 ? '#FBBF24' : 'rgba(255,255,255,0.3)'
+  const charColor = charPct > 90 ? '#CC1F1F' : charPct > 70 ? '#FBBF24' : 'rgba(255,255,255,0.3)'
 
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 60px)', direction: 'rtl', overflow: 'hidden', position: 'relative' }}>
@@ -316,7 +316,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           padding: '12px 24px', borderRadius: 14, zIndex: 200, fontSize: 13, fontWeight: 600,
           background: toast.ok ? 'rgba(52,211,153,0.15)' : 'rgba(248,113,113,0.15)',
           border: `1px solid ${toast.ok ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)'}`,
-          color: toast.ok ? '#34D399' : '#F87171', backdropFilter: 'blur(12px)',
+          color: toast.ok ? '#0A7159' : '#CC1F1F', backdropFilter: 'blur(12px)',
         }}>
           {toast.ok ? '✓' : '✗'} {toast.msg}
         </div>
@@ -535,18 +535,18 @@ export default function CreateStudio({ userId, businessName, businessDescription
               width: '100%', padding: '11px', borderRadius: 14, cursor: imgGenLoading ? 'wait' : 'pointer',
               background: imgAttempts <= 0 ? 'rgba(255,255,255,0.04)' : 'rgba(59,130,239,0.12)',
               border: `1px solid ${imgAttempts <= 0 ? 'rgba(255,255,255,0.1)' : 'rgba(59,130,239,0.25)'}`,
-              color: imgAttempts <= 0 ? 'rgba(255,255,255,0.35)' : '#60A5FA',
+              color: imgAttempts <= 0 ? 'rgba(255,255,255,0.35)' : '#2563C9',
               fontSize: 13, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s', position: 'relative',
             }}
           >
             {imgGenLoading
-              ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(96,165,250,0.3)', borderTop: '2px solid #60A5FA', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר תמונה...</>
+              ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(37,99,201,0.25)', borderTop: '2px solid #2563C9', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר תמונה...</>
               : imgAttempts <= 0
                 ? <><i className="ti ti-lock" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI<span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(150,86,254,0.2)', border: '1px solid rgba(150,86,254,0.3)', color: PURPLE2 }}>שדרג לPro</span></>
                 : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
-                    <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: imgAttempts === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.12)', border: `1px solid ${imgAttempts === 1 ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.2)'}`, color: imgAttempts === 1 ? '#FBBF24' : '#34D399', fontWeight: 700 }}>נותרו {imgAttempts} ניסיונות</span>
+                    <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: imgAttempts === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.12)', border: `1px solid ${imgAttempts === 1 ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.2)'}`, color: imgAttempts === 1 ? '#FBBF24' : '#0A7159', fontWeight: 700 }}>נותרו {imgAttempts} ניסיונות</span>
                   </>
             }
           </button>

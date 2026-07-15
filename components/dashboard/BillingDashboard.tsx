@@ -7,7 +7,7 @@ import UpgradeModal from '@/components/dashboard/UpgradeModal'
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
-const GREEN   = '#34D399'
+const GREEN   = '#0A7159'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
@@ -45,7 +45,7 @@ function StatusBadge({ status }: { status: 'paid' | 'pending' | 'failed' }) {
   const map = {
     paid:    { label: 'שולם',   color: GREEN,    bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.3)'  },
     pending: { label: 'ממתין',  color: '#FBBF24', bg: 'rgba(251,191,36,0.10)', border: 'rgba(251,191,36,0.28)' },
-    failed:  { label: 'נכשל',   color: '#F87171', bg: 'rgba(248,113,113,0.10)',border: 'rgba(248,113,113,0.28)'},
+    failed:  { label: 'נכשל',   color: '#CC1F1F', bg: 'rgba(248,113,113,0.10)',border: 'rgba(248,113,113,0.28)'},
   }
   const s = map[status]
   return (
@@ -213,7 +213,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                 height: '100%', borderRadius: 999, transition: 'width 0.6s ease',
                 width: `${100 - usedPct}%`,
                 background: tokens < plan.tokenLimit * 0.2
-                  ? 'linear-gradient(90deg, #F87171, #EF4444)'
+                  ? 'linear-gradient(90deg, #CC1F1F, #EF4444)'
                   : tokens < plan.tokenLimit * 0.5
                   ? 'linear-gradient(90deg, #FBBF24, #F59E0B)'
                   : `linear-gradient(90deg, ${PURPLE}, ${PURPLE2})`,

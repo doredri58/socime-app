@@ -6,7 +6,7 @@ import { TONES, type ToneId } from '@/lib/tones'
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
-const GREEN   = '#34D399'
+const GREEN   = '#0A7159'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
@@ -131,7 +131,7 @@ function Toast({ message, type }: { message: string; type: 'success' | 'error' }
       boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
     }}>
       <i className={`ti ${type === 'success' ? 'ti-circle-check' : 'ti-alert-circle'}`}
-        style={{ fontSize: 16, color: type === 'success' ? GREEN : '#F87171' }} />
+        style={{ fontSize: 16, color: type === 'success' ? GREEN : '#CC1F1F' }} />
       <span style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{message}</span>
     </div>
   )
@@ -373,7 +373,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
               <div style={{ position: 'absolute', right: -12, top: 0, bottom: 0, width: 1, background: 'rgba(255,255,255,0.07)' }} />
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-                <div style={{ fontSize: 11, fontWeight: 800, color: '#60A5FA', letterSpacing: '0.06em', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ fontSize: 11, fontWeight: 800, color: '#2563C9', letterSpacing: '0.06em', marginBottom: 2, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <i className="ti ti-world" style={{ fontSize: 13 }} /> נכסים דיגיטליים
                 </div>
 

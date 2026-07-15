@@ -55,8 +55,8 @@ const PURPLE_T = '#7C3FD6'   // purple that stays readable as text on light
    its value means something the user should act on. */
 const STAT_TONE = {
   neutral: { value: INK,       chip: 'rgba(150,86,254,0.12)', icon: PURPLE_T },
-  warn:    { value: '#9A6D08', chip: 'rgba(232,165,25,0.16)', icon: '#9A6D08' },
-  ok:      { value: '#0E9B80', chip: 'rgba(22,185,153,0.14)', icon: '#0E9B80' },
+  warn:    { value: '#8A6207', chip: 'rgba(232,165,25,0.16)', icon: '#8A6207' },
+  ok:      { value: '#0A7159', chip: 'rgba(22,185,153,0.14)', icon: '#0A7159' },
 } as const
 
 /* ── Week rhythm ────────────────────────────────────────────────
@@ -192,7 +192,7 @@ export default async function DashboardHome() {
                   padding: '2px 9px', borderRadius: 999,
                   background: 'rgba(232,165,25,0.14)',
                   border: '1px solid rgba(232,165,25,0.30)',
-                  color: '#9A6D08', fontSize: 11, fontWeight: 700,
+                  color: '#8A6207', fontSize: 11, fontWeight: 700,
                 }}>
                   ● {emptyDays === 1 ? 'יום ריק אחד' : `${emptyDays} ימים ריקים`}
                 </span>
@@ -396,7 +396,7 @@ export default async function DashboardHome() {
           </h3>
           {/* With nothing connected this card is the single thing blocking the
               product from working — say that plainly instead of a soft nudge. */}
-          <p style={{ fontSize: 12, color: hasConnections ? INK_LOW : '#9A6D08', fontWeight: hasConnections ? 400 : 600, margin: '0 0 20px' }}>
+          <p style={{ fontSize: 12, color: hasConnections ? INK_LOW : '#8A6207', fontWeight: hasConnections ? 400 : 600, margin: '0 0 20px' }}>
             {hasConnections
               ? 'הרשתות המחוברות שלך'
               : 'בלי רשת מחוברת SociMe לא יכולה לפרסם — חברו אחת כדי להתחיל'}
@@ -429,7 +429,7 @@ export default async function DashboardHome() {
                     <div style={{ fontSize: 13.5, fontWeight: 700, color: INK }}>
                       {net.label}
                     </div>
-                    <div style={{ fontSize: 11, fontWeight: 600, color: connected ? '#0E9B80' : INK_LOW }}>
+                    <div style={{ fontSize: 11, fontWeight: 600, color: connected ? '#0A7159' : INK_LOW }}>
                       {connected ? 'מחובר' : 'לא מחובר'}
                     </div>
                   </div>
@@ -438,7 +438,7 @@ export default async function DashboardHome() {
                     padding: '5px 14px', borderRadius: 999,
                     background: 'rgba(22,185,153,0.12)',
                     border: '1px solid rgba(22,185,153,0.30)',
-                    color: '#0E9B80', fontSize: 11, fontWeight: 700,
+                    color: '#0A7159', fontSize: 11, fontWeight: 700,
                     textDecoration: 'none', whiteSpace: 'nowrap',
                   } : {
                     padding: '6px 18px', borderRadius: 999,

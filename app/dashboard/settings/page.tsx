@@ -6,8 +6,8 @@ import UpgradeModal from '@/components/dashboard/UpgradeModal'
 /* ── design tokens ────────────────────────────────────────────────────── */
 const PURPLE  = '#9656FE'
 const PURPLE2 = '#BE56FE'
-const GREEN   = '#34D399'
-const RED     = '#F87171'
+const GREEN   = '#0A7159'
+const RED     = '#CC1F1F'
 
 const GLASS: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
@@ -335,7 +335,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 32, height: 32, borderRadius: 10, background: 'rgba(59,130,239,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <i className="ti ti-devices" style={{ fontSize: 15, color: '#60A5FA' }} />
+              <i className="ti ti-devices" style={{ fontSize: 15, color: '#2563C9' }} />
             </div>
             <div>
               <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>מכשירים פעילים</div>
@@ -405,7 +405,7 @@ function NotificationsTab() {
   return (
     <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
       <div style={{ marginBottom: 4 }}>
-        <ToggleRow icon="ti-send"          iconColor="#60A5FA"  iconBg="rgba(59,130,239,0.12)"
+        <ToggleRow icon="ti-send"          iconColor="#2563C9"  iconBg="rgba(59,130,239,0.12)"
           label="התראות על פרסום פוסטים" sub="קבל התראה כשפוסט פורסם בהצלחה"
           on={notifs.publishing} onChange={() => toggle('publishing')} />
         <ToggleRow icon="ti-coins"         iconColor="#FBBF24"  iconBg="rgba(251,191,36,0.10)"
@@ -417,7 +417,7 @@ function NotificationsTab() {
         <ToggleRow icon="ti-chart-bar"     iconColor={GREEN}    iconBg="rgba(52,211,153,0.10)"
           label="דוח שבועי"               sub="סיכום ביצועים שבועי כל יום ראשון"
           on={notifs.weeklyReport} onChange={() => toggle('weeklyReport')} />
-        <ToggleRow icon="ti-sparkles"      iconColor="#F87171"  iconBg="rgba(248,113,113,0.10)"
+        <ToggleRow icon="ti-sparkles"      iconColor="#CC1F1F"  iconBg="rgba(248,113,113,0.10)"
           label="הצעות AI חכמות"          sub="כשה-AI מזהה הזדמנות לתוכן מנצח"
           on={notifs.aiSuggestions} onChange={() => toggle('aiSuggestions')} />
       </div>
@@ -523,7 +523,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
             <span style={{ fontSize: 11, fontWeight: 700, padding: '3px 10px', borderRadius: 999,
               background: m.role === 'admin' ? 'rgba(150,86,254,0.12)' : 'rgba(59,130,239,0.10)',
               border: `1px solid ${m.role === 'admin' ? 'rgba(150,86,254,0.28)' : 'rgba(59,130,239,0.22)'}`,
-              color: m.role === 'admin' ? PURPLE2 : '#60A5FA' }}>
+              color: m.role === 'admin' ? PURPLE2 : '#2563C9' }}>
               {m.role === 'admin' ? 'מנהל' : 'עורך'}
             </span>
             <button onClick={() => removeMember(m.email)} style={{
@@ -575,7 +575,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 20 }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 6 }}>
-              <i className="ti ti-download" style={{ fontSize: 16, color: '#60A5FA' }} />
+              <i className="ti ti-download" style={{ fontSize: 16, color: '#2563C9' }} />
               <span style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>הורדת נתונים</span>
             </div>
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.75 }}>
@@ -585,7 +585,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
           <button onClick={exportData} style={{
             padding: '10px 20px', borderRadius: 12, cursor: 'pointer', fontSize: 12, fontWeight: 700, whiteSpace: 'nowrap',
             background: 'rgba(59,130,239,0.12)', border: '1px solid rgba(59,130,239,0.28)',
-            color: '#60A5FA', display: 'inline-flex', alignItems: 'center', gap: 7, flexShrink: 0,
+            color: '#2563C9', display: 'inline-flex', alignItems: 'center', gap: 7, flexShrink: 0,
           }}>
             <i className="ti ti-file-download" style={{ fontSize: 14 }} /> הורד את הנתונים שלי
           </button>

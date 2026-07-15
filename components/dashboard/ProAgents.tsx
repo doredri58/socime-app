@@ -78,7 +78,7 @@ function CardHeader({ icon, title, desc }: { icon: string; title: string; desc: 
   )
 }
 const Err = ({ msg }: { msg: string }) => (
-  <div style={{ fontSize: 12, color: '#FCA5A5', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: 10, padding: '8px 12px' }}>{msg}</div>
+  <div style={{ fontSize: 12, color: '#CC1F1F', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', borderRadius: 10, padding: '8px 12px' }}>{msg}</div>
 )
 const Block = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 12, padding: '12px 14px' }}>
@@ -117,7 +117,7 @@ function CompetitorCard() {
           <Block title="נושאים מובילים">
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
               {(d.top_performing_topics ?? []).map((t, i) => (
-                <span key={i} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999, background: `${PURPLE}22`, color: '#C4B5FD' }}>{t}</span>
+                <span key={i} style={{ fontSize: 12, padding: '3px 10px', borderRadius: 999, background: `${PURPLE}22`, color: '#7C3FD6' }}>{t}</span>
               ))}
             </div>
           </Block>

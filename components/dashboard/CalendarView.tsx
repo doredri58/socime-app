@@ -27,11 +27,11 @@ const PLATFORM_META: Record<string, { icon: string; color: string; label: string
 
 const STATUS_META: Record<string, { label: string; color: string; bg: string; dot: string }> = {
   draft:            { label: 'טיוטה',        color: '#94A3B8', bg: 'rgba(148,163,184,0.15)', dot: '#94A3B8' },
-  scheduled:        { label: 'מתוזמן',       color: '#34D399', bg: 'rgba(52,211,153,0.15)',  dot: '#34D399' },
+  scheduled:        { label: 'מתוזמן',       color: '#0A7159', bg: 'rgba(52,211,153,0.15)',  dot: '#0A7159' },
   pending_approval: { label: 'ממתין',        color: '#FBBF24', bg: 'rgba(251,191,36,0.15)',  dot: '#FBBF24' },
   queued:           { label: 'בתור',         color: PURPLE2,   bg: 'rgba(190,86,254,0.15)',  dot: PURPLE2  },
-  published:        { label: 'פורסם',        color: '#60A5FA', bg: 'rgba(96,165,250,0.15)',  dot: '#60A5FA' },
-  failed:           { label: 'נכשל',         color: '#F87171', bg: 'rgba(248,113,113,0.15)', dot: '#F87171' },
+  published:        { label: 'פורסם',        color: '#2563C9', bg: 'rgba(96,165,250,0.15)',  dot: '#2563C9' },
+  failed:           { label: 'נכשל',         color: '#CC1F1F', bg: 'rgba(248,113,113,0.15)', dot: '#CC1F1F' },
   paused:           { label: 'מושהה',        color: '#94A3B8', bg: 'rgba(148,163,184,0.12)', dot: '#94A3B8' },
 }
 
@@ -248,7 +248,7 @@ function PostDetail({ post, onClose, onStatusChange, onSaveContent, onPublishNow
             cursor: busy ? 'wait' : 'pointer',
             background: isPaused ? 'rgba(52,211,153,0.14)' : 'rgba(251,191,36,0.14)',
             border: `1px solid ${isPaused ? 'rgba(52,211,153,0.35)' : 'rgba(251,191,36,0.35)'}`,
-            color: isPaused ? '#34D399' : '#FBBF24', fontSize: 12, fontWeight: 700,
+            color: isPaused ? '#0A7159' : '#FBBF24', fontSize: 12, fontWeight: 700,
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             opacity: busy ? 0.6 : 1, transition: 'opacity 0.15s',
           }}>
@@ -262,7 +262,7 @@ function PostDetail({ post, onClose, onStatusChange, onSaveContent, onPublishNow
           <div style={{
             padding: '10px 14px', borderRadius: 12, marginBottom: 8,
             background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)',
-            fontSize: 12, color: '#F87171', lineHeight: 1.6,
+            fontSize: 12, color: '#CC1F1F', lineHeight: 1.6,
           }}>
             {publishErr}
           </div>
@@ -785,7 +785,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
         {/* stats */}
         <div style={{ marginBottom: 24 }}>
           {[
-            { label: 'מתוזמנים', val: scheduledCount, color: '#34D399' },
+            { label: 'מתוזמנים', val: scheduledCount, color: '#0A7159' },
             { label: 'טיוטות',   val: draftCount,     color: '#94A3B8' },
             { label: 'סה"כ',     val: allPosts.length, color: PURPLE2  },
           ].map(s => (
@@ -845,7 +845,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
           <button onClick={() => { setFilterPlatform([]); setFilterStatus([]) }} style={{
             width: '100%', marginTop: 14, padding: '7px', borderRadius: 12, cursor: 'pointer',
             background: 'transparent', border: '1px dashed rgba(248,113,113,0.3)',
-            color: '#F87171', fontSize: 11, fontWeight: 600,
+            color: '#CC1F1F', fontSize: 11, fontWeight: 600,
           }}>
             נקה סינון
           </button>
