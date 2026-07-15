@@ -65,7 +65,10 @@
   --dash-sidebar-text-active: #3B82EF;
   --dash-sidebar-active-bg: rgba(59,130,239,0.12);
   --dash-sidebar-active-border: rgba(59,130,239,0.32);
-  --dash-sidebar-label: rgba(37,58,83,0.45);
+  /* 4.66:1 on the frosted sidebar. Was rgba(37,58,83,0.45) = 2.37:1, which
+     fails WCAG AA for 10px text. These labels stay secondary via size,
+     uppercase and letter-spacing — not by being too faint to read. */
+  --dash-sidebar-label: #6B6790;
   --dash-token-bg: rgba(255,255,255,0.6);
   --dash-token-border: rgba(150,86,254,0.22);
   --dash-token-text: #253A53;
