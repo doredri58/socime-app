@@ -42,47 +42,47 @@ interface Props {
 const POST_IDEAS: PostIdea[] = [
   { id: 'p1', personalized: true, emoji: '🎯', category: 'tips',
     title: 'הסוד שהלקוחות שלנו לא ידעו לבקש',
-    description: 'שתף טיפ פנימי שרק הלקוחות הכי נאמנים שלך מכירים.',
+    description: 'שתפו טיפ פנימי שרק הלקוחות הכי נאמנים שלכם מכירים.',
     why: 'יוצר תחושת אקסקלוסיביות ומגביר נאמנות — קהל מרגיש "מועדפים".' },
   { id: 'p2', personalized: true, emoji: '📸', category: 'behind',
     title: 'יום אופייני — מה קורה מאחורי הקלעים?',
-    description: 'תצלום/סרטון קצר של שגרת העבודה האמיתית שלך.',
+    description: 'תצלום/סרטון קצר של שגרת העבודה האמיתית שלכם.',
     why: 'אנשים קונים מאנשים. אותנטיות מייצרת אמון גבוה פי 3 מפרסום ישיר.' },
   { id: 'p3', personalized: true, emoji: '🏆', category: 'sales',
     title: 'Case Study: לקוח אחד, תוצאה אחת מדהימה',
-    description: 'ספר סיפור הצלחה ספציפי עם מספרים אמיתיים.',
+    description: 'ספרו סיפור הצלחה ספציפי עם מספרים אמיתיים.',
     why: 'Social proof עם נתונים קונקרטיים ממיר פי 4 יותר מהמלצה כללית.' },
   { id: 'p4', emoji: '💥', category: 'sales',
     title: '48 שעות בלבד — מבצע ברק',
-    description: 'צור תחושת דחיפות עם מבצע מוגבל בזמן.',
+    description: 'צרו תחושת דחיפות עם מבצע מוגבל בזמן.',
     why: 'FOMO (fear of missing out) מגביר המרות ב-40% בממוצע.' },
   { id: 'p5', emoji: '🎁', category: 'sales',
     title: 'הפתעה לעוקבים הנאמנים ביותר',
-    description: 'הכרז על מתנה/הנחה ייחודית לעוקבים בלבד.',
+    description: 'הכריזו על מתנה/הנחה ייחודית לעוקבים בלבד.',
     why: 'מתגמל קהל קיים ומעודד שיתוף אורגני בין חברים.' },
   { id: 'p6', emoji: '❓', category: 'sales',
     title: '"כמה עולה?" — שאלות נפוצות על המחיר',
-    description: 'ענה בפומבי על השאלה הנפוצה ביותר על התמחור.',
+    description: 'ענו בפומבי על השאלה הנפוצה ביותר על התמחור.',
     why: 'מסיר חסם פסיכולוגי ראשי — שקיפות מחיר מגדילה אמון ופניות.' },
   { id: 'p7', emoji: '🔧', category: 'behind',
     title: 'כך נוצר המוצר שלנו — מהרעיון לגמר',
-    description: 'הצג את תהליך היצירה/ייצור בצורה ויזואלית.',
+    description: 'הציגו את תהליך היצירה/ייצור בצורה ויזואלית.',
     why: 'תוכן "מאחורי הקלעים" מקבל 30% יותר מעורבות מפוסטים שיווקיים.' },
   { id: 'p8', emoji: '🤝', category: 'behind',
     title: 'הצוות שלנו — הפנים מאחורי המותג',
-    description: 'הצג חבר צוות ואת הסיפור שלו בעסק.',
+    description: 'הציגו חבר צוות ואת הסיפור שלו בעסק.',
     why: 'הומניזציה של מותג מגבירה חיבור רגשי ונאמנות לטווח ארוך.' },
   { id: 'p9', emoji: '💡', category: 'tips',
     title: '5 טעויות שכולם עושים (ואיך להימנע)',
-    description: 'רשימת טעויות נפוצות בתחום שלך עם פתרונות.',
-    why: 'תוכן "טעויות" מייצר זדהות ומציב אותך כסמכות מקצועית.' },
+    description: 'רשימת טעויות נפוצות בתחום שלכם עם פתרונות.',
+    why: 'תוכן "טעויות" מייצר זדהות ומציב אתכם כסמכות מקצועית.' },
   { id: 'p10', emoji: '📋', category: 'tips',
     title: "הצ'קליסט שכל לקוח צריך לפני...",
-    description: "תן ערך מיידי עם צ'קליסט שניתן לשמור.",
+    description: "תנו ערך מיידי עם צ'קליסט שניתן לשמור.",
     why: 'תוכן שניתן לשמור מקבל שיעור bookmarks גבוה פי 5 מפוסט רגיל.' },
   { id: 'p11', emoji: '🔥', category: 'tips',
     title: 'הטיפ שאף אחד לא מדבר עליו',
-    description: 'שתף insight לא שגרתי שרק מומחה בתחום יודע.',
+    description: 'שתפו insight לא שגרתי שרק מומחה בתחום יודע.',
     why: 'תוכן קאונטר-אינטואיטיבי מגביר שיתופים ב-60%.' },
   { id: 'p12', emoji: '🎉', category: 'events',
     title: 'ראש השנה מתקרב — תוכן חגיגי לקהל',
@@ -90,15 +90,15 @@ const POST_IDEAS: PostIdea[] = [
     why: 'פוסטים חגיגיים מייצרים engagement רגשי גבוה ומחזקים קשר אישי.' },
   { id: 'p13', emoji: '📅', category: 'events',
     title: 'יום הולדת לעסק — X שנים של...',
-    description: 'חגוג אבן דרך עסקית עם נתונים ותובנות.',
+    description: 'חגגו אבן דרך עסקית עם נתונים ותובנות.',
     why: 'אבני דרך מייצרות authenticity ומעודדות תגובות ברכה.' },
   { id: 'p14', emoji: '🚀', category: 'viral',
     title: 'זה הטרנד שמשתלט על הפיד כרגע',
-    description: 'התאם את הטרנד הוויראלי הנוכחי לתחום שלך.',
+    description: 'התאימו את הטרנד הוויראלי הנוכחי לתחום שלכם.',
     why: 'תוכן שרוכב על טרנד מקבל 10x חשיפה אורגנית תוך 24 שעות.' },
   { id: 'p15', emoji: '🎯', category: 'viral',
     title: 'הסאונד הזה שובר את האינסטגרם — הגרסה שלנו',
-    description: 'השתמש ב-trending audio ויצור גרסה עסקית.',
+    description: 'השתמשו ב-trending audio וייצרו גרסה עסקית.',
     why: 'Instagram מקדם תוכן עם trending audio פי 7 יותר.' },
 ]
 
@@ -135,7 +135,7 @@ const VIDEO_IDEAS: VideoIdea[] = [
     script: 'לקוחות מצליחים עושים 3 דברים שמרביתם לא עושים: [1], [2], [3].' },
   { id: 'v6', emoji: '🎁', category: 'sales',
     title: 'מה מקבלים בפועל כשעובדים איתי',
-    concept: 'unboxing-style של החוויה עם העסק שלך',
+    concept: 'unboxing-style של החוויה עם העסק שלכם',
     hook: 'לפני שאתה מחליט — הנה בדיוק מה קורה מהרגע הראשון.',
     direction: 'Walk-through של התהליך. Screen share של תוצרים. Testimonial.',
     script: 'שלב 1: שיחת היכרות. שלב 2: תוכנית אישית. שלב 3: ביצוע. שלב 4: תוצאות.' },
@@ -222,7 +222,7 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
         onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = 'translateY(-1px)'; b.style.boxShadow = '0 6px 22px rgba(150,86,254,0.45)' }}
         onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = ''; b.style.boxShadow = '0 4px 16px rgba(150,86,254,0.3)' }}
         >
-          <i className="ti ti-sparkles" style={{ fontSize: 13 }} /> צור פוסט מזה
+          <i className="ti ti-sparkles" style={{ fontSize: 13 }} /> צרו פוסט מזה
         </button>
         <BookmarkBtn saved={saved} onToggle={onSave} />
       </div>
@@ -432,7 +432,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
           בנק רעיונות
         </h1>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
-          רעיונות מותאמים ל{businessName || 'העסק שלך'} — לחץ ליצירת תוכן מיידי
+          רעיונות מותאמים ל{businessName || 'העסק שלכם'} — לחצו ליצירת תוכן מיידי
         </p>
       </div>
 
@@ -492,7 +492,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
               <SectionHeader
                 icon="ti-sparkles" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
                 title={`הותאם במיוחד בשבילך${firstName ? `, ${firstName}` : ''}`}
-                subtitle="על סמך פרופיל העסק שלך"
+                subtitle="על סמך פרופיל העסק שלכם"
               />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
                 {personalizedPosts.map(idea => (

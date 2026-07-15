@@ -20,8 +20,8 @@ const GROUPS: NavGroup[] = [
   {
     title: 'יצירת תוכן',
     items: [
-      { href: '/dashboard/create', label: 'סטודיו יצירה',   icon: 'ti-sparkles' },
-      { href: '/dashboard/video',  label: 'עורך וידאו AI',   icon: 'ti-video' },
+      { href: '/dashboard/create', label: 'סטודיו',          icon: 'ti-sparkles' },
+      { href: '/dashboard/video',  label: 'עורך וידאו',      icon: 'ti-video' },
       { href: '/dashboard/agents', label: 'סוכני Pro',       icon: 'ti-robot' },
       { href: '/dashboard/bank',   label: 'בנק רעיונות',     icon: 'ti-bulb' },
     ],
@@ -29,16 +29,16 @@ const GROUPS: NavGroup[] = [
   {
     title: 'תזמון ופרסום',
     items: [
-      { href: '/dashboard/queue',  label: 'יומן ותזמונים',   icon: 'ti-calendar-event' },
-      { href: '/dashboard/timing', label: 'תזמון חכם',       icon: 'ti-clock-bolt' },
+      { href: '/dashboard/queue',  label: 'יומן',            icon: 'ti-calendar-event' },
+      { href: '/dashboard/timing', label: 'שעות חכמות',      icon: 'ti-clock-bolt' },
       { href: '/dashboard/bulk',   label: 'העלאה מרוכזת',    icon: 'ti-files' },
     ],
   },
   {
     title: 'קהל וניתוח',
     items: [
-      { href: '/dashboard/community', label: 'ניהול קהילה',       icon: 'ti-message-2-heart' },
-      { href: '/dashboard/ideas',     label: 'ניתוחים סטטיסטיים', icon: 'ti-chart-bar' },
+      { href: '/dashboard/community', label: 'קהילה',   icon: 'ti-message-2-heart' },
+      { href: '/dashboard/ideas',     label: 'ניתוחים', icon: 'ti-chart-bar' },
     ],
   },
   {
@@ -52,7 +52,7 @@ const GROUPS: NavGroup[] = [
     title: 'חשבון',
     items: [
       { href: '/dashboard/profile',       label: 'מנוי וטוקנים', icon: 'ti-coins' },
-      { href: '/dashboard/upgrade',       label: 'שדרוג מסלול',  icon: 'ti-crown' },
+      { href: '/dashboard/upgrade',       label: 'שדרוג',        icon: 'ti-crown' },
       { href: '/dashboard/notifications', label: 'התראות',       icon: 'ti-bell' },
       { href: '/dashboard/settings',      label: 'הגדרות',       icon: 'ti-settings' },
     ],
@@ -60,8 +60,8 @@ const GROUPS: NavGroup[] = [
 ]
 
 const SUPPORT: NavLink[] = [
-  { href: '/dashboard/help',     label: 'מרכז עזרה',            icon: 'ti-help-circle' },
-  { href: '/dashboard/privacy',  label: 'מרכז הפרטיות',         icon: 'ti-shield-check' },
+  { href: '/dashboard/help',     label: 'עזרה',                 icon: 'ti-help-circle' },
+  { href: '/dashboard/privacy',  label: 'פרטיות',               icon: 'ti-shield-check' },
   { href: '/dashboard/terms',    label: 'תנאים ומדיניות',       icon: 'ti-file-description' },
 ]
 

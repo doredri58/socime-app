@@ -159,8 +159,8 @@ export default async function DashboardHome() {
         </h1>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
           {business?.business_name
-            ? `מנהל את ${business.business_name} — ${queueCount ?? 0} פוסטים בתור`
-            : 'בוא נתחיל — הגדר את תיק העסק שלך'}
+            ? `מנהלים את ${business.business_name} — ${queueCount ?? 0} פוסטים בתור`
+            : 'בואו נתחיל — הגדירו את תיק העסק שלכם'}
         </p>
       </div>
 
@@ -398,7 +398,7 @@ export default async function DashboardHome() {
               product from working — say that plainly instead of a soft nudge. */}
           <p style={{ fontSize: 12, color: hasConnections ? INK_LOW : '#8A6207', fontWeight: hasConnections ? 400 : 600, margin: '0 0 20px' }}>
             {hasConnections
-              ? 'הרשתות המחוברות שלך'
+              ? 'הרשתות המחוברות שלכם'
               : 'בלי רשת מחוברת SociMe לא יכולה לפרסם — חברו אחת כדי להתחיל'}
           </p>
 

@@ -69,16 +69,27 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
 }) {
   const plat = PLATFORMS.find(p => p.id === platform)!
   const displayName = businessName || userName || 'שם העסק'
-  const previewText = text || 'הטקסט שלך יופיע כאן בזמן אמת...'
+  const previewText = text || 'הטקסט שלכם יופיע כאן בזמן אמת...'
   const tags = hashtags ? hashtags.split(' ').filter(Boolean) : []
 
   return (
-    <div style={{
+    /* Deliberately dark: this mock simulates the real social app, so it is an
+       island of dark UI inside the light theme.
+       Every colour in here is written as 250,250,252 / #FAFAFC rather than
+       255,255,255 / #fff ON PURPOSE. The light-theme transform in globals.css
+       matches on `[style*="color:#fff"]` and would repaint this text slate,
+       leaving the preview unreadable on the black screen.
+       The obvious fix — excluding `:not([data-dark-surface] *)` in the CSS —
+       does NOT work: Next's Lightning CSS silently strips a `:not()` holding a
+       COMPLEX selector and leaves the rule matching everything (a simple
+       `:not([attr])` does survive). So the escape hatch has to live here, in
+       values the matcher can't see. Keep it that way. */
+    <div data-dark-surface style={{
       width: 280, margin: '0 auto',
       background: 'linear-gradient(180deg, #1a1040 0%, #1C0F2B 100%)',
-      border: '6px solid rgba(255,255,255,0.12)',
+      border: '6px solid rgba(250,250,252,0.12)',
       borderRadius: 44, padding: '0', overflow: 'hidden',
-      boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.5), 0 0 40px ${plat.color}22`,
+      boxShadow: `0 0 0 1px rgba(250,250,252,0.05), 0 30px 60px rgba(0,0,0,0.5), 0 0 40px ${plat.color}22`,
       position: 'relative',
     }}>
       {/* notch */}
@@ -93,13 +104,13 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
 
         {/* platform top bar */}
         <div style={{
-          padding: '8px 14px', borderBottom: '1px solid rgba(255,255,255,0.06)',
+          padding: '8px 14px', borderBottom: '1px solid rgba(250,250,252,0.06)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>
           <i className={`ti ${plat.icon}`} style={{ fontSize: 18, color: plat.color }} />
           <div style={{ display: 'flex', gap: 12 }}>
-            <i className="ti ti-search" style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }} />
-            <i className="ti ti-bell" style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)' }} />
+            <i className="ti ti-search" style={{ fontSize: 14, color: 'rgba(250,250,252,0.4)' }} />
+            <i className="ti ti-bell" style={{ fontSize: 14, color: 'rgba(250,250,252,0.4)' }} />
           </div>
         </div>
 
@@ -111,23 +122,23 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
               width: 36, height: 36, borderRadius: '50%',
               background: `linear-gradient(135deg, ${PURPLE}, ${BLUE})`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 14, fontWeight: 700, color: '#fff', flexShrink: 0,
+              fontSize: 14, fontWeight: 700, color: '#FAFAFC', flexShrink: 0,
             }}>
               {displayName.charAt(0)}
             </div>
             <div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#fff', lineHeight: 1.3 }}>{displayName}</div>
-              <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', display: 'flex', alignItems: 'center', gap: 3 }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: '#FAFAFC', lineHeight: 1.3 }}>{displayName}</div>
+              <div style={{ fontSize: 9, color: 'rgba(250,250,252,0.3)', display: 'flex', alignItems: 'center', gap: 3 }}>
                 <i className="ti ti-clock" style={{ fontSize: 9 }} /> עכשיו
                 {platform === 'facebook' && <> · <i className="ti ti-world" style={{ fontSize: 9 }} /></>}
               </div>
             </div>
-            <i className="ti ti-dots" style={{ fontSize: 14, color: 'rgba(255,255,255,0.3)', marginRight: 'auto' }} />
+            <i className="ti ti-dots" style={{ fontSize: 14, color: 'rgba(250,250,252,0.3)', marginRight: 'auto' }} />
           </div>
 
           {/* post text */}
           <div style={{
-            fontSize: 10.5, color: text ? '#fff' : 'rgba(255,255,255,0.2)',
+            fontSize: 10.5, color: text ? '#FAFAFC' : 'rgba(250,250,252,0.2)',
             lineHeight: 1.6, marginBottom: 8, direction: 'rtl',
             fontStyle: text ? 'normal' : 'italic',
             maxHeight: 120, overflow: 'hidden',
@@ -147,15 +158,15 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
           {/* image placeholder */}
           <div style={{
             width: '100%', height: imageUrl ? 'auto' : 120,
-            background: imageUrl ? 'transparent' : 'rgba(255,255,255,0.04)',
-            border: imageUrl ? 'none' : '1px dashed rgba(255,255,255,0.1)',
+            background: imageUrl ? 'transparent' : 'rgba(250,250,252,0.04)',
+            border: imageUrl ? 'none' : '1px dashed rgba(250,250,252,0.1)',
             borderRadius: 12, overflow: 'hidden',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             marginBottom: 10,
           }}>
             {imageUrl
               ? <Image src={imageUrl} alt="post" width={248} height={140} style={{ width: '100%', height: 'auto', objectFit: 'cover' }} />
-              : <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.15)', fontSize: 9 }}>
+              : <div style={{ textAlign: 'center', color: 'rgba(250,250,252,0.15)', fontSize: 9 }}>
                   <i className="ti ti-photo" style={{ fontSize: 22, display: 'block', marginBottom: 4 }} />
                   תמונה / וידאו
                 </div>
@@ -163,9 +174,9 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
           </div>
 
           {/* reactions bar */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: 8, display: 'flex', justifyContent: 'space-around' }}>
+          <div style={{ borderTop: '1px solid rgba(250,250,252,0.06)', paddingTop: 8, display: 'flex', justifyContent: 'space-around' }}>
             {[['ti-thumb-up', 'אהבתי'], ['ti-message-circle', 'תגובה'], ['ti-share', 'שתף']].map(([icon, label]) => (
-              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'rgba(255,255,255,0.35)', fontSize: 9 }}>
+              <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 4, color: 'rgba(250,250,252,0.35)', fontSize: 9 }}>
                 <i className={`ti ${icon}`} style={{ fontSize: 12 }} />
                 {label}
               </div>
@@ -176,7 +187,7 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
 
       {/* home indicator */}
       <div style={{ background: '#0A0A0A', padding: '8px 0', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: 80, height: 4, background: 'rgba(255,255,255,0.2)', borderRadius: 999 }} />
+        <div style={{ width: 80, height: 4, background: 'rgba(250,250,252,0.2)', borderRadius: 999 }} />
       </div>
     </div>
   )
@@ -335,7 +346,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
           <div>
             <h1 style={{ fontSize: 20, fontWeight: 800, color: '#fff', margin: '0 0 3px' }}>סטודיו יצירה</h1>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>צור תוכן מותאם אישית לעסק שלך</p>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.38)', margin: 0 }}>צרו תוכן מותאם אישית לעסק שלכם</p>
           </div>
           <div style={{
             display: 'flex', alignItems: 'center', gap: 7,
@@ -412,7 +423,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           <textarea
             value={postText}
             onChange={e => { setPostText(e.target.value); setCharCount(e.target.value.length) }}
-            placeholder={loading ? 'ה-AI כותב עבורך...' : 'כתוב פוסט או לחץ "צור קסם" למעלה...'}
+            placeholder={loading ? 'היא כותבת עבורכם...' : 'כתבו פוסט או לחצו "צור קסם" למעלה...'}
             style={{
               flex: 1, minHeight: 160, padding: '14px', borderRadius: 14, fontSize: 13.5,
               color: postText ? '#fff' : 'rgba(255,255,255,0.25)',
