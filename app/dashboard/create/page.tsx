@@ -3,7 +3,7 @@ import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { getActiveBusiness } from '@/lib/business'
 import CreateStudio from '@/components/dashboard/CreateStudio'
 
-export default async function CreatePage({ searchParams }: { searchParams: Promise<{ idea?: string; prompt?: string }> }) {
+export default async function CreatePage({ searchParams }: { searchParams: Promise<{ idea?: string; prompt?: string; text?: string; hashtags?: string }> }) {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/?login=required')
@@ -27,6 +27,8 @@ export default async function CreatePage({ searchParams }: { searchParams: Promi
       userName={profile?.name ?? ''}
       tokenBalance={profile?.token_balance ?? 0}
       initialPrompt={params.prompt ?? params.idea ?? ''}
+      initialText={params.text ?? ''}
+      initialHashtags={params.hashtags ?? ''}
     />
   )
 }

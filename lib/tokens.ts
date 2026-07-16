@@ -4,7 +4,7 @@ import { createServiceClient } from '@/lib/supabase'
 export const TOKEN_COSTS = {
   generate_post:     5,
   generate_image:   10,
-  generate_ideas:    0,  // idea bank is a free static library (see IdeasBank.tsx)
+  generate_ideas:   20,  // a batch of 6 publish-ready posts (bundle price)
   onboarding:        5,
   // A video is priced as a flat 20 for the user: transcription is folded in
   // (0) so "a video costs 20" is true end to end, whether or not captions run.

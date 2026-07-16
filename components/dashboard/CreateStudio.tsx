@@ -40,6 +40,10 @@ interface Props {
   userName: string
   tokenBalance: number
   initialPrompt?: string
+  // A ready-made post handed over from the idea bank — loaded straight into the
+  // editor for scheduling, no generation (and no extra tokens).
+  initialText?: string
+  initialHashtags?: string
 }
 
 // ─── sub-components ──────────────────────────────────────────────────────────
@@ -194,14 +198,14 @@ function PhoneMockup({ text, hashtags, imageUrl, platform, businessName, userNam
 }
 
 // ─── main component ───────────────────────────────────────────────────────────
-export default function CreateStudio({ userId, businessName, businessDescription, userName, tokenBalance, initialPrompt }: Props) {
+export default function CreateStudio({ userId, businessName, businessDescription, userName, tokenBalance, initialPrompt, initialText, initialHashtags }: Props) {
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [platform, setPlatform]       = useState<Platform>('facebook')
   const [prompt, setPrompt]           = useState(initialPrompt ?? '')
-  const [postText, setPostText]       = useState('')
-  const [hashtags, setHashtags]       = useState('')
+  const [postText, setPostText]       = useState(initialText ?? '')
+  const [hashtags, setHashtags]       = useState(initialHashtags ?? '')
   const [imageUrl, setImageUrl]       = useState<string | null>(null)
   const [imageFile, setImageFile]     = useState<File | null>(null)
   const [dragOver, setDragOver]       = useState(false)

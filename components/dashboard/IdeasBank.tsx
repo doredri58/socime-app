@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 import Teleprompter from '@/components/dashboard/Teleprompter'
@@ -22,12 +22,14 @@ const GLASS: React.CSSProperties = {
 type Tab        = 'posts' | 'video'
 type CategoryId = 'all' | 'sales' | 'behind' | 'tips' | 'events' | 'viral'
 
+// A ready-to-publish post generated for the business: full body + hashtags,
+// not a concept. `title`/`emoji` are just for the card header.
 export interface PostIdea {
-  id: string; title: string; description: string; why: string
-  category: CategoryId; personalized?: boolean; emoji: string
+  id: string; emoji: string; title: string; category: CategoryId
+  text: string; hashtags: string
 }
 
-/** The shape of an AI-generated post idea cached on the business profile. */
+/** The shape of an AI-generated ready post cached on the business profile. */
 export type PostIdeaSeed = PostIdea
 
 interface VideoIdea {
@@ -122,42 +124,40 @@ function BookmarkBtn({ saved, onToggle }: { saved: boolean; onToggle: () => void
   )
 }
 
-/* ── post idea card ───────────────────────────────────────────────────── */
-function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
-  idea: PostIdea; saved: boolean; onSave: () => void
-  onGenerate: () => void; personalized?: boolean
+/* ── ready-post card ──────────────────────────────────────────────────────
+   Shows a full, publish-ready post (body + hashtags). "העלה לתזמון" hands it to
+   the studio already written — no generation, no extra tokens. */
+function PostCard({ idea, saved, onSave, onSend }: {
+  idea: PostIdea; saved: boolean; onSave: () => void; onSend: () => void
 }) {
+  const tags = idea.hashtags ? idea.hashtags.split(/\s+/).filter(Boolean) : []
   return (
     <div className="neon-card" style={{
       ...GLASS, padding: '22px', display: 'flex', flexDirection: 'column', gap: 14,
       position: 'relative', overflow: 'hidden', height: '100%', boxSizing: 'border-box',
-      border: personalized ? '1px solid rgba(150,86,254,0.28)' : '1px solid rgba(255,255,255,0.09)',
-      background: personalized ? 'rgba(150,86,254,0.07)' : 'rgba(255,255,255,0.05)',
+      border: '1px solid rgba(150,86,254,0.28)', background: 'rgba(150,86,254,0.07)',
     }}>
-      {personalized && (
-        <div style={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100,
-          borderRadius: '50%', background: 'rgba(150,86,254,0.14)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-      )}
+      <div style={{ position: 'absolute', top: -30, right: -30, width: 100, height: 100,
+        borderRadius: '50%', background: 'rgba(150,86,254,0.14)', filter: 'blur(30px)', pointerEvents: 'none' }} />
 
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
         <div style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{idea.emoji}</div>
         <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: 0, lineHeight: 1.45 }}>{idea.title}</h3>
       </div>
 
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.58)', margin: 0, lineHeight: 1.7 }}>{idea.description}</p>
+      {/* the actual post body */}
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.72)', margin: 0, lineHeight: 1.8, whiteSpace: 'pre-wrap' }}>{idea.text}</p>
 
-      {/* why it works pill */}
-      <div style={{ padding: '10px 14px', borderRadius: 12, background: 'rgba(59,130,239,0.08)',
-        border: '1px solid rgba(59,130,239,0.16)', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-        <i className="ti ti-brain" style={{ fontSize: 14, color: BLUE, flexShrink: 0, marginTop: 2 }} />
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.48)', margin: 0, lineHeight: 1.65 }}>
-          <strong style={{ color: 'rgba(59,130,239,0.8)', fontWeight: 700 }}>למה זה עובד: </strong>
-          {idea.why}
-        </p>
-      </div>
+      {tags.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+          {tags.slice(0, 7).map((t, i) => (
+            <span key={i} style={{ fontSize: 11, color: BLUE, fontWeight: 600 }}>{t}</span>
+          ))}
+        </div>
+      )}
 
       <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginTop: 'auto' }}>
-        <button onClick={onGenerate} style={{
+        <button onClick={onSend} style={{
           flex: 1, padding: '10px 16px', borderRadius: 12, cursor: 'pointer',
           background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
           border: 'none', color: '#fff', fontSize: 12, fontWeight: 800,
@@ -167,7 +167,7 @@ function PostCard({ idea, saved, onSave, onGenerate, personalized }: {
         onMouseEnter={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = 'translateY(-1px)'; b.style.boxShadow = '0 6px 22px rgba(150,86,254,0.45)' }}
         onMouseLeave={e => { const b = e.currentTarget as HTMLButtonElement; b.style.transform = ''; b.style.boxShadow = '0 4px 16px rgba(150,86,254,0.3)' }}
         >
-          <i className="ti ti-sparkles" style={{ fontSize: 13 }} /> צרו פוסט מזה
+          <i className="ti ti-calendar-plus" style={{ fontSize: 13 }} /> העלה לתזמון
         </button>
         <BookmarkBtn saved={saved} onToggle={onSave} />
       </div>
@@ -344,21 +344,32 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [promptIdea,  setPromptIdea]  = useState<VideoIdea | null>(null)
 
-  // Posts are now AI-generated per business (seeded from the server-side cache).
-  // Video ideas are still the static VIDEO_IDEAS library — personalising those
-  // is phase 2.
-  const [posts,     setPosts]     = useState<PostIdea[]>(initialPostIdeas)
+  // A batch of ready-to-publish posts, generated on demand (20 tokens) and
+  // seeded from the server-side cache. User-triggered only — no auto-generation.
+  // The batch persists until the user regenerates or sends every post to the
+  // studio. Video ideas stay the static VIDEO_IDEAS library (phase 2).
+  const [posts,      setPosts]      = useState<PostIdea[]>(initialPostIdeas)
   const [genLoading, setGenLoading] = useState(false)
-  const [genError,  setGenError]  = useState('')
+  const [genError,   setGenError]   = useState('')
 
-  async function regeneratePosts() {
+  // `force` skips the "you'll discard the current batch" confirm — used when the
+  // bank is already empty (nothing to lose).
+  async function generateBatch(force = false) {
     if (genLoading) return
+    if (!force && posts.length > 0) {
+      const ok = window.confirm(`יצירת רעיונות חדשים תעלה 20 טוקנים ותחליף את ${posts.length} הפוסטים הנוכחיים. להמשיך?`)
+      if (!ok) return
+    }
     setGenLoading(true); setGenError('')
     try {
       const res = await fetch('/api/ideas/generate', { method: 'POST' })
       const data = await res.json()
-      if (!res.ok) { setGenError(data.error ?? 'שגיאה ביצירת רעיונות'); return }
-      setPosts(data.ideas as PostIdea[])
+      if (!res.ok) {
+        if (data.insufficientTokens) setShowUpgrade(true)
+        else setGenError(data.error ?? 'שגיאה ביצירת פוסטים')
+        return
+      }
+      setPosts(data.posts as PostIdea[])
     } catch {
       setGenError('שגיאת רשת — נסו שוב')
     } finally {
@@ -366,23 +377,21 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
     }
   }
 
-  // First visit with a business but no cached ideas yet: generate once.
-  // Deferred a tick so the state updates don't run synchronously inside the
-  // effect (which would trigger a cascading render).
-  useEffect(() => {
-    if (!hasBusiness || posts.length > 0) return
-    const t = setTimeout(() => regeneratePosts(), 0)
-    return () => clearTimeout(t)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
   function toggleSave(id: string) {
     setSavedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
-  function generatePost(idea: PostIdea) {
-    const prompt = encodeURIComponent(`כתוב פוסט על: ${idea.title}\n${idea.description}`)
-    router.push(`/dashboard/create?prompt=${prompt}`)
+  // "Implement": hand the ready post to the studio (prefilled, no regeneration)
+  // and drop it from the batch server-side so it doesn't reappear on return.
+  function sendPost(idea: PostIdea) {
+    setPosts(prev => prev.filter(p => p.id !== idea.id))
+    fetch('/api/ideas/consume', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: idea.id }),
+    }).catch(() => {})
+    const q = new URLSearchParams({ text: idea.text, hashtags: idea.hashtags })
+    router.push(`/dashboard/create?${q.toString()}`)
   }
 
   function sendToStudio(idea: VideoIdea) {
@@ -406,7 +415,7 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
           בנק רעיונות
         </h1>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
-          רעיונות מוכנים להתחלה — לחצו כדי שהיא תכתוב מהם פוסט לעסק שלכם
+          6 פוסטים מוכנים לעסק שלכם ב-20 טוקנים — שולחים לתזמון והם נעלמים מהבנק
         </p>
       </div>
 
@@ -461,16 +470,16 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
       {/* ═══════════════ POSTS TAB ═══════════════════════════════════════ */}
       {tab === 'posts' && (
         <>
-          {/* header row: title + regenerate */}
+          {/* header row: title + regenerate (only when a batch exists) */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>
             <SectionHeader
               icon="ti-sparkles" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
-              title="רעיונות מותאמים לעסק שלכם"
-              subtitle="נכתבו על סמך פרופיל העסק — לחצו ליצירת פוסט מוכן"
+              title="פוסטים מוכנים לעסק שלכם"
+              subtitle="נכתבו על סמך פרופיל העסק — מוכנים לתזמון ופרסום"
             />
-            {hasBusiness && (
+            {hasBusiness && posts.length > 0 && (
               <button
-                onClick={regeneratePosts}
+                onClick={() => generateBatch()}
                 disabled={genLoading}
                 style={{
                   display: 'inline-flex', alignItems: 'center', gap: 8,
@@ -480,8 +489,8 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
                   whiteSpace: 'nowrap',
                 }}>
                 {genLoading
-                  ? <><span style={{ width: 13, height: 13, border: '2px solid rgba(190,86,254,0.3)', borderTop: `2px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} /> מייצרת רעיונות…</>
-                  : <><i className="ti ti-refresh" style={{ fontSize: 14 }} /> רענון רעיונות</>}
+                  ? <><span style={{ width: 13, height: 13, border: '2px solid rgba(190,86,254,0.3)', borderTop: `2px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} /> כותבת…</>
+                  : <><i className="ti ti-refresh" style={{ fontSize: 14 }} /> 6 חדשים · 20 טוקנים</>}
               </button>
             )}
           </div>
@@ -491,7 +500,7 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
             <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.4)' }}>
               <i className="ti ti-building-store" style={{ fontSize: 38, display: 'block', marginBottom: 12, color: PURPLE2 }} />
               <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>קודם נכיר את העסק</div>
-              <div style={{ fontSize: 13, marginBottom: 18, lineHeight: 1.6 }}>כדי לקבל רעיונות מותאמים באמת, השלימו את פרופיל העסק.</div>
+              <div style={{ fontSize: 13, marginBottom: 18, lineHeight: 1.6 }}>כדי לקבל פוסטים מותאמים באמת, השלימו את פרופיל העסק.</div>
               <button onClick={() => router.push('/dashboard/business')} style={{
                 padding: '10px 22px', borderRadius: 999, border: 'none', cursor: 'pointer',
                 background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff',
@@ -500,39 +509,50 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
             </div>
           )}
 
-          {/* generating first batch (no ideas yet) */}
+          {/* generating a batch */}
           {hasBusiness && genLoading && postIdeas.length === 0 && (
             <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.45)' }}>
               <span style={{ width: 30, height: 30, border: '3px solid rgba(190,86,254,0.25)', borderTop: `3px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite', marginBottom: 14 }} />
-              <div style={{ fontSize: 14 }}>כותבת רעיונות מותאמים לעסק שלכם…</div>
+              <div style={{ fontSize: 14 }}>כותבת 6 פוסטים מותאמים לעסק שלכם…</div>
             </div>
           )}
 
-          {/* generation failed and we have nothing to show */}
-          {hasBusiness && !genLoading && genError && postIdeas.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.45)' }}>
-              <i className="ti ti-alert-triangle" style={{ fontSize: 34, display: 'block', marginBottom: 12, color: '#F87171' }} />
-              <div style={{ fontSize: 14, marginBottom: 16 }}>{genError}</div>
-              <button onClick={regeneratePosts} style={{
-                padding: '9px 20px', borderRadius: 999, border: '1px solid rgba(150,86,254,0.3)', cursor: 'pointer',
-                background: 'rgba(150,86,254,0.12)', color: PURPLE2, fontSize: 13, fontWeight: 700,
-                fontFamily: 'var(--font-rubik),sans-serif',
-              }}>נסו שוב</button>
+          {/* empty batch → the big generate CTA (business set, nothing generated/all sent) */}
+          {hasBusiness && !genLoading && posts.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '48px 20px' }}>
+              <i className="ti ti-sparkles" style={{ fontSize: 40, display: 'block', marginBottom: 14, color: PURPLE2 }} />
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 6 }}>6 פוסטים מוכנים בלחיצה</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 4, lineHeight: 1.6 }}>
+                מותאמים לעסק שלכם, כתובים ומוכנים לתזמון.
+              </div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)', marginBottom: 20 }}>
+                6 פוסטים ב-20 טוקנים — במקום 30 בסטודיו.
+              </div>
+              {genError && <div style={{ fontSize: 12.5, color: '#F87171', marginBottom: 14 }}>{genError}</div>}
+              <button onClick={() => generateBatch(true)} style={{
+                padding: '13px 30px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff',
+                fontSize: 14, fontWeight: 800, fontFamily: 'var(--font-rubik),sans-serif',
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                boxShadow: '0 6px 22px rgba(150,86,254,0.4)',
+              }}>
+                <i className="ti ti-wand" style={{ fontSize: 16 }} /> צרו לי 6 פוסטים
+              </button>
             </div>
           )}
 
-          {/* the ideas */}
+          {/* the ready posts */}
           {postIdeas.length > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
               {postIdeas.map(idea => (
-                <PostCard key={idea.id} idea={idea} personalized
+                <PostCard key={idea.id} idea={idea}
                   saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                  onGenerate={() => generatePost(idea)} />
+                  onSend={() => sendPost(idea)} />
               ))}
             </div>
           )}
 
-          {/* have ideas overall, but none in this category filter */}
+          {/* batch exists but this category filter is empty */}
           {hasBusiness && !genLoading && posts.length > 0 && postIdeas.length === 0 && <EmptyState />}
         </>
       )}
