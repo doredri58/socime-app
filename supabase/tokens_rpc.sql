@@ -29,10 +29,13 @@ $$;
 
 -- ── reset_monthly_tokens ──────────────────────────────────────────────────────
 -- Refills PAID subscribers to their tier allowance on the 1st of each month.
--- Free users are deliberately excluded: the 100-token grant is a one-time trial
--- (given at signup by handle_new_user), not a monthly allowance. Refilling it
--- would remove any reason to subscribe — the taste is meant to run out.
--- Triggered by pg_cron (see scheduler setup).
+-- Excluded:
+--   * free users — the 100-token grant is a one-time trial (given at signup by
+--     handle_new_user), not a monthly allowance; refilling it removes the reason
+--     to subscribe.
+--   * admin / founder — god-mode accounts hold a huge fixed balance on purpose,
+--     and tier='pro' would otherwise reset them to 1000.
+-- Scheduled by pg_cron: job 'reset-monthly-tokens', '0 0 1 * *'.
 create or replace function public.reset_monthly_tokens()
 returns void
 language plpgsql security definer as $$
@@ -43,6 +46,7 @@ begin
     when tier = 'pro'    then 1000
     when tier = 'basic'  then 500
   end
-  where tier in ('basic', 'pro', 'agency');
+  where tier in ('basic', 'pro', 'agency')
+    and coalesce(role, 'user') not in ('admin', 'founder');
 end;
 $$;
