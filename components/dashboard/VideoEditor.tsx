@@ -25,13 +25,21 @@ const VIDEO_COST_TOKENS = 15
    STATIC DATA
 ══════════════════════════════════════════════════════════════════════ */
 
-/* Subtitle style presets */
+/* Subtitle style presets.
+   `preview` drives UI only (the chip swatch and the player overlay) — the real
+   burned-in subtitles are rendered from `id` server-side, so these values are
+   safe to tune for legibility.
+   The whites are #FAFAFC, not #fff, ON PURPOSE: both surfaces they sit on are
+   dark (#000 player, rgba(0,0,0,0.6) chip), and the light-theme transform in
+   globals.css matches `[style*="color:#fff"]` and would repaint them slate —
+   invisible on black. Lightning CSS strips a `:not()` with a complex selector,
+   so the surface can't be excluded in CSS. Keep these off pure white. */
 const SUBTITLE_PRESETS = [
   {
     id: 'bold_word',
     label: 'מילה מודגשת',
     sub: 'סגנון ViralTikTok',
-    preview: { bg: '#000', mainColor: '#FBBF24', accentColor: '#fff', weight: 900, shadow: true },
+    preview: { bg: '#000', mainColor: '#FBBF24', accentColor: '#FAFAFC', weight: 900, shadow: true },
     icon: 'ti-typography',
     popular: true,
   },
@@ -39,7 +47,7 @@ const SUBTITLE_PRESETS = [
     id: 'clean',
     label: 'נקי ומינימליסטי',
     sub: 'YouTube מקצועי',
-    preview: { bg: 'rgba(0,0,0,0.6)', mainColor: '#fff', accentColor: '#fff', weight: 600, shadow: false },
+    preview: { bg: 'rgba(0,0,0,0.6)', mainColor: '#FAFAFC', accentColor: '#FAFAFC', weight: 600, shadow: false },
     icon: 'ti-letter-case',
     popular: false,
   },
@@ -47,7 +55,7 @@ const SUBTITLE_PRESETS = [
     id: 'gradient',
     label: 'גרדיאנט בוהק',
     sub: 'Reels / Shorts',
-    preview: { bg: 'rgba(150,86,254,0.3)', mainColor: '#fff', accentColor: PURPLE2, weight: 800, shadow: true },
+    preview: { bg: 'rgba(150,86,254,0.3)', mainColor: '#FAFAFC', accentColor: PURPLE2, weight: 800, shadow: true },
     icon: 'ti-color-filter',
     popular: false,
   },
