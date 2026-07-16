@@ -15,9 +15,9 @@ const GOLD = '#FFD700'
 /* ── Token economy (shown as a small strip) ─────────────────── */
 // מסונכרן עם lib/tokens.ts (TOKEN_COSTS)
 const TOKEN_COSTS = [
-  { icon: 'ti-video', label: 'וידאו', cost: 10 },
-  { icon: 'ti-photo', label: 'תמונה', cost: 5 },
-  { icon: 'ti-pencil', label: 'פוסט', cost: 10 },
+  { icon: 'ti-video', label: 'וידאו', cost: 20 },
+  { icon: 'ti-photo', label: 'תמונה', cost: 10 },
+  { icon: 'ti-pencil', label: 'פוסט', cost: 5 },
 ]
 
 /* ── Plan data ──────────────────────────────────────────────── */

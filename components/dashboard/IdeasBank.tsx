@@ -389,7 +389,7 @@ function EmptyState() {
 }
 
 /* ── main export ──────────────────────────────────────────────────────── */
-export default function IdeasBank({ userName, tier, businessName }: Props) {
+export default function IdeasBank({ tier }: Props) {
   const router = useRouter()
   const isPro  = tier !== 'free'   // כל מסלול בתשלום (basic/pro/agency)
 
@@ -421,7 +421,6 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
   const personalizedVideos = videoIdeas.filter(i => i.personalized)
   const standardVideos     = videoIdeas.filter(i => !i.personalized)
 
-  const firstName = userName ? userName.split(' ')[0] : ''
 
   return (
     <div style={{ direction: 'rtl', paddingBottom: 60 }}>
@@ -432,7 +431,7 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
           בנק רעיונות
         </h1>
         <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>
-          רעיונות מותאמים ל{businessName || 'העסק שלכם'} — לחצו ליצירת תוכן מיידי
+          רעיונות מוכנים להתחלה — לחצו כדי שהיא תכתוב מהם פוסט לעסק שלכם
         </p>
       </div>
 
@@ -491,8 +490,8 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
             <section style={{ marginBottom: 36 }}>
               <SectionHeader
                 icon="ti-sparkles" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
-                title={`הותאם במיוחד בשבילך${firstName ? `, ${firstName}` : ''}`}
-                subtitle="על סמך פרופיל העסק שלכם"
+                title="מומלצים להתחלה"
+                subtitle="רעיונות שעובדים כמעט לכל עסק — לחצו ליצירה"
               />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
                 {personalizedPosts.map(idea => (
@@ -532,8 +531,8 @@ export default function IdeasBank({ userName, tier, businessName }: Props) {
             <section style={{ marginBottom: 36 }}>
               <SectionHeader
                 icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#CC1F1F"
-                title={`תסריטים מותאמים${firstName ? ` לך, ${firstName}` : ''}`}
-                subtitle="כל תסריט מוכן להפקה — פשוט לחץ שלח לסטודיו"
+                title="תסריטים מומלצים להתחלה"
+                subtitle="כל תסריט מוכן להפקה — פשוט לחצו שלח לסטודיו"
               />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
                 {personalizedVideos.map(idea => (

@@ -401,7 +401,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
             </button>
           </div>
           <div style={{ marginTop: 8, fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>
-            Ctrl+Enter ליצירה מהירה · כל יצירה ~10 טוקנים
+            Ctrl+Enter ליצירה מהירה · פוסט 5 טוקנים
           </div>
         </div>
 
@@ -559,7 +559,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
               : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
                   {/* The price, not a countdown. There is no separate image
                       allowance any more — tokens are the only meter. */}
-                  <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.2)', color: '#0A7159', fontWeight: 700 }}>5 טוקנים</span>
+                  <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.2)', color: '#0A7159', fontWeight: 700 }}>10 טוקנים</span>
                 </>
             }
           </button>

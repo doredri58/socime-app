@@ -2,12 +2,14 @@ import 'server-only'
 import { createServiceClient } from '@/lib/supabase'
 
 export const TOKEN_COSTS = {
-  generate_post:    10,
-  generate_image:    5,
-  generate_ideas:    8,  // per batch of 12 ideas
+  generate_post:     5,
+  generate_image:   10,
+  generate_ideas:    0,  // idea bank is a free static library (see IdeasBank.tsx)
   onboarding:        5,
-  video_transcribe:  5,
-  video_render:     10,
+  // A video is priced as a flat 20 for the user: transcription is folded in
+  // (0) so "a video costs 20" is true end to end, whether or not captions run.
+  video_transcribe:  0,
+  video_render:     20,
   // Pro-tier AI agents (fixed cost per run)
   agent_competitor: 15,
   agent_ad_copy:    12,
