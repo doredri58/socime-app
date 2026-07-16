@@ -213,7 +213,6 @@ export default function CreateStudio({ userId, businessName, businessDescription
   const [toast, setToast]             = useState<{ msg: string; ok: boolean } | null>(null)
   const [tokens, setTokens]           = useState(tokenBalance)
   const [charCount, setCharCount]     = useState(0)
-  const [imgAttempts, setImgAttempts] = useState(2)
   const [showUpgrade, setShowUpgrade] = useState(false)
 
   const maxChars = platform === 'instagram' ? 2200 : platform === 'tiktok' ? 2200 : 63206
@@ -262,7 +261,6 @@ export default function CreateStudio({ userId, businessName, businessDescription
 
   // ── AI image generation ──
   async function handleGenerateImage() {
-    if (imgAttempts <= 0) { setShowUpgrade(true); return }
     if (!prompt.trim() && !postText.trim()) { showToast('יש להזין פרומפט קודם', false); return }
     setImgGenLoading(true)
     const res = await fetch('/api/generate-image', {
@@ -272,11 +270,15 @@ export default function CreateStudio({ userId, businessName, businessDescription
     })
     const data = await res.json()
     setImgGenLoading(false)
-    if (!res.ok) { showToast(data.error ?? 'שגיאה ביצירת תמונה', false); return }
+    // 402 = out of tokens. The server owns that decision; the client no longer
+    // keeps its own counter and no longer blocks generation on a guess.
+    if (!res.ok) {
+      if (data.insufficientTokens) setShowUpgrade(true)
+      else showToast(data.error ?? 'שגיאה ביצירת תמונה', false)
+      return
+    }
     setImageUrl(data.imageUrl)
-    if (typeof data.remaining === 'number') setImgAttempts(data.remaining)
-    else setImgAttempts(a => a - 1)
-    setTokens(t => Math.max(0, t - 25))
+    if (typeof data.tokensRemaining === 'number') setTokens(data.tokensRemaining)
     notifyTokensSpent()
   }
 
@@ -544,9 +546,9 @@ export default function CreateStudio({ userId, businessName, businessDescription
             disabled={imgGenLoading}
             style={{
               width: '100%', padding: '11px', borderRadius: 14, cursor: imgGenLoading ? 'wait' : 'pointer',
-              background: imgAttempts <= 0 ? 'rgba(255,255,255,0.04)' : 'rgba(59,130,239,0.12)',
-              border: `1px solid ${imgAttempts <= 0 ? 'rgba(255,255,255,0.1)' : 'rgba(59,130,239,0.25)'}`,
-              color: imgAttempts <= 0 ? 'rgba(255,255,255,0.35)' : '#2563C9',
+              background: 'rgba(59,130,239,0.12)',
+              border: '1px solid rgba(59,130,239,0.25)',
+              color: '#2563C9',
               fontSize: 13, fontWeight: 700,
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
               transition: 'all 0.2s', position: 'relative',
@@ -554,11 +556,11 @@ export default function CreateStudio({ userId, businessName, businessDescription
           >
             {imgGenLoading
               ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(37,99,201,0.25)', borderTop: '2px solid #2563C9', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר תמונה...</>
-              : imgAttempts <= 0
-                ? <><i className="ti ti-lock" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI<span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(150,86,254,0.2)', border: '1px solid rgba(150,86,254,0.3)', color: PURPLE2 }}>שדרג לPro</span></>
-                : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
-                    <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: imgAttempts === 1 ? 'rgba(251,191,36,0.15)' : 'rgba(52,211,153,0.12)', border: `1px solid ${imgAttempts === 1 ? 'rgba(251,191,36,0.3)' : 'rgba(52,211,153,0.2)'}`, color: imgAttempts === 1 ? '#FBBF24' : '#0A7159', fontWeight: 700 }}>נותרו {imgAttempts} ניסיונות</span>
-                  </>
+              : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> ייצר תמונה ב-AI
+                  {/* The price, not a countdown. There is no separate image
+                      allowance any more — tokens are the only meter. */}
+                  <span style={{ marginRight: 'auto', fontSize: 10, padding: '2px 8px', borderRadius: 999, background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.2)', color: '#0A7159', fontWeight: 700 }}>5 טוקנים</span>
+                </>
             }
           </button>
         </div>

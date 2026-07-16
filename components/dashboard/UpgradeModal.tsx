@@ -6,7 +6,7 @@ const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
 
 const TRIGGER_COPY: Record<string, { title: string; subtitle: string }> = {
-  image_limit:    { title: 'הגעתם למכסת התמונות החודשית',   subtitle: 'Basic נותן 30 תמונות בחודש, Pro נותן 100 — ופי 2 טוקנים' },
+  image_limit:    { title: 'נגמרו לכם הטוקנים',              subtitle: 'שדרגו ל-Pro ל-1,000 טוקנים בחודש — פי 2 מ-Basic' },
   smart_schedule: { title: 'שעות חכמות זמינות ב-Pro',        subtitle: 'היא מזהה את שעת השיא לכל רשת ומתזמנת אליה לבד' },
   tokens_empty:   { title: 'נגמרו לכם הטוקנים',              subtitle: 'שדרגו ל-Pro ל-1,000 טוקנים בחודש — פי 2 מ-Basic' },
   generic:        { title: 'הפיצ\'ר הזה זמין ב-Pro',         subtitle: 'שדרגו ופתחו את כל הסוכנים' },

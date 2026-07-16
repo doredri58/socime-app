@@ -16,7 +16,7 @@ const GOLD = '#FFD700'
 // מסונכרן עם lib/tokens.ts (TOKEN_COSTS)
 const TOKEN_COSTS = [
   { icon: 'ti-video', label: 'וידאו', cost: 10 },
-  { icon: 'ti-photo', label: 'תמונה', cost: 25 },
+  { icon: 'ti-photo', label: 'תמונה', cost: 5 },
   { icon: 'ti-pencil', label: 'פוסט', cost: 10 },
 ]
 

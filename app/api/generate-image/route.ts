@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateImage } from '@/lib/gemini'
 import { createServiceClient, createServerSupabaseClient } from '@/lib/supabase'
-import { getQuotaForTier } from '@/lib/image-quota'
-import { checkTokenBalance, deductTokens } from '@/lib/tokens'
+import { checkTokenBalance, deductTokens, TOKEN_COSTS } from '@/lib/tokens'
 import { enforce, limiters } from '@/lib/ratelimit'
 
 const BUCKET = 'generated-images'
@@ -28,10 +27,14 @@ export async function POST(req: NextRequest) {
 
     const db = createServiceClient()
 
-    // 1. בדיקת מכסה — שלוף tier + ספירה נוכחית
+    // Tokens are the only currency. There was a second, per-tier image quota
+    // here (lib/image-quota.ts) but it could never bind — at the old price of
+    // 25 tokens an image, every paid tier ran out of tokens long before the
+    // quota, so it only ever produced a promise we couldn't keep ("100 images"
+    // delivering 40). One meter, one limit.
     const { data: user, error: userErr } = await db
       .from('users')
-      .select('tier, image_count_this_month')
+      .select('image_count_this_month, token_balance')
       .eq('id', userId)
       .single()
 
@@ -39,17 +42,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'משתמש לא נמצא' }, { status: 404 })
     }
 
-    const quota = getQuotaForTier(user.tier)
-    const used  = user.image_count_this_month ?? 0
+    // Kept for usage analytics only — it gates nothing.
+    const used = user.image_count_this_month ?? 0
 
-    if (used >= quota) {
-      return NextResponse.json(
-        { error: `הגעת למכסת התמונות החודשית (${quota}). שדרג את החבילה למכסה גדולה יותר.`, quotaExceeded: true, quota, used },
-        { status: 403 }
-      )
-    }
-
-    // 1b. בדיקת יתרת טוקנים
     const tokenCheck = await checkTokenBalance(userId, 'generate_image')
     if (!tokenCheck.ok) {
       return NextResponse.json(
@@ -89,9 +84,8 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       imageUrl,
-      used:      used + 1,
-      quota,
-      remaining: quota - used - 1,
+      used:            used + 1,
+      tokensRemaining: Math.max(0, (user.token_balance ?? 0) - TOKEN_COSTS.generate_image),
     })
   } catch (err: unknown) {
     console.error('[/api/generate-image]', err)

@@ -10,7 +10,7 @@ export default function ImageGenerator({ userId }: ImageGeneratorProps) {
   const [loading, setLoading]     = useState(false)
   const [error, setError]         = useState('')
   const [imageUrl, setImageUrl]   = useState('')
-  const [quotaInfo, setQuotaInfo] = useState<{ used: number; quota: number } | null>(null)
+  const [tokensLeft, setTokensLeft] = useState<number | null>(null)
 
   async function handleGenerate() {
     if (prompt.trim().length < 3) return
@@ -28,12 +28,11 @@ export default function ImageGenerator({ userId }: ImageGeneratorProps) {
 
     if (!res.ok) {
       setError(data.error)
-      if (data.quota != null) setQuotaInfo({ used: data.used, quota: data.quota })
       return
     }
 
     setImageUrl(data.imageUrl)
-    setQuotaInfo({ used: data.used, quota: data.quota })
+    if (typeof data.tokensRemaining === 'number') setTokensLeft(data.tokensRemaining)
   }
 
   return (
@@ -41,15 +40,15 @@ export default function ImageGenerator({ userId }: ImageGeneratorProps) {
       <div className="flex items-center justify-between mb-5">
         <div>
           <div className="text-xl font-extrabold" style={{ color: '#1A1A2E' }}>יצירת תמונה 🍌</div>
-          <div className="text-sm" style={{ color: '#8888A8' }}>תמונות AI לפוסטים שלך · Nano Banana</div>
+          <div className="text-sm" style={{ color: '#8888A8' }}>תמונות AI לפוסטים שלכם · Nano Banana</div>
         </div>
-        {quotaInfo && (
+        {tokensLeft !== null && (
           <div className="text-center px-3 py-2 rounded-2xl"
             style={{ background: 'var(--purple-soft)', border: '1px solid rgba(161,70,255,0.18)' }}>
             <div className="text-base font-black" style={{ color: 'var(--purple)' }}>
-              {quotaInfo.quota - quotaInfo.used}
+              {tokensLeft}
             </div>
-            <div className="text-[10px]" style={{ color: '#8888A8' }}>נותרו החודש</div>
+            <div className="text-[10px]" style={{ color: '#8888A8' }}>טוקנים נותרו</div>
           </div>
         )}
       </div>

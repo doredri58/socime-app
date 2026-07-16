@@ -3,7 +3,7 @@ import { createServiceClient } from '@/lib/supabase'
 
 export const TOKEN_COSTS = {
   generate_post:    10,
-  generate_image:   25,
+  generate_image:    5,
   generate_ideas:    8,  // per batch of 12 ideas
   onboarding:        5,
   video_transcribe:  5,
