@@ -28,7 +28,10 @@ end;
 $$;
 
 -- ── reset_monthly_tokens ──────────────────────────────────────────────────────
--- Resets all users' token_balance to their tier allowance on the 1st of each month.
+-- Refills PAID subscribers to their tier allowance on the 1st of each month.
+-- Free users are deliberately excluded: the 100-token grant is a one-time trial
+-- (given at signup by handle_new_user), not a monthly allowance. Refilling it
+-- would remove any reason to subscribe — the taste is meant to run out.
 -- Triggered by pg_cron (see scheduler setup).
 create or replace function public.reset_monthly_tokens()
 returns void
@@ -39,7 +42,7 @@ begin
     when tier = 'agency' then 2000
     when tier = 'pro'    then 1000
     when tier = 'basic'  then 500
-    else 100  -- free
-  end;
+  end
+  where tier in ('basic', 'pro', 'agency');
 end;
 $$;
