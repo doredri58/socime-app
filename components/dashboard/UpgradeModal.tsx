@@ -6,19 +6,22 @@ const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
 
 const TRIGGER_COPY: Record<string, { title: string; subtitle: string }> = {
-  image_limit:    { title: 'נגמרו ניסיונות יצירת התמונה',   subtitle: 'שדרג לPro וקבל יצירת תמונות ללא הגבלה' },
-  smart_schedule: { title: 'תזמון חכם זמין ב-Pro',          subtitle: 'הAI מזהה שעות שיא ומתזמן אוטומטית לתוצאות מקסימליות' },
-  tokens_empty:   { title: 'נגמרו הטוקנים שלך',             subtitle: 'שדרג לPro וקבל פי 10 טוקנים בכל חודש' },
-  generic:        { title: 'פיצ\'ר זה זמין ב-Pro',          subtitle: 'שדרג ופתח את מלוא הכוח של SociMe' },
+  image_limit:    { title: 'הגעתם למכסת התמונות החודשית',   subtitle: 'Basic נותן 30 תמונות בחודש, Pro נותן 100 — ופי 2 טוקנים' },
+  smart_schedule: { title: 'שעות חכמות זמינות ב-Pro',        subtitle: 'היא מזהה את שעת השיא לכל רשת ומתזמנת אליה לבד' },
+  tokens_empty:   { title: 'נגמרו לכם הטוקנים',              subtitle: 'שדרגו ל-Pro ל-1,000 טוקנים בחודש — פי 2 מ-Basic' },
+  generic:        { title: 'הפיצ\'ר הזה זמין ב-Pro',         subtitle: 'שדרגו ופתחו את כל הסוכנים' },
 }
 
+/* Every line here has to survive the user checking it against the pricing page
+   a minute later. Plan facts live in components/pricing/PricingPlans.tsx and
+   token costs in lib/tokens.ts — keep this list in step with both. */
 const PLAN_FEATURES = [
-  { icon: 'ti-sparkles',         text: 'יצירת תמונות AI ללא הגבלה' },
-  { icon: 'ti-brain',            text: 'תזמון חכם — AI מזהה שעות שיא' },
-  { icon: 'ti-coins',            text: 'פי 10 טוקנים בכל חודש (1,000 במקום 100)' },
-  { icon: 'ti-calendar-stats',   text: 'לוח שנה מתקדם עם סטטיסטיקות' },
-  { icon: 'ti-brand-instagram',  text: 'חיבור בלתי מוגבל לרשתות חברתיות' },
-  { icon: 'ti-headset',          text: 'תמיכה עדיפותית 24/7' },
+  { icon: 'ti-coins',            text: '1,000 טוקנים בחודש — פי 2 מ-Basic' },
+  { icon: 'ti-video',            text: 'וידאו 1080p + סאונדים ויראליים' },
+  { icon: 'ti-binoculars',       text: 'סוכן ניתוח מתחרים — סורק אותם ובונה אסטרטגיית נגד' },
+  { icon: 'ti-coin',             text: 'סוכן קופירייטינג למודעות ממומנות' },
+  { icon: 'ti-brain',            text: 'מתאם רב-פלטפורמות — 4 גרסאות בו-זמנית' },
+  { icon: 'ti-bolt',             text: 'רינדור בעדיפות — אתם ראשונים בתור' },
 ]
 
 interface Props {
@@ -101,10 +104,10 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
           {/* price */}
           <div style={{ marginTop: 28, padding: '16px 20px', borderRadius: 16, background: 'rgba(150,86,254,0.08)', border: '1px solid rgba(150,86,254,0.18)' }}>
             <div style={{ display: 'flex', alignItems: 'flex-end', gap: 6, marginBottom: 4 }}>
-              <span style={{ fontSize: 32, fontWeight: 900, color: '#fff', lineHeight: 1 }}>₪299</span>
+              <span style={{ fontSize: 32, fontWeight: 900, color: '#fff', lineHeight: 1 }}>299 ₪</span>
               <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 4 }}>/ לחודש</span>
             </div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>ביטול בכל עת · ללא התחייבות</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>239 ₪ בחיוב שנתי · ביטול בכל עת · 14 יום להחזר מלא</div>
           </div>
         </div>
 
@@ -156,12 +159,12 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
             >
               {loading
                 ? <div style={{ width: 16, height: 16, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />
-                : <><i className="ti ti-crown" style={{ fontSize: 17, color: '#FBBF24' }} /> שדרג למסלול Pro</>
+                : <><i className="ti ti-crown" style={{ fontSize: 17, color: '#FBBF24' }} /> שדרגו למסלול Pro</>
               }
             </button>
 
             <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', lineHeight: 1.6 }}>
-              לחיצה על "שדרג" תעביר אותך לדף תשלום מאובטח של PayPlus.<br />
+              לחיצה על &quot;שדרגו&quot; תעביר אתכם לדף תשלום מאובטח של PayPlus.<br />
               ניתן לבטל בכל עת מהגדרות החשבון.
             </div>
           </div>
