@@ -425,7 +425,7 @@ function HomeInner() {
             </div>
 
             <div className="hero-ctas" style={{ display: 'flex', gap: 20, flexWrap: 'wrap' }}>
-              {['ללא כרטיס אשראי', '14 יום — החזר מלא', 'ביטול בכל עת'].map(t => (
+              {['100 טוקנים חינם להתחלה', 'ללא כרטיס אשראי', '14 יום — החזר מלא'].map(t => (
                 <span key={t} style={{ fontSize: 13, color: INK_LOW, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <i className="ti ti-circle-check-filled" style={{ color: '#16B999', fontSize: 15 }} />{t}
                 </span>
