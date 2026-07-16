@@ -1,54 +1,54 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
-import { generateIdeas } from '@/lib/gemini'
-import { checkTokenBalance, deductTokens } from '@/lib/tokens'
+import { generatePostIdeas } from '@/lib/gemini'
 import { getActiveBusiness } from '@/lib/business'
 import { enrichSystemPrompt } from '@/lib/prompt-vars'
+import { enforce, limiters } from '@/lib/ratelimit'
 
-const CATEGORIES = ['value', 'marketing', 'vibe'] as const
-
-export async function POST(_req: NextRequest) {
+// Personalised post ideas for the active business. Free (0 tokens) by product
+// decision, so the cost guard here is the rate limiter, not the token balance.
+// Results are cached on business_profiles so the bank loads instantly; this
+// route only runs on first visit or when the user hits "רענן".
+export async function POST() {
   const supabase = await createServerSupabaseClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'לא מחובר' }, { status: 401 })
 
-  const db = createServiceClient()
+  const limited = await enforce(limiters.aiIdeas, user.id, 'יותר מדי ריענונים. נסו שוב בעוד שעה.')
+  if (limited) return limited
+
   const business = await getActiveBusiness(user.id)
-
-  const basePrompt = business?.parsed_system_prompt
-    ?? `אתה עוזר שיווק לעסק בשם ${business?.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
-  // Append tone / audience / address / phone / hours / etc. so the AI has the
-  // full business context even if the baked prompt didn't include it.
-  const systemPrompt = enrichSystemPrompt(basePrompt, business)
-
-  // בדיקת יתרת טוקנים לפני קריאת AI
-  const tokenCheck = await checkTokenBalance(user.id, 'generate_ideas')
-  if (!tokenCheck.ok) {
+  if (!business) {
     return NextResponse.json(
-      { error: `אין מספיק טוקנים (נדרש ${tokenCheck.required}, נותר ${tokenCheck.balance})`, insufficientTokens: true },
-      { status: 402 }
+      { error: 'צריך פרופיל עסק כדי לייצר רעיונות מותאמים', noBusiness: true },
+      { status: 400 },
     )
   }
 
-  // Generate ~3 ideas per category in parallel, then shuffle
-  const batches = await Promise.allSettled(
-    CATEGORIES.map(cat => generateIdeas(cat, systemPrompt).then(texts =>
-      texts.slice(0, 4).map(text => ({ text, category: cat }))
-    ))
-  )
+  const basePrompt = business.parsed_system_prompt
+    ?? `אתה עוזר שיווק לעסק בשם ${business.business_name ?? 'עסק ישראלי'}. כתוב תוכן בעברית.`
+  const systemPrompt = enrichSystemPrompt(basePrompt, business)
 
-  const ideas: { text: string; category: string }[] = []
-  for (const batch of batches) {
-    if (batch.status === 'fulfilled') ideas.push(...batch.value)
+  let ideas
+  try {
+    ideas = await generatePostIdeas(systemPrompt)
+  } catch (err) {
+    console.error('[/api/ideas/generate]', err)
+    return NextResponse.json({ error: 'שגיאה ביצירת רעיונות, נסו שוב' }, { status: 502 })
   }
 
-  // Shuffle
-  for (let i = ideas.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [ideas[i], ideas[j]] = [ideas[j], ideas[i]]
+  if (ideas.length === 0) {
+    return NextResponse.json({ error: 'לא הצלחנו לייצר רעיונות הפעם, נסו שוב' }, { status: 502 })
   }
 
-  await deductTokens(user.id, 'generate_ideas')
+  // Attach stable ids so the client can key/save them.
+  const withIds = ideas.map((idea, i) => ({ ...idea, id: `gen-${i}` }))
 
-  return NextResponse.json({ ideas: ideas.slice(0, 12) })
+  const db = createServiceClient()
+  await db
+    .from('business_profiles')
+    .update({ cached_post_ideas: withIds, post_ideas_generated_at: new Date().toISOString() })
+    .eq('id', business.id)
+
+  return NextResponse.json({ ideas: withIds })
 }

@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
 import Teleprompter from '@/components/dashboard/Teleprompter'
@@ -22,10 +22,13 @@ const GLASS: React.CSSProperties = {
 type Tab        = 'posts' | 'video'
 type CategoryId = 'all' | 'sales' | 'behind' | 'tips' | 'events' | 'viral'
 
-interface PostIdea {
+export interface PostIdea {
   id: string; title: string; description: string; why: string
   category: CategoryId; personalized?: boolean; emoji: string
 }
+
+/** The shape of an AI-generated post idea cached on the business profile. */
+export type PostIdeaSeed = PostIdea
 
 interface VideoIdea {
   id: string; title: string; concept: string; hook: string
@@ -36,71 +39,13 @@ interface VideoIdea {
 interface Props {
   userName: string; tier: string; tokenBalance: number
   businessName: string; businessType: string
+  hasBusiness: boolean
+  initialPostIdeas: PostIdeaSeed[]
 }
 
-/* ── static idea data ─────────────────────────────────────────────────── */
-const POST_IDEAS: PostIdea[] = [
-  { id: 'p1', personalized: true, emoji: '🎯', category: 'tips',
-    title: 'הסוד שהלקוחות שלנו לא ידעו לבקש',
-    description: 'שתפו טיפ פנימי שרק הלקוחות הכי נאמנים שלכם מכירים.',
-    why: 'יוצר תחושת אקסקלוסיביות ומגביר נאמנות — קהל מרגיש "מועדפים".' },
-  { id: 'p2', personalized: true, emoji: '📸', category: 'behind',
-    title: 'יום אופייני — מה קורה מאחורי הקלעים?',
-    description: 'תצלום/סרטון קצר של שגרת העבודה האמיתית שלכם.',
-    why: 'אנשים קונים מאנשים. אותנטיות בונה אמון שפרסום מלוטש לא מייצר.' },
-  { id: 'p3', personalized: true, emoji: '🏆', category: 'sales',
-    title: 'Case Study: לקוח אחד, תוצאה אחת מדהימה',
-    description: 'ספרו סיפור הצלחה ספציפי עם מספרים אמיתיים.',
-    why: 'סיפור הצלחה עם מספרים אמיתיים משכנע יותר מהמלצה כללית — הקורא רואה את עצמו בתוצאה.' },
-  { id: 'p4', emoji: '💥', category: 'sales',
-    title: '48 שעות בלבד — מבצע ברק',
-    description: 'צרו תחושת דחיפות עם מבצע מוגבל בזמן.',
-    why: 'דדליין אמיתי הופך "אולי אחר כך" ל"עכשיו" — רק אם המבצע באמת מוגבל.' },
-  { id: 'p5', emoji: '🎁', category: 'sales',
-    title: 'הפתעה לעוקבים הנאמנים ביותר',
-    description: 'הכריזו על מתנה/הנחה ייחודית לעוקבים בלבד.',
-    why: 'מתגמל קהל קיים ומעודד שיתוף אורגני בין חברים.' },
-  { id: 'p6', emoji: '❓', category: 'sales',
-    title: '"כמה עולה?" — שאלות נפוצות על המחיר',
-    description: 'ענו בפומבי על השאלה הנפוצה ביותר על התמחור.',
-    why: 'מסיר חסם פסיכולוגי ראשי — שקיפות מחיר מגדילה אמון ופניות.' },
-  { id: 'p7', emoji: '🔧', category: 'behind',
-    title: 'כך נוצר המוצר שלנו — מהרעיון לגמר',
-    description: 'הציגו את תהליך היצירה/ייצור בצורה ויזואלית.',
-    why: 'תוכן "מאחורי הקלעים" מרגיש כמו הצצה ולא כמו פרסומת — ולכן נצרך אחרת.' },
-  { id: 'p8', emoji: '🤝', category: 'behind',
-    title: 'הצוות שלנו — הפנים מאחורי המותג',
-    description: 'הציגו חבר צוות ואת הסיפור שלו בעסק.',
-    why: 'הומניזציה של מותג מגבירה חיבור רגשי ונאמנות לטווח ארוך.' },
-  { id: 'p9', emoji: '💡', category: 'tips',
-    title: '5 טעויות שכולם עושים (ואיך להימנע)',
-    description: 'רשימת טעויות נפוצות בתחום שלכם עם פתרונות.',
-    why: 'תוכן "טעויות" מייצר הזדהות ומציב אתכם כסמכות מקצועית.' },
-  { id: 'p10', emoji: '📋', category: 'tips',
-    title: "הצ'קליסט שכל לקוח צריך לפני...",
-    description: "תנו ערך מיידי עם צ'קליסט שניתן לשמור.",
-    why: 'תוכן שכדאי לשמור נשמר — והשמירה מחזירה את הקורא אליכם שוב.' },
-  { id: 'p11', emoji: '🔥', category: 'tips',
-    title: 'הטיפ שאף אחד לא מדבר עליו',
-    description: 'שתפו insight לא שגרתי שרק מומחה בתחום יודע.',
-    why: 'תוכן שסותר את המובן מאליו מייצר עצירה — ועצירה היא תנאי לשיתוף.' },
-  { id: 'p12', emoji: '🎉', category: 'events',
-    title: 'ראש השנה מתקרב — תוכן חגיגי לקהל',
-    description: 'ברכת חג מקצועית בשילוב ערך רלוונטי לעונה.',
-    why: 'פוסטים חגיגיים מייצרים engagement רגשי גבוה ומחזקים קשר אישי.' },
-  { id: 'p13', emoji: '📅', category: 'events',
-    title: 'יום הולדת לעסק — X שנים של...',
-    description: 'חגגו אבן דרך עסקית עם נתונים ותובנות.',
-    why: 'אבני דרך מייצרות authenticity ומעודדות תגובות ברכה.' },
-  { id: 'p14', emoji: '🚀', category: 'viral',
-    title: 'זה הטרנד שמשתלט על הפיד כרגע',
-    description: 'התאימו את הטרנד הוויראלי הנוכחי לתחום שלכם.',
-    why: 'טרנד נותן לאלגוריתם הקשר מוכר — הפוסט מגיע גם למי שלא עוקב אחריכם.' },
-  { id: 'p15', emoji: '🎯', category: 'viral',
-    title: 'הסאונד הזה שובר את האינסטגרם — הגרסה שלנו',
-    description: 'השתמשו ב-trending audio וייצרו גרסה עסקית.',
-    why: 'סאונד טרנדי מחבר את הפוסט לגל קיים — אנשים מגיעים דרך הסאונד, לא רק דרככם.' },
-]
+/* ── static idea data ─────────────────────────────────────────────────────
+   Posts are AI-generated per business (see /api/ideas/generate). Video ideas
+   are still a static library — personalising them is phase 2. */
 
 const VIDEO_IDEAS: VideoIdea[] = [
   { id: 'v1', personalized: true, emoji: '🎬', category: 'tips',
@@ -389,7 +334,7 @@ function EmptyState() {
 }
 
 /* ── main export ──────────────────────────────────────────────────────── */
-export default function IdeasBank({ tier }: Props) {
+export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props) {
   const router = useRouter()
   const isPro  = tier !== 'free'   // כל מסלול בתשלום (basic/pro/agency)
 
@@ -398,6 +343,38 @@ export default function IdeasBank({ tier }: Props) {
   const [savedIds,    setSavedIds]    = useState<Set<string>>(new Set())
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [promptIdea,  setPromptIdea]  = useState<VideoIdea | null>(null)
+
+  // Posts are now AI-generated per business (seeded from the server-side cache).
+  // Video ideas are still the static VIDEO_IDEAS library — personalising those
+  // is phase 2.
+  const [posts,     setPosts]     = useState<PostIdea[]>(initialPostIdeas)
+  const [genLoading, setGenLoading] = useState(false)
+  const [genError,  setGenError]  = useState('')
+
+  async function regeneratePosts() {
+    if (genLoading) return
+    setGenLoading(true); setGenError('')
+    try {
+      const res = await fetch('/api/ideas/generate', { method: 'POST' })
+      const data = await res.json()
+      if (!res.ok) { setGenError(data.error ?? 'שגיאה ביצירת רעיונות'); return }
+      setPosts(data.ideas as PostIdea[])
+    } catch {
+      setGenError('שגיאת רשת — נסו שוב')
+    } finally {
+      setGenLoading(false)
+    }
+  }
+
+  // First visit with a business but no cached ideas yet: generate once.
+  // Deferred a tick so the state updates don't run synchronously inside the
+  // effect (which would trigger a cascading render).
+  useEffect(() => {
+    if (!hasBusiness || posts.length > 0) return
+    const t = setTimeout(() => regeneratePosts(), 0)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function toggleSave(id: string) {
     setSavedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
@@ -413,11 +390,9 @@ export default function IdeasBank({ tier }: Props) {
     router.push(`/dashboard/create?prompt=${prompt}`)
   }
 
-  const postIdeas  = useMemo(() => POST_IDEAS.filter(i => category === 'all' || i.category === category), [category])
+  const postIdeas  = useMemo(() => posts.filter(i => category === 'all' || i.category === category), [posts, category])
   const videoIdeas = useMemo(() => VIDEO_IDEAS.filter(i => category === 'all' || i.category === category), [category])
 
-  const personalizedPosts  = postIdeas.filter(i => i.personalized)
-  const standardPosts      = postIdeas.filter(i => !i.personalized)
   const personalizedVideos = videoIdeas.filter(i => i.personalized)
   const standardVideos     = videoIdeas.filter(i => !i.personalized)
 
@@ -486,41 +461,79 @@ export default function IdeasBank({ tier }: Props) {
       {/* ═══════════════ POSTS TAB ═══════════════════════════════════════ */}
       {tab === 'posts' && (
         <>
-          {personalizedPosts.length > 0 && (
-            <section style={{ marginBottom: 36 }}>
-              <SectionHeader
-                icon="ti-sparkles" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
-                title="מומלצים להתחלה"
-                subtitle="רעיונות שעובדים כמעט לכל עסק — לחצו ליצירה"
-              />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
-                {personalizedPosts.map(idea => (
-                  <PostCard key={idea.id} idea={idea} personalized
-                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onGenerate={() => generatePost(idea)} />
-                ))}
-              </div>
-            </section>
+          {/* header row: title + regenerate */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>
+            <SectionHeader
+              icon="ti-sparkles" iconBg="rgba(150,86,254,0.15)" iconColor={PURPLE2}
+              title="רעיונות מותאמים לעסק שלכם"
+              subtitle="נכתבו על סמך פרופיל העסק — לחצו ליצירת פוסט מוכן"
+            />
+            {hasBusiness && (
+              <button
+                onClick={regeneratePosts}
+                disabled={genLoading}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '9px 18px', borderRadius: 999, cursor: genLoading ? 'wait' : 'pointer',
+                  background: 'rgba(150,86,254,0.12)', border: '1px solid rgba(150,86,254,0.3)',
+                  color: PURPLE2, fontSize: 12.5, fontWeight: 700, fontFamily: 'var(--font-rubik),sans-serif',
+                  whiteSpace: 'nowrap',
+                }}>
+                {genLoading
+                  ? <><span style={{ width: 13, height: 13, border: '2px solid rgba(190,86,254,0.3)', borderTop: `2px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} /> מייצרת רעיונות…</>
+                  : <><i className="ti ti-refresh" style={{ fontSize: 14 }} /> רענון רעיונות</>}
+              </button>
+            )}
+          </div>
+
+          {/* no business yet → can't personalise */}
+          {!hasBusiness && (
+            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.4)' }}>
+              <i className="ti ti-building-store" style={{ fontSize: 38, display: 'block', marginBottom: 12, color: PURPLE2 }} />
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>קודם נכיר את העסק</div>
+              <div style={{ fontSize: 13, marginBottom: 18, lineHeight: 1.6 }}>כדי לקבל רעיונות מותאמים באמת, השלימו את פרופיל העסק.</div>
+              <button onClick={() => router.push('/dashboard/business')} style={{
+                padding: '10px 22px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff',
+                fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-rubik),sans-serif',
+              }}>למילוי פרופיל העסק</button>
+            </div>
           )}
 
-          {standardPosts.length > 0 && (
-            <section>
-              <SectionHeader
-                icon="ti-layout-grid" iconBg="rgba(255,255,255,0.06)" iconColor="rgba(255,255,255,0.4)"
-                title={category === 'all' ? 'כל הרעיונות' : (CATEGORIES.find(c => c.id === category)?.label ?? '')}
-                count={standardPosts.length}
-              />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
-                {standardPosts.map(idea => (
-                  <PostCard key={idea.id} idea={idea}
-                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onGenerate={() => generatePost(idea)} />
-                ))}
-              </div>
-            </section>
+          {/* generating first batch (no ideas yet) */}
+          {hasBusiness && genLoading && postIdeas.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.45)' }}>
+              <span style={{ width: 30, height: 30, border: '3px solid rgba(190,86,254,0.25)', borderTop: `3px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite', marginBottom: 14 }} />
+              <div style={{ fontSize: 14 }}>כותבת רעיונות מותאמים לעסק שלכם…</div>
+            </div>
           )}
 
-          {postIdeas.length === 0 && <EmptyState />}
+          {/* generation failed and we have nothing to show */}
+          {hasBusiness && !genLoading && genError && postIdeas.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.45)' }}>
+              <i className="ti ti-alert-triangle" style={{ fontSize: 34, display: 'block', marginBottom: 12, color: '#F87171' }} />
+              <div style={{ fontSize: 14, marginBottom: 16 }}>{genError}</div>
+              <button onClick={regeneratePosts} style={{
+                padding: '9px 20px', borderRadius: 999, border: '1px solid rgba(150,86,254,0.3)', cursor: 'pointer',
+                background: 'rgba(150,86,254,0.12)', color: PURPLE2, fontSize: 13, fontWeight: 700,
+                fontFamily: 'var(--font-rubik),sans-serif',
+              }}>נסו שוב</button>
+            </div>
+          )}
+
+          {/* the ideas */}
+          {postIdeas.length > 0 && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+              {postIdeas.map(idea => (
+                <PostCard key={idea.id} idea={idea} personalized
+                  saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                  onGenerate={() => generatePost(idea)} />
+              ))}
+            </div>
+          )}
+
+          {/* have ideas overall, but none in this category filter */}
+          {hasBusiness && !genLoading && posts.length > 0 && postIdeas.length === 0 && <EmptyState />}
         </>
       )}
 
@@ -587,6 +600,9 @@ export default function IdeasBank({ tier }: Props) {
           onClose={() => setPromptIdea(null)}
         />
       )}
+
+      {/* spin keyframe is not global (see CreateStudio) — declare it locally */}
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   )
 }

@@ -34,6 +34,9 @@ export const limiters = {
   // מחובר / לפי userId — הגנה על עלויות Gemini
   aiText:   redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(30, '1 m'),  prefix: 'socime:ai-text'  }) : null,
   aiImage:  redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(10, '1 m'),  prefix: 'socime:ai-image' }) : null,
+  // Idea-bank regeneration produces 9 ideas per call — costlier than a single
+  // post, and it's free (0 tokens), so cap it per user to protect Gemini spend.
+  aiIdeas:  redis ? new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(6,  '1 h'),  prefix: 'socime:ai-ideas' }) : null,
 }
 
 type Limiter = Ratelimit | null
