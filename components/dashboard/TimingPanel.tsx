@@ -28,10 +28,12 @@ function nextShabbatEnd() {
   return sat.toISOString().slice(0, 16)
 }
 
+// AA-safe on the frosted card: raw Tailwind green-600/amber-600 were only
+// 3.3 / 3.19:1. These are the same semantic values used elsewhere in the app.
 function scoreColor(s: number) {
-  if (s >= 90) return '#16a34a'
-  if (s >= 80) return '#d97706'
-  return '#6b7280'
+  if (s >= 90) return '#0A7159'   // green  5.17:1
+  if (s >= 80) return '#8A6207'   // amber  4.74:1
+  return '#6B6790'                // neutral 4.66:1
 }
 
 export default function TimingPanel() {

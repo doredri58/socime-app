@@ -10,7 +10,9 @@ import { useState } from 'react'
 
 /* ── Theme tokens ───────────────────────────────────────────── */
 const PURPLE = '#9656FE'
-const GOLD = '#FFD700'
+const GOLD = '#FFD700'          // on-dark only (upgrade modal)
+const GOLD_TEXT = '#8A6207'     // on-light gold: 4.74:1 vs #FFD700's 1.4:1
+const PURPLE_TXT = '#7C3FD6'    // purple that clears AA as text (PURPLE is icon-only)
 
 /* ── Token economy (shown as a small strip) ─────────────────── */
 // מסונכרן עם lib/tokens.ts (TOKEN_COSTS)
@@ -224,9 +226,12 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
         onClick={() => onLockedClick(feature.label)}
         className="group flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-right transition hover:bg-[rgba(120,90,200,0.06)]"
       >
-        <i className="ti ti-crown shrink-0 text-base" style={{ color: GOLD }} />
+        {/* GOLD_TEXT, not GOLD: #FFD700 on the light plan card is 1.4:1
+            (invisible). Dark gold reads as a premium lock cue and clears AA.
+            The modal crown keeps #FFD700 — it sits on a dark surface. */}
+        <i className="ti ti-crown shrink-0 text-base" style={{ color: GOLD_TEXT }} />
         <span className="flex-1 text-sm text-[#6B6790] group-hover:text-[#5B5878]">{feature.label}</span>
-        <span className="shrink-0 text-[10px] font-bold" style={{ color: GOLD }}>PRO</span>
+        <span className="shrink-0 text-[10px] font-bold" style={{ color: GOLD_TEXT }}>PRO</span>
       </button>
     )
   }
@@ -298,7 +303,7 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
       ) : (
         <p className="text-xs text-[#6B6790]">חיוב חודשי · ללא התחייבות</p>
       )}
-      <p className="mb-5 mt-1.5 text-xs font-bold" style={{ color: PURPLE }}>{plan.anchor}</p>
+      <p className="mb-5 mt-1.5 text-xs font-bold" style={{ color: PURPLE_TXT }}>{plan.anchor}</p>
 
       {/* Tokens pill */}
       <div

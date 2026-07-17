@@ -40,7 +40,11 @@ async function callAgent(path: string, payload: unknown): Promise<{ ok: true; da
 
 /* ── Shared bits ──────────────────────────────────────────── */
 const card: React.CSSProperties = {
-  background: 'rgba(13,10,31,0.7)', border: '1px solid rgba(150,86,254,0.18)',
+  // Was rgba(13,10,31,0.7) — a leftover dark-theme obsidian card. Its decimal
+  // rgba form was missed by the recolour scripts and isn't in LIGHT_CARD_FIX,
+  // so it stayed dark and the transform slated its text to ~1.7:1 (invisible).
+  // A normal glass value lets rule 2 turn it into a frosted card like the rest.
+  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(150,86,254,0.18)',
   borderRadius: 18, padding: 22, display: 'flex', flexDirection: 'column', gap: 14,
 }
 const labelS: React.CSSProperties = { fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.55)' }
