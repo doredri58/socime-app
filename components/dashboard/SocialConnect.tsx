@@ -128,7 +128,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
               : 'אין רשתות מחוברות'}
           </div>
           <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', marginTop: 2 }}>
-            {connected.length > 0 ? 'SociMe יכולה לפרסם ישירות לחשבונות שלך' : 'חבר לפחות רשת אחת כדי לפרסם אוטומטית'}
+            {connected.length > 0 ? 'SociMe יכולה לפרסם ישירות לחשבונות שלכם' : 'חברו לפחות רשת אחת כדי לפרסם אוטומטית'}
           </div>
         </div>
       </div>

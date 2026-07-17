@@ -447,7 +447,7 @@ export default async function DashboardHome() {
                     textDecoration: 'none', whiteSpace: 'nowrap',
                     boxShadow: '0 4px 12px rgba(59,130,239,0.35)',
                   }}>
-                    {connected ? 'מחובר ✓' : 'חבר'}
+                    {connected ? 'מחובר ✓' : 'חברו'}
                   </Link>
                 </div>
               )
