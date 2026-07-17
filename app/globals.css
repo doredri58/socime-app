@@ -43,7 +43,7 @@
   /* ── Text — dark slate #253A53 for high contrast on the airy gradient ── */
   --dash-text:     #253A53;
   --dash-text-mid: #5B5878;
-  --dash-text-low: #857FA6;
+  --dash-text-low: #6B6790;
   --dash-card-bg:      rgba(255,255,255,0.58);   /* frosted glass */
   --dash-card-border:  rgba(255,255,255,0.75);
   --dash-input-bg:     rgba(255,255,255,0.72);
@@ -133,7 +133,7 @@
   /* ── Text ── */
   --text-dark:  #12082E;
   --text-mid:   #3D2B6B;
-  --text-light: #8B7AB0;
+  --text-light: #6B6790;   /* was #8B7AB0 = 3.66:1, under AA; now 4.66:1 (text-only token) */
   --text-muted: #B5A8D4;
 
   /* ── Dashboard ── */

@@ -45,7 +45,7 @@ const PLATFORM_COLOR: Record<string, string> = {
       rewritten by the light-mode transform rules in globals.css) ── */
 const INK      = '#253A53'
 const INK_MID  = '#5B5878'
-const INK_LOW  = '#857FA6'
+const INK_LOW  = '#6B6790'
 const INK_DIM  = '#A79FC4'
 const PURPLE   = '#9656FE'
 const PURPLE2  = '#BE56FE'

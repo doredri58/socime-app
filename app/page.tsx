@@ -11,7 +11,7 @@ const PURPLE2 = '#BE56FE'
 const BLUE    = '#3B82EF'
 const INK     = '#253A53'   // slate — primary text on the light design
 const INK_MID = '#5B5878'
-const INK_LOW = '#857FA6'
+const INK_LOW = '#6B6790'
 const NOISE   = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E\")"
 
 /* ─── Styles ─── */

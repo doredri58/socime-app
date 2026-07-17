@@ -138,7 +138,7 @@ function UpgradeModal({ open, feature, onClose }: { open: boolean; feature: stri
         <button
           onClick={onClose}
           aria-label="סגירה"
-          className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full text-[#857FA6] transition hover:bg-white/10 hover:text-[#253A53]"
+          className="absolute left-4 top-4 grid h-8 w-8 place-items-center rounded-full text-[#6B6790] transition hover:bg-white/10 hover:text-[#253A53]"
         >
           <i className="ti ti-x text-lg" />
         </button>
@@ -195,7 +195,7 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
     >
       <button
         onClick={() => onChange('annual')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-[#857FA6] hover:text-[#5B5878]'
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'annual' ? 'text-white' : 'text-[#6B6790] hover:text-[#5B5878]'
           }`}
         style={billing === 'annual' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(150,86,254,0.45)' } : undefined}
       >
@@ -203,7 +203,7 @@ function BillingToggle({ billing, onChange }: { billing: Billing; onChange: (b: 
       </button>
       <button
         onClick={() => onChange('monthly')}
-        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-[#857FA6] hover:text-[#5B5878]'
+        className={`rounded-full px-6 py-2.5 text-sm font-bold transition ${billing === 'monthly' ? 'text-white' : 'text-[#6B6790] hover:text-[#5B5878]'
           }`}
         style={billing === 'monthly' ? { background: PURPLE, boxShadow: '0 4px 18px rgba(150,86,254,0.45)' } : undefined}
       >
@@ -225,7 +225,7 @@ function FeatureRow({ feature, onLockedClick }: { feature: Feature; onLockedClic
         className="group flex w-full items-center gap-3 rounded-lg px-1 py-1.5 text-right transition hover:bg-[rgba(120,90,200,0.06)]"
       >
         <i className="ti ti-crown shrink-0 text-base" style={{ color: GOLD }} />
-        <span className="flex-1 text-sm text-[#857FA6] group-hover:text-[#5B5878]">{feature.label}</span>
+        <span className="flex-1 text-sm text-[#6B6790] group-hover:text-[#5B5878]">{feature.label}</span>
         <span className="shrink-0 text-[10px] font-bold" style={{ color: GOLD }}>PRO</span>
       </button>
     )
@@ -285,18 +285,18 @@ function PlanCard({ plan, billing, busy, onSelect, onLockedClick }: {
       {/* Header */}
       <div className="mb-5">
         <h3 className="text-xl font-extrabold text-[#253A53]">{plan.name}</h3>
-        <p className="mt-0.5 text-xs text-[#857FA6]">{plan.tagline}</p>
+        <p className="mt-0.5 text-xs text-[#6B6790]">{plan.tagline}</p>
       </div>
 
       {/* Price (anchoring) */}
       <div className="mb-1 flex items-end gap-1.5">
         <span className="text-5xl font-black leading-none text-[#253A53]">{ils(price)} ₪</span>
-        <span className="mb-1 text-sm text-[#857FA6]">/לחודש</span>
+        <span className="mb-1 text-sm text-[#6B6790]">/לחודש</span>
       </div>
       {billing === 'annual' ? (
-        <p className="text-xs text-[#857FA6]">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
+        <p className="text-xs text-[#6B6790]">בחיוב שנתי {ils(plan.annualTotal)} ₪</p>
       ) : (
-        <p className="text-xs text-[#857FA6]">חיוב חודשי · ללא התחייבות</p>
+        <p className="text-xs text-[#6B6790]">חיוב חודשי · ללא התחייבות</p>
       )}
       <p className="mb-5 mt-1.5 text-xs font-bold" style={{ color: PURPLE }}>{plan.anchor}</p>
 
@@ -357,7 +357,7 @@ function RefundPolicy() {
           <i className="ti ti-shield-check text-base" style={{ color: PURPLE }} />
           מדיניות החזרים וביטולים
         </span>
-        <i className={`ti ti-chevron-down text-[#857FA6] transition ${open ? 'rotate-180' : ''}`} />
+        <i className={`ti ti-chevron-down text-[#6B6790] transition ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
@@ -435,7 +435,7 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
             מחירים
           </div>
           <h2 className="text-3xl font-black tracking-tight md:text-4xl">בחרו את המשכורת שלה.</h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm text-[#857FA6]">
+          <p className="mx-auto mt-3 max-w-lg text-sm text-[#6B6790]">
             מנהל סושיאל אנושי עולה כ-3,000 ₪ בחודש. היא מתחילה ב-199.
             כל המסלולים כוללים את מנוע ה-AI המלא — לא גרסה מסורסת.
             שדרגו, הורידו או בטלו מתי שתרצו.
