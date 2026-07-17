@@ -20,7 +20,7 @@ interface Props {
 const PLATFORMS = [
   { id: 'facebook',  label: 'Facebook',  icon: 'ti-brand-facebook',  color: '#1877F2', bg: 'rgba(24,119,242,0.1)',  border: 'rgba(24,119,242,0.25)',  desc: 'פרסם ישירות לדף העסקי שלך', pro: false, oauth: '/api/social/oauth/facebook' },
   { id: 'instagram', label: 'Instagram', icon: 'ti-brand-instagram', color: '#E1306C', bg: 'rgba(225,48,108,0.1)',  border: 'rgba(225,48,108,0.25)',  desc: 'פוסטים, סטוריז ורילס',        pro: false, oauth: '/api/social/oauth/facebook' },
-  { id: 'tiktok',    label: 'TikTok',    icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)',   border: 'rgba(255,0,80,0.2)',     desc: 'וידאו קצר ותוכן ויראלי',     pro: true,  oauth: '/api/social/oauth/tiktok' },
+  { id: 'tiktok',    label: 'TikTok',    icon: 'ti-brand-tiktok',    color: '#ff0050', bg: 'rgba(255,0,80,0.08)',   border: 'rgba(255,0,80,0.2)',     desc: 'וידאו קצר ותוכן ויראלי',     pro: true,  oauth: '/api/social/oauth/tiktok', comingSoon: true },
 ]
 
 const RESULT_MESSAGES: Record<string, { msg: string; ok: boolean }> = {
@@ -74,6 +74,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
   }
 
   function startOAuth(platform: typeof PLATFORMS[number]) {
+    if ('comingSoon' in platform && platform.comingSoon) return  // TikTok — ממתין ל-App Review
     if (platform.pro && !isPro) { setShowUpgrade(true); return }
     setWorking(platform.id)
     window.location.href = platform.oauth
@@ -135,10 +136,11 @@ export default function SocialConnect({ tier = 'free' }: Props) {
       {/* platform grid */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
         {PLATFORMS.map(p => {
-          const active = isConnected(p.id)
-          const since  = connectedSince(p.id)
-          const busy   = working === p.id
-          const locked = p.pro && !isPro
+          const active     = isConnected(p.id)
+          const since      = connectedSince(p.id)
+          const busy       = working === p.id
+          const comingSoon = 'comingSoon' in p && p.comingSoon
+          const locked     = p.pro && !isPro
 
           return (
             <div key={p.id} className="neon-card" style={{
@@ -147,9 +149,18 @@ export default function SocialConnect({ tier = 'free' }: Props) {
               border: active ? `1px solid ${p.color}45` : '1px solid rgba(255,255,255,0.09)',
               borderRadius: 20, padding: '22px 20px',
               transition: 'all 0.2s', position: 'relative', overflow: 'hidden',
+              opacity: comingSoon ? 0.72 : 1,
             }}>
+              {/* "בקרוב" badge — פלטפורמה שממתינה לאישור (TikTok) */}
+              {comingSoon && (
+                <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 999, background: 'rgba(251,191,36,0.18)', border: '1px solid rgba(251,191,36,0.35)' }}>
+                  <i className="ti ti-clock-hour-4" style={{ fontSize: 10, color: '#B45309' }} />
+                  <span style={{ fontSize: 9, fontWeight: 800, color: '#B45309' }}>בקרוב</span>
+                </div>
+              )}
+
               {/* Pro badge — only when actually locked for this user */}
-              {locked && (
+              {!comingSoon && locked && (
                 <div style={{ position: 'absolute', top: 12, left: 12, display: 'flex', alignItems: 'center', gap: 4, padding: '3px 8px', borderRadius: 999, background: 'rgba(150,86,254,0.2)', border: '1px solid rgba(150,86,254,0.3)' }}>
                   <i className="ti ti-lock" style={{ fontSize: 10, color: PURPLE2 }} />
                   <span style={{ fontSize: 9, fontWeight: 800, color: PURPLE2 }}>Pro</span>
@@ -194,7 +205,16 @@ export default function SocialConnect({ tier = 'free' }: Props) {
               </div>
 
               {/* action button */}
-              {locked && !active ? (
+              {comingSoon ? (
+                <button disabled style={{
+                  width: '100%', padding: '9px', borderRadius: 12, cursor: 'not-allowed',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)',
+                  color: 'rgba(255,255,255,0.4)', fontSize: 12, fontWeight: 700,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                }}>
+                  <i className="ti ti-clock-hour-4" style={{ fontSize: 13 }} /> בקרוב
+                </button>
+              ) : locked && !active ? (
                 <button onClick={() => setShowUpgrade(true)} style={{
                   width: '100%', padding: '9px', borderRadius: 12, cursor: 'pointer',
                   background: 'rgba(150,86,254,0.12)', border: '1px solid rgba(150,86,254,0.25)',
