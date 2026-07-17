@@ -435,15 +435,15 @@ export default function PricingPlans({ variant = 'page' }: { variant?: 'page' | 
         <div className="mb-10 text-center">
           <div
             className="mb-4 inline-flex items-center gap-2 rounded-full px-4 py-1 text-xs font-bold"
-            style={{ background: `${PURPLE}1F`, color: '#7C3FD6', border: `1px solid ${PURPLE}4D` }}
+            style={{ background: `${GOLD}22`, color: GOLD_TEXT, border: `1px solid ${GOLD}55` }}
           >
-            מחירים
+            🔑 מחיר מייסדים · ל-100 המצטרפים הראשונים
           </div>
           <h2 className="text-3xl font-black tracking-tight md:text-4xl">בחרו את המשכורת שלה.</h2>
           <p className="mx-auto mt-3 max-w-lg text-sm text-[#6B6790]">
-            מנהל סושיאל אנושי עולה כ-3,000 ₪ בחודש. היא מתחילה ב-199.
-            כל המסלולים כוללים את מנוע ה-AI המלא — לא גרסה מסורסת.
-            שדרגו, הורידו או בטלו מתי שתרצו.
+            מנהל סושיאל אנושי עולה כ-3,000 ₪ בחודש. המחירים כאן הם מחיר מייסדים —
+            ל-100 המצטרפים הראשונים, ונעולים להם לכל החיים גם כשנעלה אותם.
+            כל המסלולים כוללים את מנוע ה-AI המלא, לא גרסה מסורסת.
           </p>
         </div>
 
