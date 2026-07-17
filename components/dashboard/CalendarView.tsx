@@ -559,9 +559,9 @@ function MonthGrid({ year, month, postsByDay, onDayClick, onPostClick, today }: 
                 }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: '50%',
-                    background: 'rgba(150,86,254,0.2)', border: '1px dashed rgba(150,86,254,0.4)',
+                    background: 'rgba(255,255,255,0.85)', border: '1px dashed rgba(150,86,254,0.55)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    color: PURPLE2, fontSize: 16,
+                    color: '#7C3FD6', fontSize: 16, fontWeight: 700,
                   }}>+</div>
                 </div>
               )}

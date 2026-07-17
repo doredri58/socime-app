@@ -267,7 +267,10 @@ body {
 [data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.3"],
 [data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.4"],
 [data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.4"] {
-  color: #857FA6 !important;   /* low emphasis */
+  /* #6B6790 = 4.66:1 on the frosted card; the airier #857FA6 was only 3.76:1,
+     under AA for small text (weekday headers, toggle labels, etc.). Still
+     clearly lighter than the mid tier (#5B5878), so hierarchy holds. */
+  color: #6B6790 !important;   /* low emphasis */
 }
 [data-theme="light"] :is(#dash-content, .light-page) [style*="color:rgba(255,255,255,0.5"],
 [data-theme="light"] :is(#dash-content, .light-page) [style*="color: rgba(255, 255, 255, 0.5"],
