@@ -211,7 +211,7 @@ function ProfileTab({ showToast }: { showToast: (m: string, ok: boolean) => void
         </div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>{name || 'שמך כאן'}</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 3 }}>לחץ על התמונה לשינוי</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', marginTop: 3 }}>לחצו על התמונה לשינוי</div>
         </div>
       </div>
 
@@ -253,7 +253,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
   const [twoFA,  setTwoFA]  = useState(false)
 
   async function changePassword() {
-    if (!curPw || !newPw) return showToast('מלא את כל השדות', false)
+    if (!curPw || !newPw) return showToast('מלאו את כל השדות', false)
     if (newPw !== confPw)  return showToast('הסיסמאות אינן תואמות', false)
     if (newPw.length < 8)  return showToast('סיסמה חייבת לפחות 8 תווים', false)
     setLoading(true)
@@ -276,7 +276,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
           </div>
           <div>
             <div style={{ fontSize: 14, fontWeight: 800, color: '#fff' }}>שינוי סיסמה</div>
-            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>בחר סיסמה חזקה עם לפחות 8 תווים</div>
+            <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>בחרו סיסמה חזקה עם לפחות 8 תווים</div>
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 16 }}>
@@ -325,7 +325,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
             background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
             fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
             <i className="ti ti-info-circle" style={{ color: GREEN, marginLeft: 6 }} />
-            קוד אימות ישלח לאימייל שלך בכל כניסה. הגדרת authenticator app בקרוב.
+            קוד אימות יישלח לאימייל שלכם בכל כניסה. הגדרת authenticator app בקרוב.
           </div>
         )}
       </div>
@@ -439,7 +439,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
   const [members, setMembers] = useState<{ name: string; email: string; role: string; avatar: string }[]>([])
 
   function sendInvite() {
-    if (!inviteEmail.trim()) return showToast('הזן כתובת אימייל', false)
+    if (!inviteEmail.trim()) return showToast('הזינו כתובת אימייל', false)
     // ניהול צוות רב-משתמשים עדיין לא ממומש בצד השרת — לא מזייפים "הזמנה נשלחה".
     showToast('ניהול צוות רב-משתמשים יהיה זמין בקרוב', true)
     setInviteEmail('')
@@ -459,14 +459,14 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
       </div>
       <h3 style={{ fontSize: 17, fontWeight: 900, color: '#fff', margin: '0 0 8px' }}>ניהול צוות זמין בPro</h3>
       <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', margin: '0 0 24px', lineHeight: 1.8 }}>
-        שדרג לPro כדי להזמין חברי צוות, להגדיר הרשאות<br />ולעבוד יחד על תוכן המדיה החברתית
+        שדרגו ל-Pro כדי להזמין חברי צוות, להגדיר הרשאות<br />ולעבוד יחד על תוכן המדיה החברתית
       </p>
       <button onClick={onUpgrade} style={{
         padding: '12px 28px', borderRadius: 14, cursor: 'pointer', fontSize: 13, fontWeight: 800,
         background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff',
         display: 'inline-flex', alignItems: 'center', gap: 8, boxShadow: '0 4px 18px rgba(150,86,254,0.35)',
       }}>
-        <i className="ti ti-crown" style={{ fontSize: 15, color: '#FBBF24' }} /> שדרג לPro
+        <i className="ti ti-crown" style={{ fontSize: 15, color: '#FBBF24' }} /> שדרגו ל-Pro
       </button>
     </div>
   )
@@ -477,7 +477,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
       <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
         <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', marginBottom: 4 }}>הזמן חבר צוות</div>
         <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginBottom: 16 }}>
-          ישלח אימייל הזמנה עם לינק גישה ל-SociMe
+          ישלחו אימייל הזמנה עם לינק גישה ל-SociMe
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <input value={inviteEmail} onChange={e => setInviteEmail(e.target.value)}
@@ -497,7 +497,7 @@ function TeamTab({ plan, showToast, onUpgrade }: { plan: string; showToast: (m: 
             whiteSpace: 'nowrap', display: 'inline-flex', alignItems: 'center', gap: 6,
             boxShadow: '0 3px 12px rgba(150,86,254,0.3)',
           }}>
-            <i className="ti ti-send" style={{ fontSize: 13 }} /> שלח הזמנה
+            <i className="ti ti-send" style={{ fontSize: 13 }} /> שלחו הזמנה
           </button>
         </div>
       </div>
@@ -618,7 +618,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
               מחיקת חשבון לצמיתות
             </div>
             <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.45)', margin: 0, lineHeight: 1.8 }}>
-              פעולה זו תמחק לצמיתות את כל הנתונים שלך כולל:<br />
+              פעולה זו תמחקו לצמיתות את כל הנתונים שלך כולל:<br />
               פוסטים, טיוטות, לוח שנה, הגדרות ופרטי חשבון.<br />
               <strong style={{ color: 'rgba(248,113,113,0.8)' }}>לא ניתן לשחזר לאחר המחיקה.</strong>
             </p>
@@ -630,7 +630,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
               background: 'transparent', border: '1px solid rgba(248,113,113,0.35)',
               color: RED, flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 7,
             }}>
-              <i className="ti ti-trash-x" style={{ fontSize: 14 }} /> מחק חשבון לצמיתות
+              <i className="ti ti-trash-x" style={{ fontSize: 14 }} /> מחקו חשבון לצמיתות
             </button>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, flexShrink: 0 }}>
@@ -643,7 +643,7 @@ function PrivacyTab({ showToast }: { showToast: (m: string, ok: boolean) => void
                 display: 'inline-flex', alignItems: 'center', gap: 7,
                 boxShadow: '0 4px 14px rgba(239,68,68,0.4)',
               }}>
-                {deleting ? <><Spinner />מוחק...</> : <><i className="ti ti-trash-x" style={{ fontSize: 13 }} />כן, מחק הכל</>}
+                {deleting ? <><Spinner />מוחק...</> : <><i className="ti ti-trash-x" style={{ fontSize: 13 }} />כן, מחקו הכל</>}
               </button>
               <button onClick={() => setDanger(false)} style={{
                 padding: '8px', borderRadius: 11, cursor: 'pointer', fontSize: 12, fontWeight: 600,
@@ -743,7 +743,7 @@ export default function SettingsPage() {
               </div>
               {!['pro', 'agency'].includes(plan) && (
                 <div onClick={() => setShowUpgrade(true)} style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', cursor: 'pointer', textDecoration: 'underline', marginTop: 1 }}>
-                  שדרג עכשיו
+                  שדרגו עכשיו
                 </div>
               )}
             </div>

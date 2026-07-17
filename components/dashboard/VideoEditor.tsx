@@ -347,10 +347,10 @@ function DropZone({ onFile }: { onFile: (f: File) => void }) {
 
       <div style={{ textAlign: 'center', maxWidth: 300 }}>
         <div style={{ fontSize: 17, fontWeight: 900, color: '#fff', marginBottom: 8 }}>
-          {drag ? 'שחרר כדי להעלות 🎬' : 'גרור סרטון לכאן'}
+          {drag ? 'שחרר כדי להעלות 🎬' : 'גררו סרטון לכאן'}
         </div>
         <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', marginBottom: 4 }}>
-          או לחץ לבחירת קובץ מהמחשב
+          או לחצו לבחירת קובץ מהמחשב
         </div>
         <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>
           MP4, MOV, AVI, MKV · עד 500MB
@@ -646,7 +646,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
   function handleFile(f: File) {
     setVideoFile(f); setPlaying(false); setDone(false)
     setCloudinaryPublicId(null); setCloudinaryUrl(null); setOutputUrl(null)
-    showToast(`${f.name} נבחר — לחץ עבד וידאו להעלאה`, true)
+    showToast(`${f.name} נבחר — לחצו עבד וידאו להעלאה`, true)
   }
 
   async function handleRender() {

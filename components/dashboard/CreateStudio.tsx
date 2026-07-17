@@ -369,7 +369,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
         <div className="neon-card" style={{ ...GLASS, padding: '18px 20px', marginBottom: 14 }}>
           <label style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.45)', display: 'block', marginBottom: 10, letterSpacing: '0.05em' }}>
             <i className="ti ti-sparkles" style={{ marginLeft: 5, color: PURPLE }} />
-            תאר לAI את הפוסט שתרצה
+            תארו ל-AI את הפוסט שתרצו
           </label>
           <div style={{ display: 'flex', gap: 10, alignItems: 'flex-end' }}>
             <textarea
@@ -400,7 +400,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
             >
               {loading
                 ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} /> יוצר...</>
-                : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> צור קסם</>
+                : <><i className="ti ti-wand" style={{ fontSize: 15 }} /> צרו קסם</>
               }
             </button>
           </div>
@@ -429,7 +429,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
           <textarea
             value={postText}
             onChange={e => { setPostText(e.target.value); setCharCount(e.target.value.length) }}
-            placeholder={loading ? 'היא כותבת עבורכם...' : 'כתבו פוסט או לחצו "צור קסם" למעלה...'}
+            placeholder={loading ? 'היא כותבת עבורכם...' : 'כתבו פוסט או לחצו "צרו קסם" למעלה...'}
             style={{
               flex: 1, minHeight: 160, padding: '14px', borderRadius: 14, fontSize: 13.5,
               color: postText ? '#fff' : 'rgba(255,255,255,0.25)',
@@ -535,7 +535,7 @@ export default function CreateStudio({ userId, businessName, businessDescription
             >
               <i className="ti ti-cloud-upload" style={{ fontSize: 28, color: dragOver ? PURPLE : 'rgba(255,255,255,0.2)', display: 'block', marginBottom: 8 }} />
               <div style={{ fontSize: 13, fontWeight: 600, color: dragOver ? PURPLE2 : 'rgba(255,255,255,0.4)', marginBottom: 4 }}>
-                גרור תמונה לכאן
+                גררו תמונה לכאן
               </div>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.2)' }}>
                 JPG, PNG, MP4 · עד 50MB

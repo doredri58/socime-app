@@ -281,7 +281,7 @@ function VideoCard({ idea, saved, onSave, onSend, onPrompt, personalized }: {
         onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px)' }}
         onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.transform = '' }}
         >
-          <i className="ti ti-send" style={{ fontSize: 13 }} /> שלח לסטודיו ליצירה
+          <i className="ti ti-send" style={{ fontSize: 13 }} /> שלחו לסטודיו ליצירה
         </button>
         <button onClick={onPrompt} title="פתח פרומפטר" style={{
           width: 36, height: 36, borderRadius: 10, flexShrink: 0, cursor: 'pointer',
@@ -565,7 +565,7 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
               <SectionHeader
                 icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#CC1F1F"
                 title="תסריטים מומלצים להתחלה"
-                subtitle="כל תסריט מוכן להפקה — פשוט לחצו שלח לסטודיו"
+                subtitle="כל תסריט מוכן להפקה — פשוט לחצו שלחו לסטודיו"
               />
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
                 {personalizedVideos.map(idea => (

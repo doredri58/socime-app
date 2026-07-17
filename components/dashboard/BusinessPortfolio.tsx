@@ -320,7 +320,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
             <div style={{ padding: '24px', textAlign: 'center', borderRadius: 14, background: 'rgba(150,86,254,0.06)', border: '1px dashed rgba(150,86,254,0.25)' }}>
               <i className="ti ti-brain" style={{ fontSize: 28, color: 'rgba(150,86,254,0.4)', display: 'block', marginBottom: 8 }} />
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', margin: '0 0 14px', lineHeight: 1.7 }}>
-                מלא את פרטי העסק בטפסים מטה ולחץ "שמור שינויים" — ה-AI יצור סיכום מותאם אישית
+                מלאו את פרטי העסק בטפסים מטה ולחצו "שמור שינויים" — ה-AI ייצור סיכום מותאם אישית
               </p>
             </div>
           )}
@@ -463,7 +463,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
             <Field label="טון וסגנון דיבור" icon="ti-message-circle">
               <div>
                 <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: '0 0 10px', lineHeight: 1.6 }}>
-                  בחר אחד או יותר — ה-AI ישלב את הסגנונות שנבחרו
+                  בחרו אחד או יותר — ה-AI ישלב את הסגנונות שנבחרו
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {TONES.map(tone => {

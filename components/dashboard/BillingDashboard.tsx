@@ -243,7 +243,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 boxShadow: '0 4px 14px rgba(150,86,254,0.35)',
               }}>
-                <i className="ti ti-crown" style={{ fontSize: 13, color: '#FBBF24' }} /> שדרג מסלול
+                <i className="ti ti-crown" style={{ fontSize: 13, color: '#FBBF24' }} /> שדרגו מסלול
               </button>
             )}
             <button onClick={buyTokens} style={{

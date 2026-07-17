@@ -126,7 +126,7 @@ export default function UpgradeModal({ onClose, trigger = 'generic' }: Props) {
 
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginBottom: 20, textAlign: 'center' }}>
-              שדרג עכשיו ובטל בכל עת
+              שדרגו עכשיו ובטלו בכל עת
             </div>
 
             {/* secure badges */}

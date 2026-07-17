@@ -61,7 +61,7 @@ export default function TimingPanel() {
 
   async function addBlackout(e: React.FormEvent) {
     e.preventDefault()
-    if (!start || !end) { setFormErr('בחר תאריך התחלה וסיום'); return }
+    if (!start || !end) { setFormErr('בחרו תאריך התחלה וסיום'); return }
     setSaving(true); setFormErr('')
     const res = await fetch('/api/timing/blackout', {
       method: 'POST',
@@ -118,7 +118,7 @@ export default function TimingPanel() {
       {/* Add blackout */}
       <div>
         <div className="text-xs font-bold uppercase tracking-widest mb-3" style={{ color: 'var(--text-light)' }}>
-          🚫 הוסף תקופת חסימה
+          🚫 הוסיפו תקופת חסימה
         </div>
         <div className="bg-white rounded-2xl p-5" style={{ border: '1px solid var(--purple-border)' }}>
           {/* Presets */}
@@ -156,7 +156,7 @@ export default function TimingPanel() {
             <button type="submit" disabled={saving}
               className="w-full py-2.5 rounded-xl text-white text-sm font-bold"
               style={{ background: saving ? '#c4b5fd' : 'linear-gradient(135deg,var(--purple),var(--purple-deep))' }}>
-              {saving ? 'שומר...' : '+ הוסף חסימה'}
+              {saving ? 'שומר...' : '+ הוסיפו חסימה'}
             </button>
           </form>
         </div>

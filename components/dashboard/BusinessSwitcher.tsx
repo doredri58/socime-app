@@ -98,7 +98,7 @@ export default function BusinessSwitcher() {
               color: '#9656FE', fontSize: 13, fontWeight: 700,
             }}>
               <i className="ti ti-plus" style={{ fontSize: 14 }} />
-              הוסף עסק
+              הוסיפו עסק
             </button>
           )}
         </div>

@@ -259,7 +259,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
   const insights = useMemo(() => {
     const hi = userName ? `היי ${userName.split(' ')[0]}, ` : ''
     if (totalPosts === 0) {
-      return [`${hi}עדיין אין נתונים לניתוח — צור את הפוסט הראשון שלך והתובנות יופיעו כאן.`]
+      return [`${hi}עדיין אין נתונים לניתוח — צרו את הפוסט הראשון שלכם והתובנות יופיעו כאן.`]
     }
     const list = [
       `${hi}נוצרו עד כה ${totalPosts} פוסטים: ${publishedPosts.length} פורסמו, ${scheduledPosts.length} מתוזמנים ו-${draftPosts.length} טיוטות.`,
@@ -285,7 +285,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 24, flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 22, fontWeight: 900, color: '#fff', margin: '0 0 4px', letterSpacing: '-0.5px' }}>ניתוחים סטטיסטים</h1>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>מבט מלא על הביצועים, המגמות והתובנות של העסק שלך</p>
+          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.38)', margin: 0 }}>מבט מלא על הביצועים, המגמות והתובנות של העסק שלכם</p>
         </div>
 
         {/* Export PDF CTA */}
@@ -513,7 +513,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
             </div>
             <div>
               <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 2px' }}>הפוסטים האחרונים שלך</h3>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>לחץ "שכפל" ו-AI יכתוב וריאציה חדשה</p>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>לחצו "שכפל" ו-AI יכתוב וריאציה חדשה</p>
             </div>
           </div>
           <button onClick={() => router.push('/dashboard/queue')} style={{
@@ -529,12 +529,12 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
         {topPosts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 0', color: 'rgba(255,255,255,0.2)' }}>
             <i className="ti ti-chart-bar" style={{ fontSize: 36, display: 'block', marginBottom: 10 }} />
-            <div style={{ fontSize: 13 }}>אין פוסטים עדיין — צור פוסט ראשון כדי לראות נתונים</div>
+            <div style={{ fontSize: 13 }}>אין פוסטים עדיין — צרו פוסט ראשון כדי לראות נתונים</div>
             <button onClick={() => router.push('/dashboard/create')} style={{
               marginTop: 14, padding: '9px 22px', borderRadius: 14, cursor: 'pointer',
               background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
             }}>
-              צור פוסט ראשון
+              צרו פוסט ראשון
             </button>
           </div>
         ) : (

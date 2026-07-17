@@ -731,7 +731,7 @@ export default function CommunityInbox() {
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'rgba(255,255,255,0.2)', flexDirection: 'column', gap: 12 }}>
             <i className="ti ti-messages" style={{ fontSize: 40 }} />
-            <span style={{ fontSize: 14 }}>בחר שיחה</span>
+            <span style={{ fontSize: 14 }}>בחרו שיחה</span>
           </div>
         ) : (
           <>
@@ -858,7 +858,7 @@ export default function CommunityInbox() {
                       {sending
                         ? <><div style={{ width: 14, height: 14, border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff',
                             borderRadius: '50%', animation: 'spin 0.8s linear infinite' }} />שולח</>
-                        : <><i className="ti ti-send" style={{ fontSize: 15 }} />שלח תגובה</>
+                        : <><i className="ti ti-send" style={{ fontSize: 15 }} />שלחו תגובה</>
                       }
                     </button>
                   </div>

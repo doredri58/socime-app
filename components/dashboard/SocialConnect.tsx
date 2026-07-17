@@ -27,10 +27,10 @@ const RESULT_MESSAGES: Record<string, { msg: string; ok: boolean }> = {
   'connected=facebook': { msg: 'Facebook חובר בהצלחה! אם יש חשבון Instagram עסקי מקושר — גם הוא חובר.', ok: true },
   'connected=tiktok':   { msg: 'TikTok חובר בהצלחה!', ok: true },
   'error=facebook_denied': { msg: 'החיבור ל-Facebook בוטל או נדחה.', ok: false },
-  'error=facebook_failed': { msg: 'החיבור ל-Facebook נכשל — נסה שוב.', ok: false },
+  'error=facebook_failed': { msg: 'החיבור ל-Facebook נכשל — נסו שוב.', ok: false },
   'error=tiktok_denied':   { msg: 'החיבור ל-TikTok בוטל או נדחה.', ok: false },
-  'error=tiktok_failed':   { msg: 'החיבור ל-TikTok נכשל — נסה שוב.', ok: false },
-  'error=invalid_state':   { msg: 'שגיאת אימות — נסה שוב.', ok: false },
+  'error=tiktok_failed':   { msg: 'החיבור ל-TikTok נכשל — נסו שוב.', ok: false },
+  'error=invalid_state':   { msg: 'שגיאת אימות — נסו שוב.', ok: false },
 }
 
 export default function SocialConnect({ tier = 'free' }: Props) {
@@ -221,7 +221,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
                   color: PURPLE2, fontSize: 12, fontWeight: 700,
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}>
-                  <i className="ti ti-crown" style={{ fontSize: 13 }} /> שדרג לPro
+                  <i className="ti ti-crown" style={{ fontSize: 13 }} /> שדרגו ל-Pro
                 </button>
               ) : active ? (
                 <button onClick={() => disconnect(p.id)} disabled={busy} style={{

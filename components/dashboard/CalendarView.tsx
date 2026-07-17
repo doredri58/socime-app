@@ -417,7 +417,7 @@ function ScheduleModal({ date, draftText, draftPlatform, userId, onClose, onSave
           <div style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.4)', marginBottom: 8 }}>תוכן הפוסט</div>
           <textarea
             value={text} onChange={e => setText(e.target.value)} rows={5}
-            placeholder="כתוב את הפוסט שלך כאן..."
+            placeholder="כתבו את הפוסט שלכם כאן..."
             style={{
               width: '100%', padding: '12px 14px', borderRadius: 14, fontSize: 13, color: '#fff',
               background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)',
@@ -883,7 +883,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
           </div>
 
           {/* Global pause — halts ALL scheduled publishing until resumed */}
-          <button onClick={toggleGlobalPause} disabled={pauseBusy} title={postingPaused ? 'כל הפרסומים מושהים — לחץ להמשך' : 'השהה את כל הפרסומים המתוזמנים'} style={{
+          <button onClick={toggleGlobalPause} disabled={pauseBusy} title={postingPaused ? 'כל הפרסומים מושהים — לחצו להמשך' : 'השהו את כל הפרסומים המתוזמנים'} style={{
             padding: '8px 16px', borderRadius: 12, cursor: pauseBusy ? 'wait' : 'pointer',
             background: postingPaused ? 'rgba(251,191,36,0.15)' : 'rgba(255,255,255,0.05)',
             border: `1px solid ${postingPaused ? 'rgba(251,191,36,0.45)' : 'rgba(255,255,255,0.1)'}`,
@@ -894,7 +894,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
             boxShadow: postingPaused ? '0 0 14px rgba(251,191,36,0.25)' : 'none',
           }}>
             <i className={`ti ${postingPaused ? 'ti-player-play' : 'ti-player-pause'}`} style={{ fontSize: 14 }} />
-            {pauseBusy ? 'מעדכן...' : postingPaused ? 'המשך פרסומים' : 'השהה הכל'}
+            {pauseBusy ? 'מעדכן...' : postingPaused ? 'המשך פרסומים' : 'השהו הכל'}
           </button>
 
           {/* View toggle */}
@@ -934,7 +934,7 @@ export default function CalendarView({ posts, userId, draftText, draftPlatform, 
           }}>
             <i className="ti ti-alert-triangle" style={{ fontSize: 16, color: '#FBBF24', flexShrink: 0 }} />
             <span style={{ fontSize: 12, fontWeight: 600, color: '#FBBF24' }}>
-              כל הפרסומים המתוזמנים מושהים — שום פוסט לא יעלה עד שתלחץ &quot;המשך פרסומים&quot;
+              כל הפרסומים המתוזמנים מושהים — שום פוסט לא יעלה עד שתלחצו &quot;המשך פרסומים&quot;
             </span>
           </div>
         )}

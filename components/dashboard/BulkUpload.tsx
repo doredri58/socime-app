@@ -79,7 +79,7 @@ export default function BulkUpload() {
       items.forEach(it => { if (it.preview) URL.revokeObjectURL(it.preview) })
       setItems([])
     } catch {
-      setResults([{ name: 'כללי', error: 'שגיאת רשת — נסה שוב' }])
+      setResults([{ name: 'כללי', error: 'שגיאת רשת — נסו שוב' }])
     } finally {
       setUploading(false)
     }
@@ -107,7 +107,7 @@ export default function BulkUpload() {
           >
             <div className="text-4xl">📂</div>
             <div className="text-base font-bold" style={{ color: 'var(--text-dark)' }}>
-              גרור קבצים לכאן או לחץ לבחירה
+              גררו קבצים לכאן או לחצו לבחירה
             </div>
             <div className="text-xs" style={{ color: 'var(--text-light)' }}>
               תמונות ווידאו · עד {MAX_FILES} קבצים · עד {MAX_SIZE_MB}MB לקובץ
@@ -178,7 +178,7 @@ export default function BulkUpload() {
               >
                 <div className="text-center">
                   <div className="text-2xl mb-1">+</div>
-                  <div className="text-xs" style={{ color: 'var(--text-light)' }}>הוסף עוד</div>
+                  <div className="text-xs" style={{ color: 'var(--text-light)' }}>הוסיפו עוד</div>
                 </div>
               </div>
             )}

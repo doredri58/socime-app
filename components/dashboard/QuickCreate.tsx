@@ -31,7 +31,7 @@ export default function QuickCreate() {
           ✨ יצירה מהירה
         </h2>
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
-          תאר את הפוסט שאתה רוצה — ה-AI יכתוב אותו בשבילך
+          תארו את הפוסט שאתם רוצים — ה-AI יכתוב אותו בשבילכם
         </p>
       </div>
 
@@ -82,7 +82,7 @@ export default function QuickCreate() {
             whiteSpace: 'nowrap',
           }}>
           <i className="ti ti-sparkles" style={{ fontSize: 16 }} />
-          צור קסם
+          צרו קסם
         </button>
       </div>
 

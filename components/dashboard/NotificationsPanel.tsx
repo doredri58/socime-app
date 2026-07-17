@@ -105,7 +105,7 @@ export default function NotificationsPanel() {
                 ? 'הרשאה נדחתה — שנה בהגדרות הדפדפן'
                 : subscribed
                   ? 'תקבל התראות על פרסומים ועדכונים'
-                  : 'לחץ כדי לאפשר התראות בדפדפן'}
+                  : 'לחצו כדי לאפשר התראות בדפדפן'}
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ export default function NotificationsPanel() {
 
         {status === 'unsupported' ? (
           <div className="text-sm p-3 rounded-xl" style={{ background: '#fef3c7', color: '#b45309' }}>
-            הדפדפן שלך אינו תומך ב-Push Notifications. נסה Chrome או Edge.
+            הדפדפן שלכם אינו תומך ב-Push Notifications. נסו Chrome או Edge.
           </div>
         ) : status === 'denied' ? (
           <div className="text-sm p-3 rounded-xl" style={{ background: '#fee2e2', color: '#dc2626' }}>
@@ -131,7 +131,7 @@ export default function NotificationsPanel() {
             <button onClick={sendTest}
               className="flex-1 py-2.5 rounded-xl text-sm font-bold"
               style={{ background: 'var(--purple-soft)', color: 'var(--purple)', border: '1px solid var(--purple-border)' }}>
-              {testSent ? '✓ נשלח!' : '📤 שלח הודעת בדיקה'}
+              {testSent ? '✓ נשלח!' : '📤 שלחו הודעת בדיקה'}
             </button>
             <button onClick={unsubscribe} disabled={working}
               className="px-4 py-2.5 rounded-xl text-sm font-semibold"
