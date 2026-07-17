@@ -32,74 +32,25 @@ export interface PostIdea {
 /** The shape of an AI-generated ready post cached on the business profile. */
 export type PostIdeaSeed = PostIdea
 
-interface VideoIdea {
-  id: string; title: string; concept: string; hook: string
+// A ready-to-shoot video script generated for the business (phase 2).
+export interface VideoIdea {
+  id: string; emoji: string; title: string; concept: string; hook: string
   direction: string; script: string; category: CategoryId
-  personalized?: boolean; emoji: string
 }
+
+/** The shape of an AI-generated ready video script cached on the profile. */
+export type VideoIdeaSeed = VideoIdea
 
 interface Props {
   userName: string; tier: string; tokenBalance: number
   businessName: string; businessType: string
   hasBusiness: boolean
   initialPostIdeas: PostIdeaSeed[]
+  initialVideoIdeas: VideoIdeaSeed[]
 }
 
-/* ── static idea data ─────────────────────────────────────────────────────
-   Posts are AI-generated per business (see /api/ideas/generate). Video ideas
-   are still a static library — personalising them is phase 2. */
-
-const VIDEO_IDEAS: VideoIdea[] = [
-  { id: 'v1', personalized: true, emoji: '🎬', category: 'tips',
-    title: '3 טעויות נפוצות שעסקים עושים',
-    concept: 'חשיפת 3 טעויות קריטיות שמונעות מעסקים לצמוח',
-    hook: '90% מהעסקים עושים את הטעות הזאת — ואני הייתי אחד מהם.',
-    direction: 'צילום סלפי בהליכה. זום-אין מהיר בכל "טעות". טקסט על המסך עם מספר הטעות.',
-    script: 'טעות ראשונה: לא לדעת מי הלקוח האידיאלי. טעות שנייה: לדבר על מוצרים במקום על תוצאות. טעות שלישית: להמתין לפרפקט לפני שמתחילים.' },
-  { id: 'v2', personalized: true, emoji: '✨', category: 'behind',
-    title: 'יום בחיים שלי',
-    concept: 'Vlog קצר של 24 שעות בחיי העסק',
-    hook: 'רוצה לראות איך נראה יום טיפוסי? הנה האמת ללא פילטרים.',
-    direction: 'מעברים מהירים. מוזיקת רקע אנרגטית. כיתוב של השעה בכל קטע. סגנון "day in my life".',
-    script: 'בוקר 7:00 — בדיקת הודעות. 9:00 — פגישה עם לקוח. 12:00 — עבודה. 18:00 — סיכום יום.' },
-  { id: 'v3', personalized: true, emoji: '💰', category: 'sales',
-    title: 'כמה אני מרוויח? (שקיפות מלאה)',
-    concept: 'חשיפת מספרים אמיתיים — בונה אמון עצום',
-    hook: 'אף אחד לא מדבר על זה — אז אני אדבר. הכנסות אמיתיות, הוצאות אמיתיות.',
-    direction: 'ישיבה מול מצלמה, טון אישי. גרפיקה פשוטה עם המספרים.',
-    script: 'החודש הכנסנו X שקל. ההוצאות היו Y. הרווח הנקי Z. מה שלמדתי: [תובנה מפתיעה].' },
-  { id: 'v4', emoji: '⚡', category: 'tips',
-    title: 'הטריק שחוסך לי 3 שעות ביום',
-    concept: 'productivity hack ספציפי ורלוונטי',
-    hook: 'אם אתה עדיין עושה את זה ידנית, אתה מבזבז את הזמן הכי יקר שלך.',
-    direction: 'Screen recording + קמרה. מעבר מהיר בין לפני לאחרי. דמו חי.',
-    script: 'הבעיה: [תאר כאב הזמן]. הפתרון: [הצג את הכלי]. התוצאה: חסכתי X שעות ביום.' },
-  { id: 'v5', emoji: '🧠', category: 'tips',
-    title: 'מה שלמדתי אחרי 100 לקוחות',
-    concept: 'distilled wisdom — patterns from experience',
-    hook: 'אחרי 100 לקוחות, שמתי לב לדפוס אחד שחוזר על עצמו.',
-    direction: 'Talking head, רקע נקי. B-roll של עבודה. סגנון mentor.',
-    script: 'לקוחות מצליחים עושים 3 דברים שמרביתם לא עושים: [1], [2], [3].' },
-  { id: 'v6', emoji: '🎁', category: 'sales',
-    title: 'מה מקבלים בפועל כשעובדים איתי',
-    concept: 'unboxing-style של החוויה עם העסק שלכם',
-    hook: 'לפני שאתה מחליט — הנה בדיוק מה קורה מהרגע הראשון.',
-    direction: 'Walk-through של התהליך. Screen share של תוצרים. Testimonial.',
-    script: 'שלב 1: שיחת היכרות. שלב 2: תוכנית אישית. שלב 3: ביצוע. שלב 4: תוצאות.' },
-  { id: 'v7', emoji: '🎊', category: 'events',
-    title: 'חגגנו X שנים — כך זה התחיל',
-    concept: 'Origin story עם נגיעה של נוסטלגיה',
-    hook: 'לפני X שנים, פתחתי את העסק הזה מהסלון של הבית.',
-    direction: 'תמונות ישנות + חדשות. מעבר זמן ויזואלי. רגשי ואותנטי.',
-    script: 'ההתחלה: [סיפור]. הנקודת שבירה: [ניצחון]. היום: [מצב נוכחי]. לאן: [חזון].' },
-  { id: 'v8', emoji: '🔥', category: 'viral',
-    title: 'POV: הלקוח שלי גילה את...',
-    concept: 'POV format שהולך ויראלי — ממשיקות לחוויית לקוח',
-    hook: 'POV: גיליתם ש[ההבטחה המרכזית של העסק שלך].',
-    direction: 'Aesthetic b-roll. כיתוב מינימליסטי. Trending audio. ידיים ומוצר בלבד.',
-    script: 'ויזואל 1: הבעיה. ויזואל 2: הפתרון. ויזואל 3: התוצאה. Overlay text, ללא דיבור.' },
-]
-
+/* Posts and video scripts are both AI-generated per business (see
+   /api/ideas/generate). Categories below drive the filter chips. */
 const CATEGORIES: { id: CategoryId; label: string; icon: string; pro?: boolean }[] = [
   { id: 'all',    label: 'הכל',              icon: 'ti-layout-grid' },
   { id: 'sales',  label: 'מכירות ומבצעים',   icon: 'ti-tag' },
@@ -334,7 +285,7 @@ function EmptyState() {
 }
 
 /* ── main export ──────────────────────────────────────────────────────── */
-export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props) {
+export default function IdeasBank({ tier, hasBusiness, initialPostIdeas, initialVideoIdeas }: Props) {
   const router = useRouter()
   const isPro  = tier !== 'free'   // כל מסלול בתשלום (basic/pro/agency)
 
@@ -344,32 +295,42 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
   const [showUpgrade, setShowUpgrade] = useState(false)
   const [promptIdea,  setPromptIdea]  = useState<VideoIdea | null>(null)
 
-  // A batch of ready-to-publish posts, generated on demand (20 tokens) and
-  // seeded from the server-side cache. User-triggered only — no auto-generation.
-  // The batch persists until the user regenerates or sends every post to the
-  // studio. Video ideas stay the static VIDEO_IDEAS library (phase 2).
+  // Two batches — posts and video scripts — each generated on demand (20 tokens)
+  // and seeded from the server-side cache. User-triggered only, no auto-gen. A
+  // batch persists until the user regenerates it or sends every item to the
+  // studio. Loading/error are tracked per active tab via genLoading/genError.
   const [posts,      setPosts]      = useState<PostIdea[]>(initialPostIdeas)
+  const [videos,     setVideos]     = useState<VideoIdea[]>(initialVideoIdeas)
   const [genLoading, setGenLoading] = useState(false)
   const [genError,   setGenError]   = useState('')
+
+  const isVideoTab = tab === 'video'
+  const items      = isVideoTab ? videos : posts
+  const noun       = isVideoTab ? 'תסריטים' : 'פוסטים'
 
   // `force` skips the "you'll discard the current batch" confirm — used when the
   // bank is already empty (nothing to lose).
   async function generateBatch(force = false) {
     if (genLoading) return
-    if (!force && posts.length > 0) {
-      const ok = window.confirm(`יצירת רעיונות חדשים תעלה 20 טוקנים ותחליף את ${posts.length} הפוסטים הנוכחיים. להמשיך?`)
+    if (!force && items.length > 0) {
+      const ok = window.confirm(`יצירה חדשה תעלה 20 טוקנים ותחליף את ${items.length} ה${noun} הנוכחיים. להמשיך?`)
       if (!ok) return
     }
     setGenLoading(true); setGenError('')
     try {
-      const res = await fetch('/api/ideas/generate', { method: 'POST' })
+      const res = await fetch('/api/ideas/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ kind: isVideoTab ? 'video' : 'post' }),
+      })
       const data = await res.json()
       if (!res.ok) {
         if (data.insufficientTokens) setShowUpgrade(true)
-        else setGenError(data.error ?? 'שגיאה ביצירת פוסטים')
+        else setGenError(data.error ?? `שגיאה ביצירת ${noun}`)
         return
       }
-      setPosts(data.posts as PostIdea[])
+      if (isVideoTab) setVideos(data.items as VideoIdea[])
+      else setPosts(data.items as PostIdea[])
     } catch {
       setGenError('שגיאת רשת — נסו שוב')
     } finally {
@@ -381,29 +342,34 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
     setSavedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
   }
 
-  // "Implement": hand the ready post to the studio (prefilled, no regeneration)
-  // and drop it from the batch server-side so it doesn't reappear on return.
-  function sendPost(idea: PostIdea) {
-    setPosts(prev => prev.filter(p => p.id !== idea.id))
+  // Drop an item from its batch server-side so it doesn't reappear on return.
+  function consume(id: string, kind: 'post' | 'video') {
     fetch('/api/ideas/consume', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: idea.id }),
+      body: JSON.stringify({ id, kind }),
     }).catch(() => {})
+  }
+
+  // "Implement": hand the ready post to the studio (prefilled, no regeneration)
+  // and consume it from the batch.
+  function sendPost(idea: PostIdea) {
+    setPosts(prev => prev.filter(p => p.id !== idea.id))
+    consume(idea.id, 'post')
     const q = new URLSearchParams({ text: idea.text, hashtags: idea.hashtags })
     router.push(`/dashboard/create?${q.toString()}`)
   }
 
-  function sendToStudio(idea: VideoIdea) {
-    const prompt = encodeURIComponent(`צור תסריט וידאו:\nכותרת: ${idea.title}\nהוק: ${idea.hook}\nתסריט: ${idea.script}`)
-    router.push(`/dashboard/create?prompt=${prompt}`)
+  // Send a ready video script to the studio (script prefilled) and consume it.
+  function sendVideo(idea: VideoIdea) {
+    setVideos(prev => prev.filter(v => v.id !== idea.id))
+    consume(idea.id, 'video')
+    const q = new URLSearchParams({ text: idea.script })
+    router.push(`/dashboard/create?${q.toString()}`)
   }
 
   const postIdeas  = useMemo(() => posts.filter(i => category === 'all' || i.category === category), [posts, category])
-  const videoIdeas = useMemo(() => VIDEO_IDEAS.filter(i => category === 'all' || i.category === category), [category])
-
-  const personalizedVideos = videoIdeas.filter(i => i.personalized)
-  const standardVideos     = videoIdeas.filter(i => !i.personalized)
+  const videoIdeas = useMemo(() => videos.filter(i => category === 'all' || i.category === category), [videos, category])
 
 
   return (
@@ -560,41 +526,85 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas }: Props
       {/* ═══════════════ VIDEO TAB ═══════════════════════════════════════ */}
       {tab === 'video' && (
         <>
-          {personalizedVideos.length > 0 && (
-            <section style={{ marginBottom: 36 }}>
-              <SectionHeader
-                icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#CC1F1F"
-                title="תסריטים מומלצים להתחלה"
-                subtitle="כל תסריט מוכן להפקה — פשוט לחצו שלחו לסטודיו"
-              />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
-                {personalizedVideos.map(idea => (
-                  <VideoCard key={idea.id} idea={idea} personalized
-                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onSend={() => sendToStudio(idea)} onPrompt={() => setPromptIdea(idea)} />
-                ))}
-              </div>
-            </section>
+          {/* header row: title + regenerate (only when a batch exists) */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 18, flexWrap: 'wrap' }}>
+            <SectionHeader
+              icon="ti-video" iconBg="rgba(248,113,113,0.12)" iconColor="#CC1F1F"
+              title="תסריטי וידאו לעסק שלכם"
+              subtitle="נכתבו על סמך פרופיל העסק — הוק, בימוי ותסריט מוכן להפקה"
+            />
+            {hasBusiness && videos.length > 0 && (
+              <button
+                onClick={() => generateBatch()}
+                disabled={genLoading}
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 8,
+                  padding: '9px 18px', borderRadius: 999, cursor: genLoading ? 'wait' : 'pointer',
+                  background: 'rgba(150,86,254,0.12)', border: '1px solid rgba(150,86,254,0.3)',
+                  color: PURPLE2, fontSize: 12.5, fontWeight: 700, fontFamily: 'var(--font-rubik),sans-serif',
+                  whiteSpace: 'nowrap',
+                }}>
+                {genLoading
+                  ? <><span style={{ width: 13, height: 13, border: '2px solid rgba(190,86,254,0.3)', borderTop: `2px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite' }} /> כותבת…</>
+                  : <><i className="ti ti-refresh" style={{ fontSize: 14 }} /> 6 חדשים · 20 טוקנים</>}
+              </button>
+            )}
+          </div>
+
+          {!hasBusiness && (
+            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.4)' }}>
+              <i className="ti ti-building-store" style={{ fontSize: 38, display: 'block', marginBottom: 12, color: PURPLE2 }} />
+              <div style={{ fontSize: 15, fontWeight: 700, color: '#fff', marginBottom: 6 }}>קודם נכיר את העסק</div>
+              <div style={{ fontSize: 13, marginBottom: 18, lineHeight: 1.6 }}>כדי לקבל תסריטים מותאמים באמת, השלימו את פרופיל העסק.</div>
+              <button onClick={() => router.push('/dashboard/business')} style={{
+                padding: '10px 22px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff',
+                fontSize: 13, fontWeight: 700, fontFamily: 'var(--font-rubik),sans-serif',
+              }}>למילוי פרופיל העסק</button>
+            </div>
           )}
 
-          {standardVideos.length > 0 && (
-            <section>
-              <SectionHeader
-                icon="ti-layout-grid" iconBg="rgba(255,255,255,0.06)" iconColor="rgba(255,255,255,0.4)"
-                title={category === 'all' ? 'כל תסריטי הוידאו' : (CATEGORIES.find(c => c.id === category)?.label ?? '')}
-                count={standardVideos.length}
-              />
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
-                {standardVideos.map(idea => (
-                  <VideoCard key={idea.id} idea={idea}
-                    saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
-                    onSend={() => sendToStudio(idea)} onPrompt={() => setPromptIdea(idea)} />
-                ))}
-              </div>
-            </section>
+          {hasBusiness && genLoading && videoIdeas.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '54px 20px', color: 'rgba(255,255,255,0.45)' }}>
+              <span style={{ width: 30, height: 30, border: '3px solid rgba(190,86,254,0.25)', borderTop: `3px solid ${PURPLE2}`, borderRadius: '50%', display: 'inline-block', animation: 'spin 0.8s linear infinite', marginBottom: 14 }} />
+              <div style={{ fontSize: 14 }}>כותבת 6 תסריטים מותאמים לעסק שלכם…</div>
+            </div>
           )}
 
-          {videoIdeas.length === 0 && <EmptyState />}
+          {hasBusiness && !genLoading && videos.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '48px 20px' }}>
+              <i className="ti ti-video" style={{ fontSize: 40, display: 'block', marginBottom: 14, color: PURPLE2 }} />
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 6 }}>6 תסריטי וידאו בלחיצה</div>
+              <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', marginBottom: 4, lineHeight: 1.6 }}>
+                מותאמים לעסק שלכם — הוק, בימוי ותסריט מוכן למצלמה.
+              </div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.32)', marginBottom: 20 }}>
+                6 תסריטים ב-20 טוקנים.
+              </div>
+              {genError && <div style={{ fontSize: 12.5, color: '#F87171', marginBottom: 14 }}>{genError}</div>}
+              <button onClick={() => generateBatch(true)} style={{
+                padding: '13px 30px', borderRadius: 999, border: 'none', cursor: 'pointer',
+                background: `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`, color: '#fff',
+                fontSize: 14, fontWeight: 800, fontFamily: 'var(--font-rubik),sans-serif',
+                display: 'inline-flex', alignItems: 'center', gap: 8,
+                boxShadow: '0 6px 22px rgba(150,86,254,0.4)',
+              }}>
+                <i className="ti ti-wand" style={{ fontSize: 16 }} /> צרו לי 6 תסריטים
+              </button>
+            </div>
+          )}
+
+          {videoIdeas.length > 0 && (
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+              {videoIdeas.map(idea => (
+                <VideoCard key={idea.id} idea={idea} personalized
+                  saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
+                  onSend={() => sendVideo(idea)} onPrompt={() => setPromptIdea(idea)} />
+              ))}
+            </div>
+          )}
+
+          {hasBusiness && !genLoading && videos.length > 0 && videoIdeas.length === 0 && <EmptyState />}
         </>
       )}
 

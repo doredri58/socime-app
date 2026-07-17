@@ -191,3 +191,80 @@ export async function generateReadyPosts(systemPrompt: string): Promise<Generate
     }]
   })
 }
+
+/* ── Personalised video-idea bank (phase 2) ───────────────────────────────────
+   Same idea as generateReadyPosts, but for short-form video (Reels / TikTok):
+   each item is a ready-to-shoot script — a hook, a shot direction, and the
+   spoken script — grounded in the business's own systemPrompt. */
+export interface GeneratedReadyVideo {
+  emoji: string
+  title: string
+  concept: string
+  hook: string
+  direction: string
+  script: string
+  category: 'sales' | 'behind' | 'tips' | 'events' | 'viral'
+}
+
+export async function generateReadyVideos(systemPrompt: string): Promise<GeneratedReadyVideo[]> {
+  const model = genAI.getGenerativeModel({ model: 'gemini-2.5-flash' })
+
+  const instruction = `${systemPrompt}
+
+צור 6 רעיונות לסרטוני וידאו קצרים (Reels / TikTok), מותאמים ספציפית לעסק הזה — לא גנריים. כל רעיון צריך לנבוע ממה שאתה יודע על העסק: התחום, קהל היעד, הערך הייחודי והטון. תגוון בין הרעיונות (מכירה, מאחורי הקלעים, טיפ, אירוע/עונה, טרנד).
+
+לכל סרטון החזר:
+- emoji: אימוג'י אחד שמתאים
+- title: כותרת קצרה לכרטיס (עד 6 מילים)
+- concept: משפט אחד שמסביר את הרעיון של הסרטון
+- hook: משפט הפתיחה של הסרטון — מה שנאמר ב-3 השניות הראשונות כדי לעצור גלילה
+- direction: הנחיית צילום קצרה — איך לצלם (זווית, מעברים, טקסט על המסך)
+- script: התסריט המדובר המלא, מוכן להקראה מול המצלמה. עברית בלבד, בלי markdown
+- category: אחת בלבד — ${IDEA_CATEGORIES.join(', ')} (sales=מכירה/מבצע, behind=מאחורי הקלעים, tips=טיפ/ערך, events=חג/אירוע/עונה, viral=טרנד)
+
+החזר JSON בלבד: { "videos": [ { "emoji": "...", "title": "...", "concept": "...", "hook": "...", "direction": "...", "script": "...", "category": "..." } ] }`
+
+  const result = await model.generateContent({
+    contents: [{ role: 'user', parts: [{ text: instruction }] }],
+    generationConfig: {
+      temperature: 0.9,
+      maxOutputTokens: 2800,
+      // @ts-expect-error thinkingConfig accepted by the API, not yet typed in this SDK
+      thinkingConfig: { thinkingBudget: 0 },
+    },
+  })
+
+  const rawText = result.response.text().trim()
+  const raw = rawText
+    .replace(/^```json\s*/i, '')
+    .replace(/^```\s*/i, '')
+    .replace(/\s*```$/, '')
+    .trim()
+  const jsonMatch = raw.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) return []
+
+  const parsed = JSON.parse(jsonMatch[0]) as { videos?: unknown }
+  if (!Array.isArray(parsed.videos)) return []
+
+  // A video is only usable with a script; drop any without one, and clamp
+  // category to the allowed set.
+  return parsed.videos.flatMap((raw): GeneratedReadyVideo[] => {
+    if (!raw || typeof raw !== 'object') return []
+    const o = raw as Record<string, unknown>
+    const script = typeof o.script === 'string' ? o.script.trim() : ''
+    const title = typeof o.title === 'string' ? o.title.trim() : ''
+    if (!script || !title) return []
+    const category = (IDEA_CATEGORIES as readonly string[]).includes(o.category as string)
+      ? (o.category as GeneratedReadyVideo['category'])
+      : 'tips'
+    return [{
+      emoji: typeof o.emoji === 'string' && o.emoji.trim() ? o.emoji.trim() : '🎬',
+      title,
+      concept: typeof o.concept === 'string' ? o.concept.trim() : '',
+      hook: typeof o.hook === 'string' ? o.hook.trim() : '',
+      direction: typeof o.direction === 'string' ? o.direction.trim() : '',
+      script,
+      category,
+    }]
+  })
+}
