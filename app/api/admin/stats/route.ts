@@ -56,7 +56,7 @@ export async function GET() {
   }
 
   /* ── users by tier ── */
-  let free_users = 0, basic_users = 0, pro_users = 0
+  let free_users = 0, basic_users = 0, pro_users = 0, agency_users = 0
   try {
     const { data: tierRows } = await db
       .from('users')
@@ -64,15 +64,16 @@ export async function GET() {
     if (tierRows) {
       for (const row of tierRows) {
         const t = (row as { tier?: string | null }).tier ?? 'free'
-        if (t === 'pro')        pro_users++
-        else if (t === 'basic') basic_users++
-        else                    free_users++
+        if (t === 'pro')         pro_users++
+        else if (t === 'basic')  basic_users++
+        else if (t === 'agency') agency_users++
+        else                     free_users++
       }
     }
   } catch {}
 
-  /* ── paying users ── */
-  const paying_users = basic_users + pro_users
+  /* ── paying users (basic + pro + agency) ── */
+  const paying_users = basic_users + pro_users + agency_users
 
   /* ── revenue_mtd (sum from transactions this calendar month) ── */
   let revenue_mtd = 0
@@ -123,6 +124,7 @@ export async function GET() {
     free_users,
     basic_users,
     pro_users,
+    agency_users,
     revenue_mtd,
     total_revenue,
     image_count,

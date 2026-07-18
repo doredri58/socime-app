@@ -30,6 +30,7 @@ interface LiveStats {
   free_users: number
   basic_users: number
   pro_users: number
+  agency_users: number
   revenue_mtd: number
   total_revenue: number
   image_count: number
