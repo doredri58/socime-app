@@ -45,8 +45,10 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
   const [error, setError] = useState('')
 
   /* Step 1 */
+  const [accountType, setAccountType]     = useState<'business' | 'creator'>('business')
   const [businessName, setBusinessName]   = useState('')
   const [description, setDescription]     = useState('')
+  const isCreator = accountType === 'creator'
 
   /* Step 2 */
   const [tones, setTones] = useState<string[]>([])
@@ -76,7 +78,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
       const res = await fetch('/api/onboarding', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, businessName, rawDescription: description, toneOfVoice: tones[0] || DEFAULT_TONE, targetAudience: audience }),
+        body: JSON.stringify({ userId, accountType, businessName, rawDescription: description, toneOfVoice: tones[0] || DEFAULT_TONE, targetAudience: audience }),
       })
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'שגיאה'); setLoadingStage('idle'); return }
@@ -89,6 +91,8 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
   }
 
   const progress = (step / 3) * 100
+  // A creator may skip the name; everyone still needs the description.
+  const step1Invalid = !description.trim() || (!isCreator && !businessName.trim())
 
   /* ── Loading Screen ── */
   if (loadingStage === 'loading' || loadingStage === 'done') {
@@ -157,7 +161,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                    linear-gradient(152deg, #E9DEFB 0%, #DCD6F7 45%, #CCE0FF 100%)`,
       padding: '40px 20px',
     }}>
-      <div style={{
+      <div className="onboarding-card" style={{
         width: '100%', maxWidth: 560,
         background: '#fff', borderRadius: 28,
         padding: '44px 48px',
@@ -182,10 +186,10 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
                 }}>
                   {step > s ? '✓' : s}
                 </div>
-                <span style={{ fontSize: 12, fontWeight: 600, color: step >= s ? '#111827' : '#9CA3AF', transition: 'color .3s' }}>
-                  {s === 1 ? 'זהות העסק' : s === 2 ? 'טון הדיבור' : 'קהל יעד'}
+                <span className="onb-step-label" style={{ fontSize: 12, fontWeight: 600, color: step >= s ? '#111827' : '#9CA3AF', transition: 'color .3s' }}>
+                  {s === 1 ? (isCreator ? 'הזהות שלך' : 'זהות העסק') : s === 2 ? 'טון הדיבור' : 'קהל יעד'}
                 </span>
-                {s < 3 && <div style={{ width: 48, height: 2, background: step > s ? `linear-gradient(90deg,${PURPLE},${PURPLE2})` : '#E5E7EB', borderRadius: 2, margin: '0 8px', transition: 'background .4s' }} />}
+                {s < 3 && <div className="onb-step-line" style={{ width: 48, height: 2, background: step > s ? `linear-gradient(90deg,${PURPLE},${PURPLE2})` : '#E5E7EB', borderRadius: 2, margin: '0 8px', transition: 'background .4s' }} />}
               </div>
             ))}
           </div>
@@ -206,29 +210,59 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <div>
               <h2 className="font-arimo" style={{ fontSize: 26, fontWeight: 700, color: '#111827', margin: '0 0 8px', letterSpacing: '-0.5px' }}>
-                ספרו לה על העסק. 👋
+                {isCreator ? 'ספרו לה עליכם. 👋' : 'ספרו לה על העסק. 👋'}
               </h2>
               <p style={{ fontSize: 14, color: '#6B7280', margin: 0, lineHeight: 1.6 }}>
                 פעם אחת בחיים. ככל שתספרו יותר — היא תכתוב מדויק יותר
               </p>
             </div>
 
-            <Field label="שם העסק / המותג">
+            {/* Account type — a private creator/influencer isn't a business.
+                Default stays 'business'; 'creator' relaxes the business fields
+                and is stored so we can measure how big that segment is. */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+              {([
+                { id: 'business', emoji: '🏢', label: 'יש לי עסק' },
+                { id: 'creator',  emoji: '✨', label: 'יוצר/משפיען פרטי' },
+              ] as const).map(opt => {
+                const active = accountType === opt.id
+                return (
+                  <button
+                    key={opt.id}
+                    onClick={() => setAccountType(opt.id)}
+                    style={{
+                      padding: '12px 14px', borderRadius: 14, textAlign: 'center',
+                      border: active ? `2px solid ${PURPLE}` : '1.5px solid #E5E7EB',
+                      background: active ? 'rgba(150,86,254,0.07)' : '#fff',
+                      cursor: 'pointer', transition: 'all .2s',
+                      boxShadow: active ? `0 0 0 4px rgba(150,86,254,0.1)` : 'none',
+                      fontFamily: 'var(--font-rubik), sans-serif',
+                    }}>
+                    <span style={{ fontSize: 18, marginInlineEnd: 8 }}>{opt.emoji}</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: active ? PURPLE : '#374151' }}>{opt.label}</span>
+                  </button>
+                )
+              })}
+            </div>
+
+            <Field label={isCreator ? 'השם / הכינוי שלך (אופציונלי)' : 'שם העסק / המותג'}>
               <input
                 value={businessName}
                 onChange={e => setBusinessName(e.target.value)}
-                placeholder="למשל: קפה ירושלים, סטודיו לעיצוב..."
+                placeholder={isCreator ? 'למשל: דנה כהן, @dana.creates...' : 'למשל: קפה ירושלים, סטודיו לעיצוב...'}
                 style={inputCls}
                 onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(150,86,254,0.12)` }}
                 onBlur={e => { e.currentTarget.style.borderColor = '#E5E7EB'; e.currentTarget.style.boxShadow = 'none' }}
               />
             </Field>
 
-            <Field label="במילים שלכם: מה העסק עושה, ולמה הלקוחות בוחרים דווקא בכם?">
+            <Field label={isCreator ? 'במילים שלכם: על מה התוכן שלכם, ומה מייחד אתכם?' : 'במילים שלכם: מה העסק עושה, ולמה הלקוחות בוחרים דווקא בכם?'}>
               <textarea
                 value={description}
                 onChange={e => setDescription(e.target.value)}
-                placeholder="אל תחשבו על זה יותר מדי, פשוט תכתבו כאילו אתם מסבירים לחבר. לדוגמה: אנחנו חברת שיווק שעוזרת לעסקים קטנים להכפיל את המכירות בלי תקציבי ענק..."
+                placeholder={isCreator
+                  ? 'אל תחשבו על זה יותר מדי, פשוט תכתבו כאילו אתם מסבירים לחבר. לדוגמה: אני יוצר תוכן על כושר וחיים בריאים, מלווה אנשים בדרך שלהם לשינוי...'
+                  : 'אל תחשבו על זה יותר מדי, פשוט תכתבו כאילו אתם מסבירים לחבר. לדוגמה: אנחנו חברת שיווק שעוזרת לעסקים קטנים להכפיל את המכירות בלי תקציבי ענק...'}
                 rows={5}
                 style={{ ...inputCls, resize: 'none', lineHeight: 1.75 }}
                 onFocus={e => { e.currentTarget.style.borderColor = PURPLE; e.currentTarget.style.boxShadow = `0 0 0 3px rgba(150,86,254,0.12)` }}
@@ -238,15 +272,15 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
 
             <button
               onClick={() => setStep(2)}
-              disabled={!businessName.trim() || !description.trim()}
+              disabled={step1Invalid}
               style={{
                 width: '100%', padding: '14px', borderRadius: 14, border: 'none',
-                background: !businessName.trim() || !description.trim()
+                background: step1Invalid
                   ? '#E5E7EB'
                   : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`,
-                color: !businessName.trim() || !description.trim() ? '#9CA3AF' : '#fff',
-                fontSize: 15, fontWeight: 700, cursor: !businessName.trim() || !description.trim() ? 'not-allowed' : 'pointer',
-                boxShadow: !businessName.trim() || !description.trim() ? 'none' : `0 4px 20px rgba(150,86,254,0.4)`,
+                color: step1Invalid ? '#9CA3AF' : '#fff',
+                fontSize: 15, fontWeight: 700, cursor: step1Invalid ? 'not-allowed' : 'pointer',
+                boxShadow: step1Invalid ? 'none' : `0 4px 20px rgba(150,86,254,0.4)`,
                 transition: 'all .25s', fontFamily: 'var(--font-rubik), sans-serif',
                 marginTop: 4,
               }}>
@@ -359,7 +393,7 @@ export default function Onboarding({ userId, onComplete }: OnboardingProps) {
               <div style={{ fontSize: 11, fontWeight: 700, color: PURPLE, letterSpacing: '1.5px', textTransform: 'uppercase', marginBottom: 12 }}>סיכום</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {[
-                  { label: 'שם העסק', val: businessName },
+                  { label: isCreator ? 'שם / כינוי' : 'שם העסק', val: businessName },
                   { label: 'טון', val: tones.map(t => TONES.find(x => x.id === t)?.label).join(' + ') },
                 ].map(r => (
                   <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>

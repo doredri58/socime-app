@@ -260,6 +260,12 @@ body {
     gap: 6px !important; padding-bottom: 4px;
   }
   .settings-nav > button { width: auto !important; white-space: nowrap; flex-shrink: 0; }
+
+  /* Onboarding: the card padding + labelled 1-2-3 stepper overflowed a phone.
+     Trim padding and compact the stepper to circles + short connectors. */
+  .onboarding-card { padding: 32px 20px !important; }
+  .onb-step-label  { display: none !important; }
+  .onb-step-line   { width: 20px !important; margin: 0 4px !important; }
 }
 
 /* ═══════════════════════════════════════

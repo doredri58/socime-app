@@ -28,13 +28,26 @@ export async function POST(req: NextRequest) {
     const {
       businessName, rawDescription,
       toneOfVoice, targetAudience,
+      accountType,
       phone, address, operatingHours,
       companyId, website, instagram, facebook, linkedin, tiktok, uniqueValue,
     } = await req.json()
 
-    if (!businessName || !rawDescription) {
+    // 'creator' = a private creator/influencer with no registered business.
+    // For them the business name is optional (we fall back to their own name);
+    // everyone still needs a description so the AI has something to work with.
+    const isBusiness = accountType !== 'creator'
+    if (!rawDescription || (isBusiness && !businessName)) {
       return NextResponse.json({ error: 'שדות חסרים' }, { status: 400 })
     }
+
+    const db = createServiceClient()
+
+    // Resolve an effective brand name up front — a creator may leave it blank,
+    // in which case we use their account name so content still has an identity.
+    const { data: u } = await db
+      .from('users').select('active_business_id, name').eq('id', userId).single()
+    const effectiveName = (businessName?.trim() || (u?.name as string | undefined) || 'היוצר/ת').trim()
 
     const tokenCheck = await checkTokenBalance(userId, 'onboarding')
     if (!tokenCheck.ok) {
@@ -54,8 +67,8 @@ export async function POST(req: NextRequest) {
         parts: [{
           text: `אתה עוזר AI שמייצר system prompts לכתיבת פוסטים לרשתות חברתיות.
 
-פרטי העסק:
-- שם: ${businessName}
+${isBusiness ? 'פרטי העסק' : 'פרטי היוצר/המשפיען'}:
+- שם: ${effectiveName}
 - תיאור: ${rawDescription}
 - טון דיבור: ${toneLabel}
 ${targetAudience ? `- קהל יעד: ${targetAudience}` : ''}
@@ -63,8 +76,8 @@ ${phone ? `- טלפון: ${phone}` : ''}
 ${address ? `- כתובת: ${address}` : ''}
 ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
 
-צור system prompt קצר (4-6 משפטים) בעברית שישמש בסיס לכתיבת כל הפוסטים של העסק הזה.
-ה-prompt צריך להגדיר: זהות העסק, קהל יעד, טון הכתיבה, וסגנון ייחודי.
+צור system prompt קצר (4-6 משפטים) בעברית שישמש בסיס לכתיבת כל הפוסטים של ${isBusiness ? 'העסק' : 'היוצר'} הזה.
+ה-prompt צריך להגדיר: ${isBusiness ? 'זהות העסק' : 'זהות היוצר/ת'}, קהל יעד, טון הכתיבה, וסגנון ייחודי.
 החזר את ה-prompt בלבד, ללא כותרות או הסברים.`
         }],
       }],
@@ -78,11 +91,8 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
 
     const parsedSystemPrompt = result.response.text().trim()
 
-    const db = createServiceClient()
-
     // Target the ACTIVE business (multi-business aware): users.active_business_id
     // → else the user's first business → else create a new one.
-    const { data: u } = await db.from('users').select('active_business_id').eq('id', userId).single()
     let targetId = (u?.active_business_id as string | null) ?? null
     if (!targetId) {
       const { data: first } = await db
@@ -93,7 +103,8 @@ ${operatingHours ? `- שעות פעילות: ${operatingHours}` : ''}
 
     const payload = {
       user_id:              userId,
-      business_name:        businessName,
+      business_name:        effectiveName,
+      account_type:         isBusiness ? 'business' : 'creator',
       raw_description:      rawDescription,
       parsed_system_prompt: parsedSystemPrompt,
       tone_of_voice:        toneOfVoice ?? 'professional',
