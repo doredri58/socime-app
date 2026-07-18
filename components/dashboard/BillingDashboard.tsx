@@ -36,7 +36,7 @@ interface Profile {
   card_last4?: string | null
 }
 interface Transaction { amount_paid_ils: number; tokens_granted: number; created_at: string }
-interface Business { business_name?: string; company_id?: string; address?: string; phone?: string }
+interface Business { business_name?: string; company_id?: string; address?: string; phone?: string; billing_email?: string | null }
 
 interface Props { profile: Profile | null; transactions: Transaction[]; business: Business | null }
 
@@ -110,7 +110,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
   const [billName,      setBillName]      = useState(business?.business_name ?? '')
   const [billCompanyId, setBillCompanyId] = useState(business?.company_id ?? '')
   const [billAddress,   setBillAddress]   = useState(business?.address ?? '')
-  const [billEmail,     setBillEmail]     = useState(profile?.email ?? '')
+  const [billEmail,     setBillEmail]     = useState(business?.billing_email ?? profile?.email ?? '')
   const [savingBill,    setSavingBill]    = useState(false)
   const [toast,         setToast]         = useState<string | null>(null)
 
@@ -129,10 +129,29 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
 
   async function saveBillingDetails() {
     setSavingBill(true)
-    await new Promise(r => setTimeout(r, 800)) // optimistic
-    setSavingBill(false)
-    setEditingBill(false)
-    showToast('פרטי החיוב עודכנו ✓')
+    try {
+      const res = await fetch('/api/account/billing', {
+        method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          businessName: billName,
+          companyId:    billCompanyId,
+          address:      billAddress,
+          billingEmail: billEmail,
+        }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (res.ok) {
+        setEditingBill(false)
+        showToast('פרטי החיוב עודכנו ✓')
+        router.refresh()
+      } else {
+        showToast(data.error ?? 'שגיאה בשמירת הפרטים')
+      }
+    } catch {
+      showToast('שגיאה בשמירת הפרטים')
+    } finally {
+      setSavingBill(false)
+    }
   }
 
   function downloadInvoice(txn: Transaction, idx: number) {

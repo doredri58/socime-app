@@ -24,7 +24,7 @@ export default async function ProfilePage() {
 
   const { data: business } = await db
     .from('business_profiles')
-    .select('business_name, company_id, address, phone')
+    .select('business_name, company_id, address, phone, billing_email')
     .eq('user_id', user.id)
     .single()
 

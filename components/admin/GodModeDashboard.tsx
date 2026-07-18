@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { PLANS } from '@/lib/plans'
 
 /* ── design tokens — light theme ─────────────────────────────────────── */
 const ACCENT  = '#1A73E8'
@@ -180,7 +181,7 @@ function ActionBtn({ icon, title, color, bg, border, onClick, loading }: {
 }
 
 /* ── token editor inline ─────────────────────────────────────────────── */
-function TokenEditor({ userId, current, onSave }: { userId: string; current: number; onSave: (v: number) => void }) {
+function TokenEditor({ current, onSave }: { current: number; onSave: (v: number) => void }) {
   const [val, setVal] = useState(String(current))
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -196,31 +197,6 @@ function TokenEditor({ userId, current, onSave }: { userId: string; current: num
   )
 }
 
-/* ── trend source dot ────────────────────────────────────────────────── */
-function SourceDot({ name, ok, latency }: { name: string; ok: boolean; latency: string }) {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-      padding: '9px 0', borderBottom: `1px solid ${BORDER}` }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div style={{ width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
-          background: ok ? GREEN : RED, boxShadow: `0 0 6px ${ok ? GREEN : RED}` }} />
-        <span style={{ fontSize: 12, fontWeight: 600, color: ok ? TEXT : TEXT_MID }}>{name}</span>
-      </div>
-      <span style={{ fontSize: 10, fontWeight: 600, color: ok ? TEXT_LOW : RED,
-        fontFamily: 'monospace' }}>{latency}</span>
-    </div>
-  )
-}
-
-const TREND_SOURCES = [
-  { name: 'Google Trends',    ok: true,  latency: '142ms' },
-  { name: 'TikTok RSS',       ok: true,  latency: '318ms' },
-  { name: 'Instagram Trends', ok: false, latency: 'timeout' },
-  { name: 'YouTube RSS',      ok: true,  latency: '89ms'  },
-  { name: 'Twitter/X API',    ok: true,  latency: '204ms' },
-  { name: 'SerpAPI',          ok: true,  latency: '531ms' },
-]
-
 /* ════════════════════════════════════════════════════════════════════════
    MAIN COMPONENT
 ════════════════════════════════════════════════════════════════════════ */
@@ -231,6 +207,8 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
   const [search, setSearch]       = useState('')
   const [tierFilter, setTierFilter] = useState<string>('all')
   const [toast, setToast]         = useState<{ msg: string; ok: boolean } | null>(null)
+  // חותמת זמן יציבה לחישובי DAU — מונע קריאה ל-Date.now() בזמן render.
+  const [renderTime] = useState(() => Date.now())
 
   /* ── live stats fetched from /api/admin/stats ── */
   const [liveStats, setLiveStats] = useState<LiveStats | null>(null)
@@ -278,13 +256,23 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
 
   async function impersonate(id: string) {
     setBusy(id)
-    const res = await fetch('/api/admin/impersonate', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: id }),
-    })
-    setBusy(null)
-    if (res.ok) window.location.href = '/dashboard'
-    else showToast('שגיאה בהתחברות כמשתמש', false)
+    try {
+      const res = await fetch('/api/admin/impersonate', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: id }),
+      })
+      const data = await res.json().catch(() => ({}))
+      // ה-API מחזיר magicLink חד-פעמי — יש לנווט אליו כדי להחליף סשן למשתמש היעד.
+      if (res.ok && data.magicLink) {
+        window.location.href = data.magicLink
+      } else {
+        showToast(data.error ?? 'שגיאה בהתחברות כמשתמש', false)
+      }
+    } catch {
+      showToast('שגיאה בהתחברות כמשתמש', false)
+    } finally {
+      setBusy(null)
+    }
   }
 
   async function toggleSuspend(u: User) {
@@ -297,7 +285,8 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
   }
 
   async function saveTokens(u: User, tokens: number) {
-    const ok = await patchUser(u.id, { token_balance: tokens })
+    // ה-API מצפה ל-tokenBalance (camelCase) ומעדכן את עמודת token_balance ב-DB.
+    const ok = await patchUser(u.id, { tokenBalance: tokens })
     if (ok) {
       setUsers(p => p.map(x => x.id === u.id ? { ...x, token_balance: tokens } : x))
       setEditTokenId(null)
@@ -312,19 +301,21 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
     return (u.email + u.name + u.id).toLowerCase().includes(q)
   })
 
-  /* ── MRR calc: assume basic=₪79/m, pro=₪149/m ── */
+  /* ── MRR calc: real monthly prices from lib/plans (basic/pro/agency) ── */
   const mrr = users.reduce((s, u) => {
-    if (u.tier === 'basic') return s + 79
-    if (u.tier === 'pro')   return s + 149
+    const t = u.tier
+    if (t === 'basic' || t === 'pro' || t === 'agency') return s + PLANS[t].monthly
     return s
   }, 0)
 
   const dau = users.filter(u => {
     if (!u.last_login_at) return false
-    return Date.now() - new Date(u.last_login_at).getTime() < 86400000
+    return renderTime - new Date(u.last_login_at).getTime() < 86400000
   }).length
 
   const conversionPct = Math.round(payingUsers / Math.max(totalUsers, 1) * 100)
+  const tokenBurn = imageCount * 50 + postCount * 10
+  const avgTokens = Math.round(tokenBurn / Math.max(totalUsers, 1))
 
   return (
     <div style={{ direction: 'rtl' }}>
@@ -371,7 +362,6 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
               label="MRR — הכנסה חודשית"
               value={`₪${mrr.toLocaleString()}`}
               sub={`₪${totalRevenue.toLocaleString()} הכנסות כולל`}
-              trend="+12% לעומת החודש שעבר" trendUp
             />
             <KpiCard
               icon="ti-users-group" iconColor={ACCENT} iconBg="rgba(26,115,232,0.10)"
@@ -382,18 +372,17 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
               trendUp={payingUsers > 0}
             />
             <KpiCard
-              icon="ti-brand-openai" iconColor={YELLOW} iconBg="rgba(249,171,0,0.10)"
-              label="AI API Costs"
-              value="$0"
-              sub="OpenAI / Claude — חודש זה"
-              trend="במסגרת תקציב" trendUp
+              icon="ti-photo-ai" iconColor={YELLOW} iconBg="rgba(249,171,0,0.10)"
+              label="תמונות AI"
+              value={imageCount.toLocaleString()}
+              sub="נוצרו במנוע Gemini"
             />
             <KpiCard
               icon="ti-flame" iconColor={RED} iconBg="rgba(217,48,37,0.08)"
               label="Token Burn Rate"
-              value={`${imageCount * 50 + postCount * 10}`}
+              value={tokenBurn.toLocaleString()}
               sub={`${postCount} פוסטים · ${imageCount} תמונות`}
-              trend="ממוצע 84 טוקן/משתמש" trendUp={false}
+              trend={`ממוצע ${avgTokens} טוקן/משתמש`} trendUp={false}
             />
           </>
         )}
@@ -485,7 +474,7 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
                     </td>
                     <td style={{ padding: '9px 14px', whiteSpace: 'nowrap' }}>
                       {editTokenId === u.id ? (
-                        <TokenEditor userId={u.id} current={u.token_balance ?? 0}
+                        <TokenEditor current={u.token_balance ?? 0}
                           onSave={v => saveTokens(u, v)} />
                       ) : (
                         <span style={{ fontFamily: 'monospace', fontSize: 12, fontWeight: 700,
@@ -558,137 +547,54 @@ export default function GodModeDashboard({ users: initial, stats: initialStats }
       </div>
 
       {/* ═══════════════════════════════════════════
-          ROW 3 — AI ENGINE + TREND SOURCES
+          ROW 3 — AI ENGINE
       ═══════════════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div style={{ ...BG_CARD_STYLE, padding: '18px 20px' }}>
+        <SectionHeader icon="ti-brain" title="מנוע ה-AI"
+          action={
+            <Link href="/admin/ai" style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8,
+              textDecoration: 'none', fontSize: 11, fontWeight: 800,
+              background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.22)',
+              color: PURPLE,
+            }}>
+              <i className="ti ti-edit" style={{ fontSize: 12 }} /> עריכת System Prompts
+            </Link>
+          }
+        />
 
-        {/* Card 1 — AI Engine Status */}
-        <div style={{ ...BG_CARD_STYLE, padding: '18px 20px' }}>
-          <SectionHeader icon="ti-brain" title="מנוע ה-AI — סטטוס מערכת"
-            action={
-              <Link href="/admin/ai" style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8,
-                textDecoration: 'none', fontSize: 11, fontWeight: 800,
-                background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.22)',
-                color: PURPLE,
-              }}>
-                <i className="ti ti-edit" style={{ fontSize: 12 }} /> עריכת System Prompts
-              </Link>
-            }
-          />
+        <p style={{ fontSize: 12, color: TEXT_MID, lineHeight: 1.6, margin: '0 0 16px' }}>
+          כל התוכן מופק על-ידי <strong style={{ color: TEXT }}>Google Gemini&nbsp;2.5&nbsp;Flash</strong>.
+          ניתן לערוך את ה-System&nbsp;Prompt של כל מנוע דרך הכפתור למעלה.
+        </p>
 
-          <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
-            {[
-              { label: 'Ideas Engine',   ok: true,  latency: '1.2s'  },
-              { label: 'Post Generator', ok: true,  latency: '2.1s'  },
-              { label: 'Image AI',       ok: false, latency: 'error' },
-              { label: 'Onboarding AI',  ok: true,  latency: '0.9s'  },
-            ].map(e => (
-              <div key={e.label} style={{
-                display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 8,
-                background: e.ok ? 'rgba(15,158,96,0.06)' : 'rgba(217,48,37,0.06)',
-                border: `1px solid ${e.ok ? 'rgba(15,158,96,0.18)' : 'rgba(217,48,37,0.18)'}`,
-              }}>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                  background: e.ok ? GREEN : RED, boxShadow: `0 0 5px ${e.ok ? GREEN : RED}` }} />
-                <span style={{ fontSize: 11, fontWeight: 700, color: e.ok ? TEXT : TEXT_MID }}>{e.label}</span>
-                <span style={{ fontSize: 10, fontFamily: 'monospace', color: e.ok ? TEXT_LOW : RED }}>{e.latency}</span>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-            {[
-              { label: 'Total Requests', val: postCount.toLocaleString(), color: ACCENT },
-              { label: 'Avg Latency',    val: '1.45s',                    color: GREEN  },
-              { label: 'Error Rate',     val: '0.3%',                     color: YELLOW },
-            ].map(m => (
-              <div key={m.label} style={{ padding: '10px 12px', borderRadius: 10,
-                background: '#F8FAFD', border: `1px solid ${BORDER}` }}>
-                <div style={{ fontSize: 16, fontWeight: 900, color: m.color, fontFamily: 'monospace' }}>{m.val}</div>
-                <div style={{ fontSize: 10, color: TEXT_LOW, marginTop: 3 }}>{m.label}</div>
-              </div>
-            ))}
-          </div>
-
-          <div style={{ marginTop: 14 }}>
-            <div style={{ fontSize: 10, fontWeight: 700, color: TEXT_LOW,
-              letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8 }}>פעילות אחרונה</div>
-            {[
-              { time: '14:32', type: 'POST_GEN',  user: 'user@example.com', status: 'ok'  },
-              { time: '14:30', type: 'IDEA_BANK', user: 'jane@co.com',      status: 'ok'  },
-              { time: '14:28', type: 'IMG_GEN',   user: 'test@demo.com',    status: 'err' },
-              { time: '14:25', type: 'ONBOARD',   user: 'biz@shop.com',     status: 'ok'  },
-            ].map((a, i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8,
-                padding: '5px 0', borderBottom: i < 3 ? `1px solid ${BORDER}` : 'none' }}>
-                <span style={{ fontSize: 10, color: TEXT_LOW, fontFamily: 'monospace', flexShrink: 0 }}>{a.time}</span>
-                <span style={{ fontSize: 10, fontWeight: 800, padding: '1px 6px', borderRadius: 5, flexShrink: 0,
-                  background: 'rgba(26,115,232,0.08)', border: '1px solid rgba(26,115,232,0.15)',
-                  color: ACCENT, letterSpacing: '0.04em' }}>{a.type}</span>
-                <span style={{ fontSize: 10, color: TEXT_MID, flex: 1,
-                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.user}</span>
-                <div style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                  background: a.status === 'ok' ? GREEN : RED }} />
-              </div>
-            ))}
-          </div>
+        {/* real editable engines — no fabricated live status */}
+        <div style={{ display: 'flex', gap: 8, marginBottom: 18, flexWrap: 'wrap' }}>
+          {['Ideas Engine', 'Post Generator', 'Image AI', 'Onboarding AI'].map(label => (
+            <span key={label} style={{
+              display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 8,
+              background: '#F8FAFD', border: `1px solid ${BORDER}`,
+              fontSize: 11, fontWeight: 700, color: TEXT_MID,
+            }}>
+              <i className="ti ti-sparkles" style={{ fontSize: 12, color: PURPLE }} />
+              {label}
+            </span>
+          ))}
         </div>
 
-        {/* Card 2 — Trend Sources */}
-        <div style={{ ...BG_CARD_STYLE, padding: '18px 20px' }}>
-          <SectionHeader icon="ti-radar" title="מקורות טרנדים — חיבוריות"
-            action={
-              <button onClick={() => showToast('מרענן חיבורים...', true)} style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6, padding: '5px 12px', borderRadius: 8,
-                cursor: 'pointer', fontSize: 11, fontWeight: 800,
-                background: 'rgba(26,115,232,0.06)', border: '1px solid rgba(26,115,232,0.18)', color: ACCENT,
-              }}>
-                <i className="ti ti-refresh" style={{ fontSize: 12 }} /> רענן
-              </button>
-            }
-          />
-
-          <div style={{ marginBottom: 14, padding: '9px 12px', borderRadius: 10,
-            background: 'rgba(15,158,96,0.06)', border: '1px solid rgba(15,158,96,0.18)',
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-              <i className="ti ti-wifi" style={{ fontSize: 15, color: GREEN }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: TEXT }}>
-                {TREND_SOURCES.filter(s => s.ok).length}/{TREND_SOURCES.length} מקורות מחוברים
-              </span>
+        {/* real usage metrics from live stats */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
+          {[
+            { label: 'פוסטים שנוצרו', val: postCount.toLocaleString(),  color: ACCENT },
+            { label: 'תמונות שנוצרו', val: imageCount.toLocaleString(), color: PURPLE },
+            { label: 'טוקנים שנצרכו', val: tokenBurn.toLocaleString(),  color: GREEN  },
+          ].map(m => (
+            <div key={m.label} style={{ padding: '10px 12px', borderRadius: 10,
+              background: '#F8FAFD', border: `1px solid ${BORDER}` }}>
+              <div style={{ fontSize: 16, fontWeight: 900, color: m.color, fontFamily: 'monospace' }}>{m.val}</div>
+              <div style={{ fontSize: 10, color: TEXT_LOW, marginTop: 3 }}>{m.label}</div>
             </div>
-            <span style={{ fontSize: 10, color: TEXT_LOW, fontFamily: 'monospace' }}>
-              Updated: {new Date().toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
-            </span>
-          </div>
-
-          {TREND_SOURCES.map(s => <SourceDot key={s.name} {...s} />)}
-
-          <div style={{ height: 1, background: BORDER, margin: '14px 0' }} />
-          <div style={{ fontSize: 10, fontWeight: 700, color: TEXT_LOW,
-            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 10 }}>Data Pipeline</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
-            {['Fetch', 'Parse', 'Score', 'Cache', 'AI', 'Output'].map((step, i, arr) => (
-              <div key={step} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-                <div style={{ flex: 1, textAlign: 'center' }}>
-                  <div style={{ width: 28, height: 28, borderRadius: 8, margin: '0 auto 4px',
-                    background: i < 4 ? 'rgba(15,158,96,0.10)' : 'rgba(249,171,0,0.10)',
-                    border: `1px solid ${i < 4 ? 'rgba(15,158,96,0.22)' : 'rgba(249,171,0,0.22)'}`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <i className={`ti ${['ti-cloud-download','ti-code','ti-filter','ti-database','ti-brain','ti-send'][i]}`}
-                      style={{ fontSize: 12, color: i < 4 ? GREEN : YELLOW }} />
-                  </div>
-                  <div style={{ fontSize: 9, fontWeight: 700, color: TEXT_LOW,
-                    textTransform: 'uppercase', letterSpacing: '0.04em' }}>{step}</div>
-                </div>
-                {i < arr.length - 1 && (
-                  <div style={{ width: 16, height: 1,
-                    background: i < 3 ? 'rgba(15,158,96,0.3)' : 'rgba(249,171,0,0.3)', flexShrink: 0 }} />
-                )}
-              </div>
-            ))}
-          </div>
+          ))}
         </div>
       </div>
 
