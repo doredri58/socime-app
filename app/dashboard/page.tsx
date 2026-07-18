@@ -213,7 +213,7 @@ export default async function DashboardHome() {
         </div>
 
         {/* Week rhythm: a time axis + 7 vertical day lanes */}
-        <div style={{ display: 'grid', gridTemplateColumns: '34px repeat(7, 1fr)', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '34px repeat(7, minmax(0, 1fr))', gap: 8 }}>
 
           {/* Time axis — gives the rails their meaning */}
           <div style={{ paddingTop: 52 }}>
@@ -381,7 +381,7 @@ export default async function DashboardHome() {
       <QuickCreate />
 
       {/* ══ SECTION 3: Bottom Row ══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
 
         {/* RIGHT: Social Connections */}
         <div className="neon-card" style={{
@@ -478,7 +478,7 @@ export default async function DashboardHome() {
               that said nothing and let a 6-digit token balance shout loudest.
               Numbers are slate by default; a tile only takes colour when its
               value actually means something. */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+          <div className="dash-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
             {([
               { label: 'פוסטים בתור',   value: queueCount ?? 0,           icon: 'ti-calendar-event', suffix: '',   tone: 'neutral' },
               { label: 'פוסטים השבוע',  value: posts.length,              icon: 'ti-chart-bar',      suffix: '',   tone: 'neutral' },

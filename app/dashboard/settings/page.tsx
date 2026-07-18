@@ -218,7 +218,7 @@ function ProfileTab({ showToast }: { showToast: (m: string, ok: boolean) => void
       <div style={{ height: 1, background: 'rgba(255,255,255,0.07)' }} />
 
       {/* fields grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+      <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
         <Field label="שם מלא"      value={name}     onChange={setName}     placeholder="שמך המלא" />
         <Field label="אימייל אישי" value={email}    readOnly              placeholder="your@email.com" />
         <Field label="תפקיד"       value={jobTitle} onChange={setJobTitle} placeholder="בעלים, מנהל שיווק..." />
@@ -279,7 +279,7 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
             <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)' }}>בחרו סיסמה חזקה עם לפחות 8 תווים</div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 16 }}>
+        <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 16 }}>
           <Field label="סיסמה נוכחית"     type="password" value={curPw}  onChange={setCurPw}  placeholder="••••••••" />
           <Field label="סיסמה חדשה"       type="password" value={newPw}  onChange={setNewPw}  placeholder="מינימום 8 תווים" />
           <Field label="אימות סיסמה חדשה" type="password" value={confPw} onChange={setConfPw} placeholder="••••••••" />
@@ -694,10 +694,10 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
+      <div className="settings-shell" style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
 
         {/* ── vertical settings sidebar ── */}
-        <div style={{ width: 210, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 4,
+        <div className="settings-nav" style={{ width: 210, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 4,
           position: 'sticky', top: 24 }}>
           {TABS.map(tab => {
             const active = activeTab === tab.id

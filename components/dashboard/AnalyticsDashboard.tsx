@@ -345,7 +345,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
       </div>
 
       {/* ── KPI Cards — real data only ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
+      <div className="dash-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 24 }}>
         <KPICard
           icon="ti-file-text"
           label="סה&quot;כ פוסטים"
@@ -380,11 +380,11 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
       </div>
 
       {/* ── Main chart + Platform breakdown side ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 16, marginBottom: 20 }}>
+      <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 16, marginBottom: 20 }}>
 
         {/* Area chart */}
         <div className="neon-card" style={{ ...GLASS, padding: '24px 24px 16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
             <div>
               <h3 style={{ fontSize: 15, fontWeight: 800, color: '#fff', margin: '0 0 3px' }}>מגמת צמיחה</h3>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', margin: 0 }}>פוסטים שנוצרו ב-8 השבועות האחרונים</p>
@@ -397,7 +397,7 @@ export default function AnalyticsDashboard({ posts, userName, tier, tokenBalance
                 const pm     = f === 'all' ? null : PLATFORM_META[f]
                 return (
                   <button key={f} onClick={() => setChartFilter(f)} style={{
-                    padding: '5px 12px', borderRadius: 9, fontSize: 11, fontWeight: 700, cursor: 'pointer',
+                    padding: '5px 9px', borderRadius: 9, fontSize: 11, fontWeight: 700, cursor: 'pointer',
                     background: active ? (pm ? `${pm.color}22` : `linear-gradient(135deg, ${PURPLE}, ${PURPLE2})`) : 'transparent',
                     border: active && pm ? `1px solid ${pm.color}44` : 'none',
                     color: active ? (pm ? pm.color : '#fff') : 'rgba(255,255,255,0.38)',

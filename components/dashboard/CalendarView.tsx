@@ -488,7 +488,7 @@ function MonthGrid({ year, month, postsByDay, onDayClick, onPostClick, today }: 
   return (
     <div>
       {/* day labels */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, marginBottom: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4, marginBottom: 4 }}>
         {HE_DAYS.map((d, i) => (
           <div key={i} style={{ textAlign: 'center', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.3)', padding: '6px 0' }}>
             {d}
@@ -497,7 +497,7 @@ function MonthGrid({ year, month, postsByDay, onDayClick, onPostClick, today }: 
       </div>
 
       {/* day cells */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 4 }}>
         {cells.map((day, idx) => {
           if (day === null) return <div key={idx} style={{ minHeight: 100, borderRadius: 14, background: 'rgba(255,255,255,0.015)' }} />
 
@@ -581,7 +581,7 @@ function WeekGrid({ weekStart, postsByDay, onDayClick, onPostClick, today }: {
   const days = Array.from({ length: 7 }, (_, i) => new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate() + i))
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6 }}>
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: 6 }}>
       {days.map((d, i) => {
         const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`
         const dayPosts = postsByDay.get(key) ?? []

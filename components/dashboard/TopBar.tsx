@@ -44,7 +44,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
   const tokenColor = pct > 50 ? '#BE56FE' : pct > 20 ? '#8A6207' : '#CC1F1F'
 
   return (
-    <header style={{
+    <header className="dash-topbar" style={{
       position: 'sticky', top: 0, zIndex: 30,
       height: 60,
       background: 'var(--dash-topbar-bg)',
@@ -84,7 +84,7 @@ export default function TopBar({ userName, tokens, tier }: TopBarProps) {
             transition: 'width 0.4s ease',
           }} />
         </div>
-        <Link href="/dashboard/profile" style={{
+        <Link href="/dashboard/profile" className="topbar-upgrade-mini" style={{
           fontSize: 10, fontWeight: 700, color: '#9656FE',
           textDecoration: 'none',
           padding: '3px 10px', borderRadius: 999,

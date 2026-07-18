@@ -509,7 +509,7 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas, initial
 
           {/* the ready posts */}
           {postIdeas.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+            <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
               {postIdeas.map(idea => (
                 <PostCard key={idea.id} idea={idea}
                   saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}
@@ -595,7 +595,7 @@ export default function IdeasBank({ tier, hasBusiness, initialPostIdeas, initial
           )}
 
           {videoIdeas.length > 0 && (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
+            <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14, alignItems: 'stretch' }}>
               {videoIdeas.map(idea => (
                 <VideoCard key={idea.id} idea={idea} personalized
                   saved={savedIds.has(idea.id)} onSave={() => toggleSave(idea.id)}

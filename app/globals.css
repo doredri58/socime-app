@@ -235,6 +235,34 @@ body {
 }
 
 /* ═══════════════════════════════════════
+   RESPONSIVE GRIDS — collapse multi-column dashboard grids on phones.
+   Desktop column templates stay inline (preserving intent up to 1100px);
+   these overrides only take over below the sidebar breakpoint (< 768px).
+   .dash-grid      → single column   (2/3-col content-card grids)
+   .dash-grid-2    → two columns      (stat-tile grids that read fine 2-up)
+═══════════════════════════════════════ */
+@media (max-width: 767px) {
+  .dash-grid   { grid-template-columns: minmax(0, 1fr) !important; }
+  .dash-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  /* TopBar: trim heavy desktop padding/gap and drop the redundant mini
+     "שדרוג" link so the token pill + avatar fit a phone width.
+     (Upgrade stays reachable from the sidebar.) */
+  .dash-topbar { padding-left: 14px !important; padding-right: 14px !important; gap: 10px !important; }
+  .topbar-upgrade-mini { display: none !important; }
+
+  /* Settings: stack the page, and turn the 210px vertical nav into a
+     horizontal scrollable tab strip instead of a fixed column. */
+  .settings-shell { flex-direction: column !important; }
+  .settings-nav {
+    width: 100% !important; position: static !important;
+    flex-direction: row !important; overflow-x: auto !important;
+    gap: 6px !important; padding-bottom: 4px;
+  }
+  .settings-nav > button { width: auto !important; white-space: nowrap; flex-shrink: 0; }
+}
+
+/* ═══════════════════════════════════════
    LIGHT MODE — Dashboard content (#dash-content)
    bg: blue→purple gradient · cards: dirty white · text: deep purple
    Rules are ordered; later rules win on equal specificity.

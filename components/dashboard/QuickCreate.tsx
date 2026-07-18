@@ -37,7 +37,7 @@ export default function QuickCreate() {
 
       <div style={{ display: 'flex', gap: 12, alignItems: 'stretch' }}>
         <div style={{
-          flex: 1, position: 'relative',
+          flex: 1, minWidth: 0, position: 'relative',
           borderRadius: 16,
           background: 'rgba(255,255,255,0.05)',
           border: '1px solid rgba(150,86,254,0.25)',
@@ -53,6 +53,7 @@ export default function QuickCreate() {
             placeholder="על מה נדבר היום בפיד? (למשל: פוסט על השקת מוצר חדש)"
             style={{
               flex: 1,
+              minWidth: 0,
               background: 'transparent',
               border: 'none',
               outline: 'none',

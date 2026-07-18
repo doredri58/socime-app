@@ -964,7 +964,7 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
           on={smartTrim} onToggle={() => setSmartTrim(p => !p)}
         >
           {/* stats */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
+          <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
             {[
               { label: 'שתיקות זוהו', val: '4', icon: 'ti-circle-x', color: RED    },
               { label: 'זמן נחסך',    val: '8ש\'',icon: 'ti-clock',   color: GREEN  },

@@ -134,7 +134,7 @@ export default function SocialConnect({ tier = 'free' }: Props) {
       </div>
 
       {/* platform grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+      <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
         {PLATFORMS.map(p => {
           const active     = isConnected(p.id)
           const since      = connectedSince(p.id)

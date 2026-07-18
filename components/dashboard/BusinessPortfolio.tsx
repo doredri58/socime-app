@@ -334,7 +334,7 @@ export default function BusinessPortfolio({ userId, initialProfile }: Props) {
           title="פרטים יבשים ונכסים דיגיטליים"
           subtitle="מידע בסיסי על העסק ולינקים לנוכחות הדיגיטלית"
         >
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
 
             {/* column 1 — business info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>

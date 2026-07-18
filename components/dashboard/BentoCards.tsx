@@ -65,7 +65,7 @@ export function QuickActionList({ actions }: { actions: QuickAction[] }) {
 
 export function FeatureGrid({ items }: { items: FeatureCard[] }) {
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
+    <div className="dash-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 16 }}>
       {items.map(item => (
         <Link key={item.href} href={item.href} style={{ textDecoration: 'none' }}>
           <div style={{

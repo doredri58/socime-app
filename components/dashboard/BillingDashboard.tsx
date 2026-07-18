@@ -166,7 +166,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
       </div>
 
       {/* ══ TOP ROW — plan + payment ══════════════════════════════════════ */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+      <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
 
         {/* ── Card 1: Current Plan & Usage ── */}
         <SectionCard
@@ -362,7 +362,7 @@ export default function BillingDashboard({ profile, transactions, business }: Pr
           }
         >
           {editingBill ? (
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+            <div className="dash-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {[
                 { label: 'שם העסק / חברה', val: billName, set: setBillName, placeholder: 'שם החברה', icon: 'ti-building' },
                 { label: 'ח.פ / עוסק מורשה', val: billCompanyId, set: setBillCompanyId, placeholder: '123456789', icon: 'ti-id-badge' },
