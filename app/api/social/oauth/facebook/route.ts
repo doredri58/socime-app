@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import crypto from 'crypto'
 import { createServerSupabaseClient } from '@/lib/supabase'
 
 // GET /api/social/oauth/facebook
@@ -13,8 +14,10 @@ export async function GET(req: NextRequest) {
   const siteUrl    = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
   const redirectUri = `${siteUrl}/api/social/oauth/facebook/callback`
 
-  // Pass userId in state so callback knows who to associate the token with
-  const state = Buffer.from(JSON.stringify({ userId: user.id })).toString('base64url')
+  // CSRF: random state nonce stored in an httpOnly cookie and validated on
+  // callback. userId is NOT carried in state — the callback derives it from the
+  // authenticated session, so a forged state can't bind a token to another user.
+  const state = crypto.randomBytes(32).toString('base64url')
 
   const url = new URL('https://www.facebook.com/v19.0/dialog/oauth')
   url.searchParams.set('client_id',     appId)
@@ -37,5 +40,13 @@ export async function GET(req: NextRequest) {
     url.searchParams.set('scope', scopes)
   }
 
-  return NextResponse.redirect(url.toString())
+  const res = NextResponse.redirect(url.toString())
+  res.cookies.set('fb_oauth_state', state, {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: 'lax',   // sent on the top-level GET redirect back from Facebook
+    path:     '/',
+    maxAge:   600,     // 10 minutes
+  })
+  return res
 }

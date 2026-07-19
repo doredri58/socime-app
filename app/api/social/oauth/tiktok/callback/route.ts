@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { encrypt } from '@/lib/crypto'
+
+// clears the short-lived OAuth cookies on any redirect out of the callback
+function withCleared(res: NextResponse): NextResponse {
+  res.cookies.delete('tiktok_oauth_state')
+  res.cookies.delete('tiktok_code_verifier')
+  return res
+}
 
 // GET /api/social/oauth/tiktok/callback
 // TikTok redirects here with ?code=... after user grants permissions.
@@ -13,19 +20,20 @@ export async function GET(req: NextRequest) {
   const state = searchParams.get('state')
   const error = searchParams.get('error')
 
-  if (error || !code || !state) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_denied`)
+  // CSRF: state must match the nonce stored in the httpOnly cookie.
+  const cookieState  = req.cookies.get('tiktok_oauth_state')?.value
+  const codeVerifier = req.cookies.get('tiktok_code_verifier')?.value
+  if (error || !code || !state || !cookieState || state !== cookieState || !codeVerifier) {
+    return withCleared(NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_denied`))
   }
 
-  let userId: string
-  let codeVerifier: string
-  try {
-    const parsed = JSON.parse(Buffer.from(state, 'base64url').toString())
-    userId = parsed.userId
-    codeVerifier = parsed.codeVerifier
-  } catch {
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=invalid_state`)
+  // userId comes from the authenticated session, never from the state param.
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    return withCleared(NextResponse.redirect(`${siteUrl}/login`))
   }
+  const userId = user.id
 
   try {
     // Step 1: Exchange code for access token (PKCE)
@@ -66,9 +74,9 @@ export async function GET(req: NextRequest) {
       extra_data:            { open_id: openId, name },
     }, { onConflict: 'user_id,platform' })
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?connected=tiktok`)
+    return withCleared(NextResponse.redirect(`${siteUrl}/dashboard/social?connected=tiktok`))
   } catch (err) {
     console.error('[tiktok/callback]', err)
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_failed`)
+    return withCleared(NextResponse.redirect(`${siteUrl}/dashboard/social?error=tiktok_failed`))
   }
 }

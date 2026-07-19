@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createServiceClient } from '@/lib/supabase'
+import { createServerSupabaseClient, createServiceClient } from '@/lib/supabase'
 import { encrypt } from '@/lib/crypto'
 
 const BASE = 'https://graph.facebook.com/v19.0'
@@ -15,16 +15,23 @@ export async function GET(req: NextRequest) {
   const state = searchParams.get('state')
   const error = searchParams.get('error')
 
-  if (error || !code || !state) {
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_denied`)
+  // CSRF: the state param must match the nonce we stored in the httpOnly cookie.
+  const cookieState = req.cookies.get('fb_oauth_state')?.value
+  if (error || !code || !state || !cookieState || state !== cookieState) {
+    const res = NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_denied`)
+    res.cookies.delete('fb_oauth_state')
+    return res
   }
 
-  let userId: string
-  try {
-    userId = JSON.parse(Buffer.from(state, 'base64url').toString()).userId
-  } catch {
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=invalid_state`)
+  // userId comes from the authenticated session, never from the state param.
+  const supabase = await createServerSupabaseClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) {
+    const res = NextResponse.redirect(`${siteUrl}/login`)
+    res.cookies.delete('fb_oauth_state')
+    return res
   }
+  const userId = user.id
 
   try {
     // Step 1: Exchange code for short-lived user access token
@@ -115,9 +122,13 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?connected=facebook`)
+    const res = NextResponse.redirect(`${siteUrl}/dashboard/social?connected=facebook`)
+    res.cookies.delete('fb_oauth_state')
+    return res
   } catch (err) {
     console.error('[facebook/callback]', err)
-    return NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_failed`)
+    const res = NextResponse.redirect(`${siteUrl}/dashboard/social?error=facebook_failed`)
+    res.cookies.delete('fb_oauth_state')
+    return res
   }
 }

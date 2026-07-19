@@ -748,7 +748,11 @@ export default function VideoEditor({ tokenBalance }: VideoEditorProps) {
           },
         }),
       })
-      if (!renderRes.ok) throw new Error('שגיאה בעיבוד הסרטון')
+      if (!renderRes.ok) {
+        // מציג את הודעת השרת (למשל 402 — אין מספיק טוקנים) במקום הודעה גנרית
+        const errBody = await renderRes.json().catch(() => ({})) as { error?: string }
+        throw new Error(errBody.error ?? 'שגיאה בעיבוד הסרטון')
+      }
       const { output_url } = await renderRes.json() as { output_url: string }
 
       setProcProgress(100); setProcStep('הסרטון מוכן! 🎉')

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { v2 as cloudinary } from 'cloudinary'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { deductTokens } from '@/lib/tokens'
+import { checkTokenBalance, deductTokens } from '@/lib/tokens'
 
 export const runtime = 'nodejs'
 
@@ -28,6 +28,15 @@ export async function POST(req: NextRequest) {
 
   if (!public_id) {
     return NextResponse.json({ error: 'public_id required' }, { status: 400 })
+  }
+
+  // בדיקת יתרה לפני עיבוד — מונע ירידה למינוס (וידאו = 20 טוקן)
+  const check = await checkTokenBalance(user.id, 'video_render')
+  if (!check.ok) {
+    return NextResponse.json(
+      { error: `אין מספיק טוקנים (נדרש ${check.required}, נותר ${check.balance})`, insufficientTokens: true },
+      { status: 402 }
+    )
   }
 
   // Build transformation chain

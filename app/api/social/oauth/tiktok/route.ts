@@ -15,7 +15,10 @@ export async function GET(req: NextRequest) {
 
   const codeVerifier  = crypto.randomBytes(32).toString('base64url')
   const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64url')
-  const state = Buffer.from(JSON.stringify({ userId: user.id, codeVerifier })).toString('base64url')
+  // CSRF: random state nonce validated on callback via an httpOnly cookie.
+  // The PKCE verifier is kept server-side in an httpOnly cookie (never in the
+  // URL/state), and userId is derived from the session on callback.
+  const state = crypto.randomBytes(32).toString('base64url')
 
   const url = new URL('https://www.tiktok.com/v2/auth/authorize/')
   url.searchParams.set('client_key',            clientKey)
@@ -27,5 +30,15 @@ export async function GET(req: NextRequest) {
   url.searchParams.set('code_challenge',        codeChallenge)
   url.searchParams.set('code_challenge_method', 'S256')
 
-  return NextResponse.redirect(url.toString())
+  const res = NextResponse.redirect(url.toString())
+  const cookieOpts = {
+    httpOnly: true,
+    secure:   process.env.NODE_ENV === 'production',
+    sameSite: 'lax' as const,
+    path:     '/',
+    maxAge:   600,
+  }
+  res.cookies.set('tiktok_oauth_state', state, cookieOpts)
+  res.cookies.set('tiktok_code_verifier', codeVerifier, cookieOpts)
+  return res
 }
