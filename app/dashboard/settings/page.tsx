@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import UpgradeModal from '@/components/dashboard/UpgradeModal'
+import MfaSettings from '@/components/dashboard/MfaSettings'
 
 /* ── design tokens ────────────────────────────────────────────────────── */
 const PURPLE  = '#9656FE'
@@ -250,7 +251,6 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
   const [newPw,  setNewPw]  = useState('')
   const [confPw, setConfPw] = useState('')
   const [loading, setLoading] = useState(false)
-  const [twoFA,  setTwoFA]  = useState(false)
 
   async function changePassword() {
     if (!curPw || !newPw) return showToast('מלאו את כל השדות', false)
@@ -293,42 +293,8 @@ function SecurityTab({ showToast }: { showToast: (m: string, ok: boolean) => voi
         </button>
       </div>
 
-      {/* 2FA */}
-      <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 42, height: 42, borderRadius: 12,
-              background: twoFA ? 'rgba(52,211,153,0.12)' : 'rgba(255,255,255,0.06)',
-              border: `1px solid ${twoFA ? 'rgba(52,211,153,0.28)' : 'rgba(255,255,255,0.10)'}`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s' }}>
-              <i className="ti ti-shield-check" style={{ fontSize: 20, color: twoFA ? GREEN : 'rgba(255,255,255,0.35)', transition: 'color 0.3s' }} />
-            </div>
-            <div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: 8 }}>
-                אימות דו-שלבי (2FA)
-                {twoFA && (
-                  <span style={{ fontSize: 10, fontWeight: 800, padding: '2px 8px', borderRadius: 999,
-                    background: 'rgba(52,211,153,0.12)', border: '1px solid rgba(52,211,153,0.28)', color: GREEN }}>
-                    פעיל
-                  </span>
-                )}
-              </div>
-              <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.38)', marginTop: 3, lineHeight: 1.6 }}>
-                שכבת הגנה נוספת — קוד חד-פעמי בכל כניסה
-              </div>
-            </div>
-          </div>
-          <Toggle on={twoFA} onChange={() => { setTwoFA(p => !p); showToast(twoFA ? '2FA כובה' : '2FA הופעל ✓', true) }} />
-        </div>
-        {twoFA && (
-          <div style={{ marginTop: 16, padding: '12px 14px', borderRadius: 12,
-            background: 'rgba(52,211,153,0.07)', border: '1px solid rgba(52,211,153,0.18)',
-            fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7 }}>
-            <i className="ti ti-info-circle" style={{ color: GREEN, marginLeft: 6 }} />
-            קוד אימות יישלח לאימייל שלכם בכל כניסה. הגדרת authenticator app בקרוב.
-          </div>
-        )}
-      </div>
+      {/* 2FA — real TOTP MFA (required for admin/founder access) */}
+      <MfaSettings showToast={showToast} />
 
       {/* active sessions */}
       <div className="neon-card" style={{ ...GLASS, padding: '22px' }}>
@@ -672,6 +638,16 @@ export default function SettingsPage() {
     fetch('/api/account/profile').then(r => r.json()).then(d => {
       if (d.profile?.tier) setPlan(d.profile.tier)
     })
+  }, [])
+
+  // פתיחת הטאב לפי ?tab= (משמש בהפניית אכיפת ה-MFA לאדמין)
+  useEffect(() => {
+    const t = new URLSearchParams(window.location.search).get('tab')
+    if (t && TABS.some(x => x.id === t)) setActiveTab(t as TabId)
+    if (new URLSearchParams(window.location.search).get('mfa') === 'required') {
+      setToast({ msg: 'לגישה לאזור הניהול חובה להפעיל אימות דו-שלבי (MFA)', ok: false })
+      setTimeout(() => setToast(null), 6000)
+    }
   }, [])
 
   function showToast(msg: string, ok: boolean) {
