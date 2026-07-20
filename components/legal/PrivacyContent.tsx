@@ -73,9 +73,23 @@ export default function PrivacyContent({ showAccountActions = true }: { showAcco
   const [openSection, setOpenSection] = useState<number | null>(null)
   const [exportRequested, setExportRequested] = useState(false)
 
-  function handleExport() {
+  async function handleExport() {
     setExportRequested(true)
-    setTimeout(() => setExportRequested(false), 3000)
+    try {
+      const res = await fetch('/api/account/export')
+      if (!res.ok) throw new Error('export failed')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `socime-data-${new Date().toISOString().slice(0, 10)}.json`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // נשארים במצב "בקשה נשלחה" קצר גם בכשל — לא חושפים פרטים
+    } finally {
+      setTimeout(() => setExportRequested(false), 2000)
+    }
   }
 
   return (
